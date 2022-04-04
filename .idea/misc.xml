@@ -3,8 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_bottom.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_habit.xml" value="0.306" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/ic_bottom_nav_home.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/ic_icon_sad.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/layout/btn_habit.xml" value="0.5" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/layout/fragment_home.xml" value="0.43597560975609756" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/layout/fragment_planner.xml" value="0.22864583333333333" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/menu/bottom.xml" value="0.22864583333333333" />
