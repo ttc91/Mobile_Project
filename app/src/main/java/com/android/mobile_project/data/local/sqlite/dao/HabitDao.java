@@ -1,5 +1,6 @@
 package com.android.mobile_project.data.local.sqlite.dao;
 
+import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -13,16 +14,20 @@ import com.android.mobile_project.data.local.model.db.relation.UserWithHabit;
 
 import java.util.List;
 
+@Dao
 public interface HabitDao {
 
     @Insert
     public void insertHabit(HabitEntity habit);
 
     @Delete
-    public void deleteHabit(Long habitId);
+    public void deleteHabit(HabitEntity habit);
 
     @Update
     public void updateHabit(HabitEntity habit);
+
+    @Query("DELETE FROM tbl_habit WHERE id = :id")
+    public void deleteHabitById(Long id);
 
     @Transaction
     @Query("SELECT * FROM tbl_user")

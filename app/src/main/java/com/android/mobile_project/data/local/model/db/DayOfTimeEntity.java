@@ -26,10 +26,10 @@ public class DayOfTimeEntity extends BaseEntity implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    private Long dayOfTimeId;
+    public Long dayOfTimeId;
 
     @ColumnInfo(name = "time_name")
     @NonNull
-    private String dayOfTimeName;
+    public String dayOfTimeName;
 
 }

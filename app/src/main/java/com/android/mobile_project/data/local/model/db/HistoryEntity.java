@@ -6,25 +6,36 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity(tableName = "tbl_history")
+@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class HistoryEntity {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    private Long historyId;
+    public Long historyId;
 
     @ColumnInfo(name = "date")
     @Nullable
-    private Long historyDate;
+    public Long historyDate;
 
     @NonNull
     @ColumnInfo(defaultValue = "true")
-    private boolean historyHabitsState;
+    public boolean historyHabitsState;
 
     @ColumnInfo(name = "user_id")
-    private Long userId;
+    public Long userId;
 
     @ColumnInfo(name = "habit_id")
-    private Long habitId;
+    public Long habitId;
 
 }

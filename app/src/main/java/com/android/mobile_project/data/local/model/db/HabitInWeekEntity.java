@@ -1,5 +1,6 @@
 package com.android.mobile_project.data.local.model.db;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -25,16 +26,19 @@ import lombok.Setter;
 public class HabitInWeekEntity extends BaseEntity implements Serializable {
 
     @ColumnInfo(name = "user_id")
-    private Long userId;
+    @NonNull
+    public Long userId;
 
     @ColumnInfo(name = "habit_id")
-    private Long habitId;
+    @NonNull
+    public Long habitId;
 
     @ColumnInfo(name = "day_of_week_id")
-    private Long dayOfWeekId;
+    @NonNull
+    public Long dayOfWeekId;
 
     @ColumnInfo(name = "timer")
     @Nullable
-    private Long habitTimer;
+    public Long habitTimer;
 
 }

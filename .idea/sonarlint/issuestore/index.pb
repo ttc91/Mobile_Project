@@ -1,6 +1,4 @@
 
-n
->app/src/main/java/com/android/mobile_project/MainActivity.java,9\8\9842a9510e39fd0a61022a48c7dfbbe9b2c94ca0
 @
 app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 ë
@@ -17,11 +15,5 @@ gapp/src/main/java/com/android/mobile_project/data/local/model/db/relation/UserW
 aapp/src/main/java/com/android/mobile_project/data/local/model/db/relation/HabitWithDayOfWeek.java,c\b\cb6fb18e79a223b82080c2d4e8d4cdd4898416a9
 }
 Mapp/src/main/java/com/android/mobile_project/data/local/model/BaseEntity.java,8\6\86f0279fc25c1189e2093a296f2ffd963b707e31
-Ä
-Papp/src/main/java/com/android/mobile_project/data/local/model/db/UserEntity.java,9\8\98933531720d379902ecb10a568d84ed1ecd8aef
-Ö
-Uapp/src/main/java/com/android/mobile_project/data/local/model/db/DayOfWeekEntity.java,f\5\f5b15b7d363577d4336968c0e2c89005c2475aa4
 ê
 `app/src/main/java/com/android/mobile_project/data/local/model/db/relation/DayOfWeekWithUser.java,4\3\43c1b075a1e7b42183b1d2c36930e058a7224f40
-Ö
-Uapp/src/main/java/com/android/mobile_project/data/local/pref/MySharedPreferences.java,b\6\b6bfd8d2b1a7e500c343b951202653b9021a847f

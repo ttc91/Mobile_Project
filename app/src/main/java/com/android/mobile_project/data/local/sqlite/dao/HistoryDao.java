@@ -1,5 +1,6 @@
 package com.android.mobile_project.data.local.sqlite.dao;
 
+import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
@@ -10,6 +11,7 @@ import com.android.mobile_project.data.local.model.db.relation.UserWithHistory;
 
 import java.util.List;
 
+@Dao
 public interface HistoryDao {
 
     @Insert

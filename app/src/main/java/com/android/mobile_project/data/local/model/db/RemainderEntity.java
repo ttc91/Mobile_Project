@@ -24,14 +24,14 @@ public class RemainderEntity implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    private Long remainderId;
+    public Long remainderId;
 
     @ColumnInfo(name = "habit_id")
     @NonNull
-    private Long habitId;
+    public Long habitId;
 
     @ColumnInfo(name = "remainder_time")
     @NonNull
-    private Long remainderTime;
+    public Long remainderTime;
 
 }

@@ -11,6 +11,7 @@ import com.android.mobile_project.data.local.model.BaseEntity;
 import java.io.Serializable;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,15 +21,16 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@Data
 public class UserEntity extends BaseEntity implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    private Long userId;
+    public Long userId;
 
     @ColumnInfo(name = "user_name")
     @NonNull
-    private String userName;
+    public String userName;
 
 
 

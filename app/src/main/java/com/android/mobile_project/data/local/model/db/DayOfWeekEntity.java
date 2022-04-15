@@ -25,10 +25,10 @@ public class DayOfWeekEntity extends BaseEntity implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    private Long dayOfWeekId;
+    public Long dayOfWeekId;
 
     @ColumnInfo(name = "day_of_week_name")
     @NonNull
-    private String dayOfWeekName;
+    public String dayOfWeekName;
 
 }

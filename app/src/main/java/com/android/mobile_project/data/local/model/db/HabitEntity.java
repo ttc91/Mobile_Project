@@ -25,26 +25,26 @@ public class HabitEntity extends BaseEntity implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    private Integer habitId;
+    public Integer habitId;
 
     @ColumnInfo(name = "habit_name")
     @NonNull
-    private String habitName;
+    public String habitName;
 
     @ColumnInfo(name = "habit_logo")
-    private String habitLogo;
+    public String habitLogo;
 
     @ColumnInfo(name = "longest_steak", defaultValue = "0")
     @NonNull
-    private Long numOfLongestSteak;
+    public Long numOfLongestSteak;
 
     //FK :
 
     @ColumnInfo(name = "user_id")
-    private Long userId;
+    public Long userId;
 
     @ColumnInfo(name = "day_of_time_id")
     @NonNull
-    private Long dayOfTimeId;
+    public Long dayOfTimeId;
 
 }
