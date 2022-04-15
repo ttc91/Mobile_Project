@@ -16,13 +16,13 @@ import java.util.List;
 public interface HabitDao {
 
     @Insert
-    void insertHabit(HabitEntity habit);
+    public void insertHabit(HabitEntity habit);
 
     @Delete
-    void deleteHabit(Long habitId);
+    public void deleteHabit(Long habitId);
 
     @Update
-    void updateHabit(HabitEntity habit);
+    public void updateHabit(HabitEntity habit);
 
     @Transaction
     @Query("SELECT * FROM tbl_user")

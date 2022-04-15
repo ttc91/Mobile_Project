@@ -2,7 +2,6 @@ package com.android.mobile_project.data.local.model.db;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
-import androidx.room.Database;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 

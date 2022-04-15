@@ -37,8 +37,4 @@ public class HabitInWeekEntity extends BaseEntity implements Serializable {
     @Nullable
     private Long habitTimer;
 
-    @ColumnInfo(name = "reminder")
-    @Nullable
-    private Long habitReminder;
-
 }
