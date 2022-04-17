@@ -110,6 +110,7 @@
 
 
                 <include
+                    android:id="@+id/ver_car"
                     layout="@layout/layout_ver_calendar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -121,7 +122,7 @@
                     android:layout_height="@dimen/_20sdp"
                     android:layout_marginStart="@dimen/_15sdp"
                     android:layout_marginEnd="@dimen/_15sdp"
-                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
                     android:text="Detail history"
                     android:textSize="@dimen/_12ssp"
                     android:textStyle="bold"

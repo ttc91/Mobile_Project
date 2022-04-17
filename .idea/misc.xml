@@ -6,6 +6,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_best_planner.xml" value="0.292" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_bottom.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_car_date.xml" value="0.317" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_car_today.xml" value="0.26" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_habit.xml" value="0.306" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_item_process.xml" value="0.292" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_item_process_miss.xml" value="0.292" />
@@ -39,7 +40,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/layout/layout_ver_calendar.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/layout/layout_your_record.xml" value="0.32708333333333334" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/layout/rcv_text_date.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/layout/rcv_vertical_calendar_text_date.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/layout/rcv_vertical_calendar_text_date.xml" value="0.67" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/menu/bottom.xml" value="0.22864583333333333" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/menu/bottom_nav.xml" value="0.22864583333333333" />
       </map>

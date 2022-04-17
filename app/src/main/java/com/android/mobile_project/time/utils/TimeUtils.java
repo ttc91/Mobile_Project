@@ -15,10 +15,10 @@ public class TimeUtils {
     private LocalDate selectedDate = LocalDate.now();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private ArrayList<String> daysInMonthArray(LocalDate date){
+    public ArrayList<String> daysInMonthArray(){
 
         ArrayList<String> daysInMonthArray = new ArrayList<>();
-        YearMonth yearMonth = YearMonth.from(date);
+        YearMonth yearMonth = YearMonth.from(selectedDate);
 
         int dayInMonth = yearMonth.lengthOfMonth();
 
@@ -40,10 +40,10 @@ public class TimeUtils {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private String getMonthYearFromDate(LocalDate date){
+    public String getMonthYearFromDate(){
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM");
-        return date.format(formatter);
+        return selectedDate.format(formatter);
 
     }
 
