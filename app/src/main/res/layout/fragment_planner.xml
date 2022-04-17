@@ -4,6 +4,14 @@
 
     <data>
 
+        <variable
+            name="vm"
+            type="com.android.mobile_project.ui.activity.main.fragment.planner.PlannerViewModel" />
+
+        <variable
+            name="fm"
+            type="com.android.mobile_project.ui.activity.main.fragment.planner.PlannerFragment" />
+
     </data>
 
     <ScrollView

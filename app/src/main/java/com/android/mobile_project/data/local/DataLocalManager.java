@@ -7,6 +7,7 @@ import com.android.mobile_project.data.local.pref.MySharedPreferences;
 public class DataLocalManager {
 
     private static final String USER_NAME = "PREF_USER_NAME";
+    private static final String USER_ID = "PREF_USER_ID";
 
     private static DataLocalManager instance;
 
@@ -29,12 +30,20 @@ public class DataLocalManager {
         return instance;
     }
 
-    public static void setUser(String value){
+    public static void setUserName(String value){
         DataLocalManager.getInstance().mySharedPreferences.putStringValue(USER_NAME, value);
     }
 
-    public static void getUser(){
-        DataLocalManager.getInstance().mySharedPreferences.getStringValue(USER_NAME);
+    public static String getUserName(){
+        return DataLocalManager.getInstance().mySharedPreferences.getStringValue(USER_NAME);
+    }
+
+    public static void setUserId(Integer value){
+        DataLocalManager.mySharedPreferences.putIntegerValue(USER_ID, value);
+    }
+
+    public static int getUserId(){
+        return DataLocalManager.mySharedPreferences.getIntegerValue(USER_ID);
     }
 
 }

@@ -1,10 +1,8 @@
 package com.android.mobile_project.ui.activity.main;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -12,12 +10,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.android.mobile_project.R;
+import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.databinding.ActivityMainBinding;
-import com.android.mobile_project.ui.InitActivity;
+import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.main.fragment.home.HomeFragment;
 import com.android.mobile_project.ui.activity.main.fragment.planner.PlannerFragment;
 import com.android.mobile_project.ui.activity.main.fragment.setting.SettingFragment;
-public class MainActivity extends AppCompatActivity implements InitActivity {
+public class MainActivity extends AppCompatActivity implements InitLayout {
 
     private ActivityMainBinding binding;
     private MainViewModel viewModel;
@@ -43,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements InitActivity {
         initAdapter();
         initViewModel();
 
+        int id = DataLocalManager.getUserId();
 
     }
 
@@ -97,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements InitActivity {
 
         viewModel = new MainViewModel();
         binding.setVm(viewModel);
+
+        binding.executePendingBindings();
 
     }
 }

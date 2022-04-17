@@ -17,4 +17,7 @@ public interface UserDao {
     @Update
     void updateUser(UserEntity user);
 
+    @Query("SELECT id FROM tbl_user WHERE user_name = :name")
+    public int getUserIdByName(String name);
+
 }
