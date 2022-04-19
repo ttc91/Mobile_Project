@@ -4,6 +4,13 @@
 
     <data>
 
+        <variable
+            name="a"
+            type="com.android.mobile_project.ui.activity.main.fragment.home.HomeFragment" />
+        <variable
+            name="vm"
+            type="com.android.mobile_project.ui.activity.main.fragment.home.HomeViewModel" />
+
     </data>
 
     <LinearLayout
@@ -38,10 +45,11 @@
                 app:layout_constraintStart_toEndOf="@id/title_month"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginStart="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_2sdp"
                 android:background="@drawable/btn_white_circle">
 
                 <TextView
+                    android:id="@+id/tv_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
@@ -49,18 +57,21 @@
                     app:layout_constraintTop_toTopOf="@+id/title_date"
                     app:layout_constraintBottom_toBottomOf="@+id/title_date"
                     android:text="3"
-                    android:textSize="@dimen/_20ssp"
+                    android:textSize="@dimen/_15ssp"
                     android:textStyle="bold"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button
+                android:id="@+id/btn_ch"
                 android:layout_width="@dimen/_40sdp"
                 android:layout_height="@dimen/_40sdp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                android:background="@drawable/btn_plus_circle"
+                android:onClick="@{(v) -> a.onClick(v)}"
+                android:clickable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:background="@drawable/btn_plus_circle"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         

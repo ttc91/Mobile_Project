@@ -47,4 +47,11 @@ public class TimeUtils {
 
     }
 
+    public String getDateFromLocalDate(){
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd");
+        return selectedDate.format(formatter);
+
+    }
+
 }

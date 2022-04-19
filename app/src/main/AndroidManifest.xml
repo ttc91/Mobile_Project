@@ -13,6 +13,9 @@
         <activity android:name=".ui.activity.main.MainActivity"
             android:exported="false"/>
 
+        <activity android:name=".ui.activity.create.CreateHabitActivity"
+            android:exported="false"/>
+
         <activity android:name=".ui.activity.input.InputActivity"
             android:exported="true">
 
