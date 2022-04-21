@@ -13,11 +13,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import com.android.mobile_project.R;
 import com.android.mobile_project.databinding.FragmentHomeBinding;
+import com.android.mobile_project.time.adapter.DailyCalendarAdapter;
+import com.android.mobile_project.time.utils.TimeUtils;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.create.CreateHabitActivity;
+import com.android.mobile_project.ui.activity.main.fragment.home.service.InitUIService;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public class HomeFragment extends Fragment implements InitLayout, View.OnClickListener {
 
@@ -34,6 +45,8 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         viewModel.setDate(binding.tvDate);
         viewModel.setMonth(binding.titleMonth);
+
+        viewModel.initUIService.initDailyCalendar();
 
 
         return v;
@@ -53,6 +66,28 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         viewModel = new HomeViewModel();
         binding.setVm(viewModel);
+
+        viewModel.initUIService = new InitUIService() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void initDailyCalendar() {
+
+                com.android.mobile_project.time.utils.TimeUtils utils = new TimeUtils();
+                ArrayList<LocalDate> days = utils.getSixtyDaysArray();
+
+                DailyCalendarAdapter adapter = new DailyCalendarAdapter(getContext(), days);
+                adapter.notifyDataSetChanged();
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
+
+                binding.rvHorCalendar.setLayoutManager(layoutManager);
+                binding.rvHorCalendar.setAdapter(adapter);
+                binding.rvHorCalendar.smoothScrollToPosition(days.size() / 2 + 1);
+
+                SnapHelper helper = new LinearSnapHelper();
+                helper.attachToRecyclerView(binding.rvHorCalendar);
+
+            }
+        };
 
     }
 

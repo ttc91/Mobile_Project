@@ -2,6 +2,7 @@ package com.android.mobile_project.ui.activity.input;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -112,6 +113,10 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
         boolean check = viewModel.service.checkExistUser();
 
         if(check){
+
+            Log.e("User name :", DataLocalManager.getUserName());
+            Log.e("User id :", String.valueOf(DataLocalManager.getUserId()));
+
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
         }

@@ -1,6 +1,7 @@
 package com.android.mobile_project.time.utils;
 
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class TimeUtils {
+
+    public TimeUtils(){}
 
     private LocalDate selectedDate = LocalDate.now();
 
@@ -52,6 +55,34 @@ public class TimeUtils {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd");
         return selectedDate.format(formatter);
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public ArrayList<LocalDate> getSixtyDaysArray()
+    {
+
+        ArrayList<LocalDate> days = new ArrayList<>();
+
+        LocalDate previousDates = selectedDate.minusDays(29);
+
+        while (previousDates.isBefore(selectedDate))
+        {
+            days.add(previousDates);
+            previousDates = previousDates.plusDays(1);
+        }
+
+        days.add(selectedDate);
+
+        LocalDate afterDate = selectedDate.plusDays(1);
+
+        while (days.size() < 60){
+
+            days.add(afterDate);
+            afterDate = afterDate.plusDays(1);
+
+        }
+
+        return days;
     }
 
 }

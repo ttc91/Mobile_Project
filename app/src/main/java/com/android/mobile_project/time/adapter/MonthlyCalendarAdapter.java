@@ -39,8 +39,6 @@ public class MonthlyCalendarAdapter extends RecyclerView.Adapter<MonthlyCalendar
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         RcvVerticalCalendarTextDateBinding binding = RcvVerticalCalendarTextDateBinding.inflate(inflater, parent, false);
 
-
-
         return new ViewHolder(binding);
 
     }
