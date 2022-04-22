@@ -14,8 +14,8 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:orientation="horizontal"
-            android:layout_marginStart="25dp"
-            android:layout_marginEnd="25dp"
+            android:layout_marginStart="@dimen/_25sdp"
+            android:layout_marginEnd="@dimen/_25sdp"
             android:gravity="center">
 
             <TextView
@@ -26,10 +26,10 @@
                 android:textStyle="bold"
                 android:textColor="#5A5858"
                 android:textAlignment="center"
-                android:textSize="20sp" />
+                android:textSize="@dimen/_20ssp" />
 
             <ImageView
-                android:layout_width="2dp"
+                android:layout_width="@dimen/_2sdp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/line_ver_car" />
 
@@ -41,10 +41,10 @@
                 android:textStyle="bold"
                 android:textColor="#5A5858"
                 android:textAlignment="center"
-                android:textSize="20sp" />
+                android:textSize="@dimen/_20ssp" />
 
             <ImageView
-                android:layout_width="2dp"
+                android:layout_width="@dimen/_2sdp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/line_ver_car" />
 
@@ -56,10 +56,10 @@
                 android:textStyle="bold"
                 android:textColor="#5A5858"
                 android:textAlignment="center"
-                android:textSize="20sp" />
+                android:textSize="@dimen/_20ssp" />
 
             <ImageView
-                android:layout_width="2dp"
+                android:layout_width="@dimen/_2sdp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/line_ver_car" />
 
@@ -71,10 +71,10 @@
                 android:textStyle="bold"
                 android:textColor="#5A5858"
                 android:textAlignment="center"
-                android:textSize="20sp" />
+                android:textSize="@dimen/_20ssp" />
 
             <ImageView
-                android:layout_width="2dp"
+                android:layout_width="@dimen/_2sdp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/line_ver_car" />
 
@@ -86,10 +86,10 @@
                 android:textStyle="bold"
                 android:textColor="#5A5858"
                 android:textAlignment="center"
-                android:textSize="20sp" />
+                android:textSize="@dimen/_20ssp" />
 
             <ImageView
-                android:layout_width="2dp"
+                android:layout_width="@dimen/_2sdp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/line_ver_car" />
 
@@ -101,10 +101,10 @@
                 android:textStyle="bold"
                 android:textColor="#5A5858"
                 android:textAlignment="center"
-                android:textSize="20sp" />
+                android:textSize="@dimen/_20ssp" />
 
             <ImageView
-                android:layout_width="2dp"
+                android:layout_width="@dimen/_2sdp"
                 android:layout_height="wrap_content"
                 android:src="@drawable/line_ver_car" />
 
@@ -116,7 +116,7 @@
                 android:textStyle="bold"
                 android:textColor="#5A5858"
                 android:textAlignment="center"
-                android:textSize="20sp" />
+                android:textSize="@dimen/_20ssp" />
 
 
         </LinearLayout>
@@ -126,8 +126,9 @@
             android:id="@+id/rcv_calendar_ver"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="25dp"
-            android:layout_marginEnd="25dp" />
+            android:layout_marginStart="@dimen/_25sdp"
+            android:layout_marginEnd="@dimen/_25sdp"
+            android:layout_marginTop="@dimen/_5sdp"/>
 
     </LinearLayout>
 </LinearLayout>

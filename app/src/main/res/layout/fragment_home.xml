@@ -46,6 +46,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginStart="@dimen/_2sdp"
+                android:layout_marginTop="@dimen/_2sdp"
                 android:background="@drawable/btn_white_circle">
 
                 <TextView
@@ -56,8 +57,10 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/title_date"
                     app:layout_constraintBottom_toBottomOf="@+id/title_date"
+                    android:layout_marginBottom="@dimen/_2sdp"
+                    android:layout_marginEnd="@dimen/_1sdp"
                     android:text="3"
-                    android:textSize="@dimen/_15ssp"
+                    android:textSize="@dimen/_13ssp"
                     android:textStyle="bold"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
