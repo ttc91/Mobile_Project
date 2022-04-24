@@ -8,24 +8,25 @@
 
     </data>
 
-    <androidx.cardview.widget.CardView
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/_75sdp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:orientation="horizontal"
             android:background="@drawable/bck_habit_btn">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:layout_marginTop="@dimen/_18sdp">
+                android:layout_marginStart="@dimen/_20sdp">
 
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/logo"
                     android:layout_width="@dimen/_50sdp"
                     android:layout_height="@dimen/_50sdp"
                     app:layout_constraintTop_toTopOf="parent"
@@ -38,12 +39,13 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
+                android:id="@+id/hname"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:gravity="center"
                 android:layout_gravity="center"
-                android:text="Habbit Title"
+                android:text="Habit Title"
                 android:textSize="@dimen/_15ssp"
                 android:textStyle="bold" />
 
@@ -57,17 +59,19 @@
                 android:layout_marginEnd="@dimen/_20sdp">
 
                 <TextView
+                    android:id="@+id/timer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:layout_gravity="center"
                     android:text="1:00:00"
+                    android:textSize="@dimen/_10ssp"
                     android:textStyle="bold" />
 
                 <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
+                    android:layout_width="@dimen/_15sdp"
+                    android:layout_height="@dimen/_15sdp"
                     android:layout_weight="1"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_icon_smile" />
@@ -75,5 +79,5 @@
             </LinearLayout>
         </LinearLayout>
 
-    </androidx.cardview.widget.CardView>
+    </LinearLayout>
 </layout>

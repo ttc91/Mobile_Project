@@ -29,6 +29,7 @@ import com.android.mobile_project.time.adapter.DailyCalendarAdapter;
 import com.android.mobile_project.time.utils.TimeUtils;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.create.CreateHabitActivity;
+import com.android.mobile_project.ui.activity.main.fragment.home.adapter.HabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.service.InitUIService;
 
 import java.time.LocalDate;
@@ -53,6 +54,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         viewModel.setMonth(binding.titleMonth);
 
         viewModel.initUIService.initDailyCalendar();
+        viewModel.initUIService.initHabitListUI();
 
 
         return v;
@@ -91,6 +93,20 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
                 SnapHelper helper = new LinearSnapHelper();
                 helper.attachToRecyclerView(binding.rvHorCalendar);
+
+            }
+
+            @Override
+            public void initHabitListUI() {
+
+                List<HabitEntity> entities = HabitTrackerDatabase.getInstance(getContext()).habitDao().getHabitListByUserId(DataLocalManager.getUserId());
+
+                HabitAdapter adapter = new HabitAdapter(getContext(), entities);
+                adapter.notifyDataSetChanged();
+                RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+
+                binding.rcvHabitList.setAdapter(adapter);
+                binding.rcvHabitList.setLayoutManager(manager);
 
             }
         };
