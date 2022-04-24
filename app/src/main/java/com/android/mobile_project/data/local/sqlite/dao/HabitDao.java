@@ -40,4 +40,10 @@ public interface HabitDao {
     @Query("SELECT * FROM tbl_habit WHERE user_id = :userId AND day_of_time_id = :dayOfTimeId")
     public List<HabitEntity> getHabitListByUserAndDayOfTime(Long userId, Long dayOfTimeId);
 
+    @Query("SELECT * FROM tbl_habit WHERE habit_name = :name")
+    public HabitEntity getHabitByName(String name);
+
+    @Query("SELECT * FROM tbl_habit WHERE user_id = :id")
+    public List<HabitEntity> getHabitListByUserId(Long id);
+
 }

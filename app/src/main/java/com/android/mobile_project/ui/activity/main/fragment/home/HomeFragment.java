@@ -19,6 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import com.android.mobile_project.R;
+import com.android.mobile_project.data.local.DataLocalManager;
+import com.android.mobile_project.data.local.model.db.DayOfWeekEntity;
+import com.android.mobile_project.data.local.model.db.HabitEntity;
+import com.android.mobile_project.data.local.model.db.HabitInWeekEntity;
+import com.android.mobile_project.data.local.sqlite.HabitTrackerDatabase;
 import com.android.mobile_project.databinding.FragmentHomeBinding;
 import com.android.mobile_project.time.adapter.DailyCalendarAdapter;
 import com.android.mobile_project.time.utils.TimeUtils;
@@ -29,6 +34,7 @@ import com.android.mobile_project.ui.activity.main.fragment.home.service.InitUIS
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HomeFragment extends Fragment implements InitLayout, View.OnClickListener {
 

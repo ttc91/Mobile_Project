@@ -197,6 +197,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_30sdp"
                                     android:layout_marginBottom="@dimen/_1sdp"
+                                    android:layout_marginTop="@dimen/_1sdp"
                                     android:text="Anytime"
                                     android:textStyle="bold"
                                     android:textColor="@color/black"
@@ -226,6 +227,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_30sdp"
                                     android:layout_marginBottom="@dimen/_1sdp"
+                                    android:layout_marginTop="@dimen/_1sdp"
                                     android:text="Morning"
                                     android:textStyle="bold"
                                     android:textColor="@color/black"
@@ -264,7 +266,6 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_30sdp"
-                                    android:layout_marginBottom="@dimen/_1sdp"
                                     android:text="Afternoon"
                                     android:textStyle="bold"
                                     android:textColor="@color/black"
@@ -294,7 +295,6 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="@dimen/_30sdp"
-                                    android:layout_marginBottom="@dimen/_1sdp"
                                     android:text="Night"
                                     android:textStyle="bold"
                                     android:textColor="@color/black"
@@ -313,6 +313,7 @@
                             android:textColor="@color/white"
                             android:textStyle="bold"
                             android:textSize="@dimen/_12ssp"
+                            android:onClick="@{(v) -> a.onClick(v)}"
                             android:background="@drawable/btn_create"/>
 
                         <androidx.constraintlayout.widget.ConstraintLayout

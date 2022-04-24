@@ -8,6 +8,8 @@ import androidx.room.Update;
 
 import com.android.mobile_project.data.local.model.db.DayOfWeekEntity;
 
+import java.util.List;
+
 @Dao
 public interface DayOfWeekDao {
 
@@ -22,4 +24,8 @@ public interface DayOfWeekDao {
 
     @Query("SELECT * FROM tbl_day_of_week WHERE day_of_week_name = :dayOfWeekName")
     DayOfWeekEntity searchDayOfWeekByName(String dayOfWeekName);
+
+    @Query("SELECT * FROM tbl_day_of_week")
+    List<DayOfWeekEntity> getDayOfWeekList();
+
 }

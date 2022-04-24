@@ -38,12 +38,12 @@ public class DataLocalManager {
         return DataLocalManager.getInstance().mySharedPreferences.getStringValue(USER_NAME);
     }
 
-    public static void setUserId(Integer value){
-        DataLocalManager.mySharedPreferences.putIntegerValue(USER_ID, value);
+    public static void setUserId(Long value){
+        DataLocalManager.mySharedPreferences.putLongValue(USER_ID, value);
     }
 
-    public static int getUserId(){
-        return DataLocalManager.mySharedPreferences.getIntegerValue(USER_ID);
+    public static Long getUserId(){
+        return DataLocalManager.mySharedPreferences.getLongValue(USER_ID);
     }
 
 }

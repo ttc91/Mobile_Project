@@ -61,7 +61,7 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
                 HabitTrackerDatabase.getInstance(getApplicationContext()).userDao().insertUser(user);
 
                 DataLocalManager.setUserName(userName);
-                int userId = HabitTrackerDatabase.getInstance(getApplicationContext()).userDao().getUserIdByName(userName);
+                Long userId = HabitTrackerDatabase.getInstance(getApplicationContext()).userDao().getUserIdByName(userName);
                 DataLocalManager.setUserId(userId);
 
             }

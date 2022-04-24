@@ -25,7 +25,7 @@ public class HabitEntity extends BaseEntity implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    public Integer habitId;
+    public Long habitId;
 
     @ColumnInfo(name = "habit_name")
     @NonNull

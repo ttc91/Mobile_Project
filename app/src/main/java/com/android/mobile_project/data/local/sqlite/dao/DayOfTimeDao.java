@@ -8,6 +8,8 @@ import androidx.room.Update;
 
 import com.android.mobile_project.data.local.model.db.DayOfTimeEntity;
 
+import java.util.List;
+
 @Dao
 public interface DayOfTimeDao {
 
@@ -22,5 +24,8 @@ public interface DayOfTimeDao {
 
     @Query("SELECT * FROM tbl_day_of_time WHERE time_name = :dayOfTimeName")
     DayOfTimeEntity searchDayOfTimeByName(String dayOfTimeName);
+
+    @Query("SELECT * FROM tbl_day_of_time")
+    List<DayOfTimeEntity> getDayOfTimeList();
 
 }
