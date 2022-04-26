@@ -1,7 +1,6 @@
 package com.android.mobile_project.ui.activity.main;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -11,18 +10,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.android.mobile_project.R;
-import com.android.mobile_project.data.local.DataLocalManager;
-import com.android.mobile_project.data.local.model.db.DayOfTimeEntity;
-import com.android.mobile_project.data.local.model.db.DayOfWeekEntity;
-import com.android.mobile_project.data.local.sqlite.HabitTrackerDatabase;
 import com.android.mobile_project.databinding.ActivityMainBinding;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.main.fragment.home.HomeFragment;
 import com.android.mobile_project.ui.activity.main.fragment.planner.PlannerFragment;
 import com.android.mobile_project.ui.activity.main.fragment.setting.SettingFragment;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements InitLayout {
 

@@ -28,4 +28,7 @@ public interface DayOfWeekDao {
     @Query("SELECT * FROM tbl_day_of_week")
     List<DayOfWeekEntity> getDayOfWeekList();
 
+    @Query("SELECT * FROM tbl_day_of_week WHERE id = :id")
+    DayOfWeekEntity getDayOfWeekById(Long id);
+
 }

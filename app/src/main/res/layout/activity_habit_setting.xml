@@ -1,438 +1,539 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#F0EFEF"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
 
+        <variable
+            name="a"
+            type="com.android.mobile_project.ui.activity.setting.HabitSettingActivity" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/_248sdp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/img_habit_setting"/>
+        <variable
+            name="vm"
+            type="com.android.mobile_project.ui.activity.setting.HabitSettingViewModel" />
+
+        <variable
+            name="habit"
+            type="com.android.mobile_project.data.local.model.db.HabitEntity" />
+
+        <variable
+            name="sun"
+            type="Boolean" />
+
+        <variable
+            name="mon"
+            type="Boolean" />
+
+        <variable
+            name="tue"
+            type="Boolean" />
+
+        <variable
+            name="wed"
+            type="Boolean" />
+
+        <variable
+            name="thu"
+            type="Boolean" />
+
+        <variable
+            name="fri"
+            type="Boolean" />
+
+        <variable
+            name="sat"
+            type="Boolean" />
+
+        <variable
+            name="anytime"
+            type="Boolean" />
+
+        <variable
+            name="morning"
+            type="Boolean" />
+
+        <variable
+            name="afternoon"
+            type="Boolean" />
+
+        <variable
+            name="night"
+            type="Boolean" />
+
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/btn_back"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="@dimen/_5sdp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:background="@drawable/bck_circle_white_btn"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@+id/btn_back"
-            app:layout_constraintEnd_toEndOf="@+id/btn_back"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_back"
-            app:layout_constraintStart_toStartOf="@+id/btn_back"
-            android:layout_marginEnd="@dimen/_2sdp"
-            android:src="@drawable/ic_arrow_back"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/btn_delete"
-        android:layout_width="@dimen/_40sdp"
-        android:layout_height="@dimen/_40sdp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="@dimen/_5sdp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:background="@drawable/bck_circle_white_btn"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@+id/btn_delete"
-            app:layout_constraintEnd_toEndOf="@+id/btn_delete"
-            app:layout_constraintBottom_toBottomOf="@+id/btn_delete"
-            app:layout_constraintStart_toStartOf="@+id/btn_delete"
-            android:layout_marginEnd="@dimen/_2sdp"
-            android:src="@drawable/ic_delete"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_480sdp"
-        android:background="@drawable/bck_habit"
-        android:layout_marginStart="@dimen/_10sdp"
-        android:layout_marginEnd="@dimen/_10sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:scrollbars="none">
+        android:layout_height="match_parent"
+        android:background="#F0EFEF">
 
-        <LinearLayout
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_248sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/img_habit_setting" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btn_back"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:onClick="@{(v) -> a.onClick(v)}">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:background="@drawable/bck_circle_white_btn" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/btn_back"
+                app:layout_constraintEnd_toEndOf="@+id/btn_back"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_back"
+                app:layout_constraintStart_toStartOf="@+id/btn_back"
+                android:layout_marginEnd="@dimen/_2sdp"
+                android:src="@drawable/ic_arrow_back" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btn_delete"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="@dimen/_5sdp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:background="@drawable/bck_circle_white_btn" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/btn_delete"
+                app:layout_constraintEnd_toEndOf="@+id/btn_delete"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_delete"
+                app:layout_constraintStart_toStartOf="@+id/btn_delete"
+                android:layout_marginEnd="@dimen/_2sdp"
+                android:src="@drawable/ic_delete" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="@dimen/_480sdp"
+            android:background="@drawable/bck_habit"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_20sdp"
+            app:layout_constraintTop_toBottomOf="@+id/btn_delete"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:scrollbars="none">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_10sdp"
-                android:gravity="center_horizontal"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_15sdp"
-                    android:text="NAME"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:background="@drawable/bck_name_title"/>
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_60sdp"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:background="@drawable/bck_habit_name"
-                    android:hint="Habit name"
-                    android:maxLength="20"
-                    android:gravity="center"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_15sdp"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:text="ICON"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:background="@color/bck_ground"/>
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_width="@dimen/_70sdp"
-                    android:layout_height="@dimen/_70sdp"
-                    android:layout_marginTop="@dimen/_20sdp"
-                    android:src="@drawable/ic_launcher_background"
-                    app:shapeAppearanceOverlay="@style/corner"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_15sdp"
-                    android:layout_marginTop="@dimen/_20sdp"
-                    android:text="DAY OF WEEK"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:background="@color/bck_ground"/>
-
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_20sdp"
-                    android:gravity="center_horizontal"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:id="@+id/sun_date"
-                        android:layout_width="@dimen/_40sdp"
-                        android:layout_height="@dimen/_40sdp"
-                        android:background="@drawable/bck_cir_date"
-                        android:text="S" />
-
-                    <Button
-                        android:id="@+id/mon_date"
-                        android:layout_width="@dimen/_40sdp"
-                        android:layout_height="@dimen/_40sdp"
-                        android:background="@drawable/bck_cir_date"
-                        android:text="M"/>
-
-                    <Button
-                        android:id="@+id/tue_date"
-                        android:layout_width="@dimen/_40sdp"
-                        android:layout_height="@dimen/_40sdp"
-                        android:background="@drawable/bck_cir_date"
-                        android:text="t"/>
-
-                    <Button
-                        android:id="@+id/wed_date"
-                        android:layout_width="@dimen/_40sdp"
-                        android:layout_height="@dimen/_40sdp"
-                        android:background="@drawable/bck_cir_date"
-                        android:text="w"/>
-
-                    <Button
-                        android:id="@+id/thu_date"
-                        android:layout_width="@dimen/_40sdp"
-                        android:layout_height="@dimen/_40sdp"
-                        android:background="@drawable/bck_cir_date"
-                        android:text="t"/>
-
-                    <Button
-                        android:id="@+id/fri_date"
-                        android:layout_width="@dimen/_40sdp"
-                        android:layout_height="@dimen/_40sdp"
-                        android:background="@drawable/bck_cir_date"
-                        android:text="f"/>
-
-                    <Button
-                        android:id="@+id/sat_date"
-                        android:layout_width="@dimen/_40sdp"
-                        android:layout_height="@dimen/_40sdp"
-                        android:background="@drawable/bck_cir_date"
-                        android:text="S"/>
-
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_15sdp"
-                    android:layout_marginTop="@dimen/_20sdp"
-                    android:text="TIME OF DAY"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:background="@color/bck_ground"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/_15sdp"
-                    android:gravity="center">
+                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_15sdp"
+                        android:text="NAME"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:background="@drawable/bck_name_title" />
+
+                    <EditText
+                        android:id="@+id/hname"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_60sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:background="@drawable/bck_habit_name"
+                        android:hint="Habit name"
+                        android:text="@={habit.habitName}"
+                        android:textStyle="bold"
+                        android:maxLength="20"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:text="ICON"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:background="@color/bck_ground" />
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="@dimen/_70sdp"
+                        android:layout_height="@dimen/_70sdp"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:src="@drawable/ic_launcher_background"
+                        app:shapeAppearanceOverlay="@style/corner" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:text="DAY OF WEEK"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:background="@color/bck_ground" />
 
                     <LinearLayout
-                        android:id="@+id/time_any"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/_32sdp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bck_habit_name">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
 
-                        <ImageView
-                            android:layout_width="@dimen/_16sdp"
-                            android:layout_height="@dimen/_16sdp"
-                            android:layout_marginStart="@dimen/_15sdp"
-                            android:src="@drawable/ic_lg_any"/>
+                        <Button
+                            android:id="@+id/sun_date"
+                            android:layout_width="@dimen/_40sdp"
+                            android:layout_height="@dimen/_40sdp"
+                            android:background="@{!sun ? @drawable/bck_cir_date : @drawable/bck_cir_date_select}"
+                            android:textColor="@{!sun ? @color/black : @color/white}"
+                            android:text="S"
+                            android:onClick="@{(v) -> a.onClick(v)}"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_30sdp"
-                            android:layout_marginBottom="@dimen/_1sdp"
-                            android:text="Anytime"
-                            android:textStyle="bold"/>
+                        <Button
+                            android:id="@+id/mon_date"
+                            android:layout_width="@dimen/_40sdp"
+                            android:layout_height="@dimen/_40sdp"
+                            android:background="@{!mon ? @drawable/bck_cir_date : @drawable/bck_cir_date_select}"
+                            android:textColor="@{!mon ? @color/black : @color/white}"
+                            android:text="M"
+                            android:onClick="@{(v) -> a.onClick(v)}"/>
+
+                        <Button
+                            android:id="@+id/tue_date"
+                            android:layout_width="@dimen/_40sdp"
+                            android:layout_height="@dimen/_40sdp"
+                            android:background="@{!tue ? @drawable/bck_cir_date : @drawable/bck_cir_date_select}"
+                            android:textColor="@{!tue ? @color/black : @color/white}"
+                            android:text="t"
+                            android:onClick="@{(v) -> a.onClick(v)}"/>
+
+                        <Button
+                            android:id="@+id/wed_date"
+                            android:layout_width="@dimen/_40sdp"
+                            android:layout_height="@dimen/_40sdp"
+                            android:background="@{!wed ? @drawable/bck_cir_date : @drawable/bck_cir_date_select}"
+                            android:textColor="@{!wed ? @color/black : @color/white}"
+                            android:text="w"
+                            android:onClick="@{(v) -> a.onClick(v)}"/>
+
+                        <Button
+                            android:id="@+id/thu_date"
+                            android:layout_width="@dimen/_40sdp"
+                            android:layout_height="@dimen/_40sdp"
+                            android:background="@{!thu ? @drawable/bck_cir_date : @drawable/bck_cir_date_select}"
+                            android:textColor="@{!thu ? @color/black : @color/white}"
+                            android:text="t"
+                            android:onClick="@{(v) -> a.onClick(v)}"/>
+
+                        <Button
+                            android:id="@+id/fri_date"
+                            android:layout_width="@dimen/_40sdp"
+                            android:layout_height="@dimen/_40sdp"
+                            android:background="@{!fri ? @drawable/bck_cir_date : @drawable/bck_cir_date_select}"
+                            android:textColor="@{!fri ? @color/black : @color/white}"
+                            android:text="f"
+                            android:onClick="@{(v) -> a.onClick(v)}"/>
+
+                        <Button
+                            android:id="@+id/sat_date"
+                            android:layout_width="@dimen/_40sdp"
+                            android:layout_height="@dimen/_40sdp"
+                            android:background="@{!sat ? @drawable/bck_cir_date : @drawable/bck_cir_date_select}"
+                            android:textColor="@{!sat ? @color/black : @color/white}"
+                            android:text="S"
+                            android:onClick="@{(v) -> a.onClick(v)}"/>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:text="TIME OF DAY"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:background="@color/bck_ground" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:gravity="center">
+
+                        <LinearLayout
+                            android:id="@+id/time_any"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/_28sdp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:background="@{!anytime ? @drawable/bck_habit_name : @drawable/bck_habit_name_select}"
+                            android:onClick="@{(v) -> a.onClick(v)}">
+
+                            <ImageView
+                                android:id="@+id/lg_any"
+                                android:layout_width="@dimen/_14sdp"
+                                android:layout_height="@dimen/_14sdp"
+                                android:layout_marginStart="@dimen/_15sdp"
+                                android:src="@{!anytime ? @drawable/ic_lg_any : @drawable/ic_lg_any_white}" />
+
+                            <TextView
+                                android:id="@+id/t_any"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_30sdp"
+                                android:text="Anytime"
+                                android:textColor="@{!anytime ? @color/black : @color/white}"
+                                android:textSize="@dimen/_10ssp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/time_morning"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/_28sdp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:background="@{!morning ? @drawable/bck_habit_name : @drawable/bck_habit_name_select}"
+                            android:onClick="@{(v) -> a.onClick(v)}">
+
+                            <ImageView
+                                android:id="@+id/lg_morning"
+                                android:layout_width="@dimen/_14sdp"
+                                android:layout_height="@dimen/_14sdp"
+                                android:layout_marginStart="@dimen/_15sdp"
+                                android:src="@{!morning ? @drawable/ic_lg_morning : @drawable/ic_lg_morning_white}" />
+
+                            <TextView
+                                android:id="@+id/t_morning"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_30sdp"
+                                android:text="Morning"
+                                android:textColor="@{!morning ? @color/black : @color/white}"
+                                android:textSize="@dimen/_10ssp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/time_morning"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/_32sdp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:background="@drawable/bck_habit_name">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:gravity="center">
 
-                        <ImageView
-                            android:layout_width="@dimen/_16sdp"
-                            android:layout_height="@dimen/_16sdp"
-                            android:layout_marginStart="@dimen/_15sdp"
-                            android:src="@drawable/ic_lg_morning"/>
+                        <LinearLayout
+                            android:id="@+id/time_afternoon"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/_28sdp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_rowWeight="1"
+                            android:background="@{!afternoon ? @drawable/bck_habit_name : @drawable/bck_habit_name_select}"
+                            android:onClick="@{(v) -> a.onClick(v)}">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_30sdp"
-                            android:layout_marginBottom="@dimen/_1sdp"
-                            android:text="Morning"
-                            android:textStyle="bold"/>
+                            <ImageView
+                                android:id="@+id/lg_afternoon"
+                                android:layout_width="@dimen/_14sdp"
+                                android:layout_height="@dimen/_14sdp"
+                                android:layout_marginStart="@dimen/_15sdp"
+                                android:src="@{!afternoon ? @drawable/ic_lg_afternoon : @drawable/ic_lg_afternoon_white}" />
+
+                            <TextView
+                                android:id="@+id/t_afternoon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_30sdp"
+                                android:text="Afternoon"
+                                android:textColor="@{!afternoon ? @color/black : @color/white}"
+                                android:textSize="@dimen/_10ssp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/time_night"
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/_28sdp"
+                            android:layout_weight="1"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_rowWeight="1"
+                            android:background="@{!night ? @drawable/bck_habit_name : @drawable/bck_habit_name_select}"
+                            android:onClick="@{(v) -> a.onClick(v)}">
+
+                            <ImageView
+                                android:id="@+id/lg_night"
+                                android:layout_width="@dimen/_14sdp"
+                                android:layout_height="@dimen/_14sdp"
+                                android:layout_marginStart="@dimen/_15sdp"
+                                android:src="@{!night ? @drawable/ic_lg_night : @drawable/ic_lg_night_white}" />
+
+                            <TextView
+                                android:id="@+id/t_night"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_30sdp"
+                                android:text="Night"
+                                android:textColor="@{!night ? @color/black : @color/white}"
+                                android:textSize="@dimen/_10ssp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:background="@color/bck_ground"
+                        android:gravity="center"
+                        android:text="INFO"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:text="TIMER"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="bold"
+                        android:gravity="center" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginStart="@dimen/_40sdp"
+                        android:layout_marginEnd="@dimen/_40sdp"
+                        android:background="@drawable/bck_habit_name"
+                        android:hint="00 : 00 : 00"
+                        android:maxLength="20"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:text="REMINDER"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="bold"
+                        android:gravity="center" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcv_reminder"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/btn_add_reminder"
+                        android:layout_width="@dimen/_50sdp"
+                        android:layout_height="@dimen/_50sdp"
+                        android:layout_marginTop="@dimen/_10sdp">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            android:background="@drawable/bck_circle_white_btn" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintTop_toTopOf="@+id/btn_add_reminder"
+                            app:layout_constraintEnd_toEndOf="@+id/btn_add_reminder"
+                            app:layout_constraintBottom_toBottomOf="@+id/btn_add_reminder"
+                            app:layout_constraintStart_toStartOf="@+id/btn_add_reminder"
+                            android:src="@drawable/ic_add_reminder" />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:text="HISTORY"
+                        android:textSize="@dimen/_10ssp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:background="@color/bck_ground" />
+
+                    <include
+                        layout="@layout/layout_ver_calendar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_20sdp" />
+
+                    <Button
+                        android:id="@+id/btn_update"
+                        android:layout_width="@dimen/_270sdp"
+                        android:layout_height="@dimen/_45sdp"
+                        android:layout_marginTop="@dimen/_30sdp"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                        android:text="UPDATE"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/_12ssp"
+                        android:background="@drawable/btn_create"
+                        android:onClick="@{(v) -> a.onClick(v)}"/>
 
 
                 </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
-
-                    <LinearLayout
-                        android:id="@+id/time_afternoon"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/_32sdp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_rowWeight="1"
-                        android:background="@drawable/bck_habit_name">
-
-                        <ImageView
-                            android:layout_width="@dimen/_16sdp"
-                            android:layout_height="@dimen/_16sdp"
-                            android:layout_marginStart="@dimen/_15sdp"
-                            android:src="@drawable/ic_lg_afternoon"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_30sdp"
-                            android:layout_marginBottom="@dimen/_1sdp"
-                            android:text="Afternoon"
-                            android:textStyle="bold"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/time_night"
-                        android:layout_width="0dp"
-                        android:layout_height="@dimen/_32sdp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_rowWeight="1"
-                        android:background="@drawable/bck_habit_name">
-
-                        <ImageView
-                            android:layout_width="@dimen/_16sdp"
-                            android:layout_height="@dimen/_16sdp"
-                            android:layout_marginStart="@dimen/_15sdp"
-                            android:src="@drawable/ic_lg_night"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_30sdp"
-                            android:layout_marginBottom="@dimen/_1sdp"
-                            android:text="Night"
-                            android:textStyle="bold"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_15sdp"
-                    android:layout_marginTop="@dimen/_20sdp"
-                    android:text="INFO"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:background="@color/bck_ground"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_15sdp"
-                    android:layout_marginTop="@dimen/_20sdp"
-                    android:text="TIMER"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="bold"
-                    android:gravity="center"/>
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:layout_marginStart="@dimen/_40sdp"
-                    android:layout_marginEnd="@dimen/_40sdp"
-                    android:background="@drawable/bck_habit_name"
-                    android:hint="00 : 00 : 00"
-                    android:maxLength="20"
-                    android:gravity="center"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_15sdp"
-                    android:layout_marginTop="@dimen/_20sdp"
-                    android:text="REMINDER"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="bold"
-                    android:gravity="center"/>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rcv_reminder"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btn_add_reminder"
-                    android:layout_width="@dimen/_50sdp"
-                    android:layout_height="@dimen/_50sdp"
-                    android:layout_marginTop="@dimen/_10sdp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        android:background="@drawable/bck_circle_white_btn"/>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="@+id/btn_add_reminder"
-                        app:layout_constraintEnd_toEndOf="@+id/btn_add_reminder"
-                        app:layout_constraintBottom_toBottomOf="@+id/btn_add_reminder"
-                        app:layout_constraintStart_toStartOf="@+id/btn_add_reminder"
-                        android:src="@drawable/ic_add_reminder"/>
-
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_15sdp"
-                    android:layout_marginTop="@dimen/_20sdp"
-                    android:text="HISTORY"
-                    android:textSize="@dimen/_10ssp"
-                    android:textStyle="bold"
-                    android:gravity="center"
-                    android:background="@color/bck_ground"/>
-
-                <include
-                    layout="@layout/layout_ver_calendar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_20sdp" />
-
-                <Button
-                    android:layout_width="@dimen/_270sdp"
-                    android:layout_height="@dimen/_45sdp"
-                    android:layout_marginTop="@dimen/_30sdp"
-                    android:text="UPDATE"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/_12ssp"
-                    android:background="@drawable/btn_create"/>
 
 
             </LinearLayout>
 
+        </ScrollView>
 
-        </LinearLayout>
-
-    </ScrollView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

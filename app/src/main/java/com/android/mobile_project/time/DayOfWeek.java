@@ -12,7 +12,7 @@ public enum DayOfWeek {
 
     public String dayName;
 
-    private DayOfWeek (String dayName){
+    private DayOfWeek(String dayName){
         this.dayName = dayName;
     }
 

@@ -9,8 +9,9 @@
     </data>
 
     <LinearLayout
+        android:id="@+id/hitem"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/_75sdp">
+        android:layout_height="@dimen/_70sdp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -27,8 +28,8 @@
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/logo"
-                    android:layout_width="@dimen/_50sdp"
-                    android:layout_height="@dimen/_50sdp"
+                    android:layout_width="@dimen/_45sdp"
+                    android:layout_height="@dimen/_45sdp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -42,11 +43,12 @@
                 android:id="@+id/hname"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_weight="2"
                 android:gravity="center"
-                android:layout_gravity="center"
                 android:text="Habit Title"
                 android:textSize="@dimen/_15ssp"
+                android:textColor="#CA66AE"
                 android:textStyle="bold" />
 
             <LinearLayout

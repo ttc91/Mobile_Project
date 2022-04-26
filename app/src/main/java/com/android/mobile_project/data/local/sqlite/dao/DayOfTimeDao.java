@@ -28,4 +28,7 @@ public interface DayOfTimeDao {
     @Query("SELECT * FROM tbl_day_of_time")
     List<DayOfTimeEntity> getDayOfTimeList();
 
+    @Query("SELECT * FROM tbl_day_of_time WHERE id = :id")
+    DayOfTimeEntity getDayOfTimeById(Long id);
+
 }

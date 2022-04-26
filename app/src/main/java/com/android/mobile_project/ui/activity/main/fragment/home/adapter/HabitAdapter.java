@@ -1,6 +1,7 @@
 package com.android.mobile_project.ui.activity.main.fragment.home.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,9 @@ import com.android.mobile_project.data.local.model.db.HabitEntity;
 import com.android.mobile_project.databinding.RcvHorizontalCalendarTextDateBinding;
 import com.android.mobile_project.databinding.RcvItemHabitBinding;
 import com.android.mobile_project.time.adapter.DailyCalendarAdapter;
+import com.android.mobile_project.ui.activity.main.fragment.home.service.InitUIService;
+import com.android.mobile_project.ui.activity.main.fragment.home.service.RecyclerViewInterface;
+import com.android.mobile_project.ui.activity.setting.HabitSettingActivity;
 
 import java.util.List;
 
@@ -20,10 +24,12 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder>{
 
     private Context context;
     private List<HabitEntity> habitEntityList;
+    private RecyclerViewClickListener recyclerViewClickListener;
 
-    public HabitAdapter(Context context, List<HabitEntity> habitEntityList){
+    public HabitAdapter(Context context, List<HabitEntity> habitEntityList, RecyclerViewClickListener recyclerViewClickListener){
         this.context = context;
         this.habitEntityList = habitEntityList;
+        this.recyclerViewClickListener = recyclerViewClickListener;
     }
 
     @NonNull
@@ -54,7 +60,11 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder>{
         return habitEntityList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public interface RecyclerViewClickListener{
+        public void onClick(View v, List<HabitEntity> habitEntityList, int position);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         RcvItemHabitBinding binding;
 
@@ -63,6 +73,13 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder>{
 
             this.binding = binding;
 
+            binding.getRoot().setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View view) {
+            recyclerViewClickListener.onClick(binding.getRoot(), habitEntityList, getAdapterPosition());
         }
     }
 

@@ -31,13 +31,15 @@ import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.create.CreateHabitActivity;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.HabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.service.InitUIService;
+import com.android.mobile_project.ui.activity.main.fragment.home.service.RecyclerViewInterface;
+import com.android.mobile_project.ui.activity.setting.HabitSettingActivity;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment implements InitLayout, View.OnClickListener {
+public class HomeFragment extends Fragment implements InitLayout, View.OnClickListener{
 
     private FragmentHomeBinding binding;
     private HomeViewModel viewModel;
@@ -101,7 +103,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
                 List<HabitEntity> entities = HabitTrackerDatabase.getInstance(getContext()).habitDao().getHabitListByUserId(DataLocalManager.getUserId());
 
-                HabitAdapter adapter = new HabitAdapter(getContext(), entities);
+                HabitAdapter adapter = new HabitAdapter(getContext(), entities, viewModel.recyclerViewClickListener);
                 adapter.notifyDataSetChanged();
                 RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
@@ -110,6 +112,20 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
             }
         };
+
+        viewModel.recyclerViewClickListener = new HabitAdapter.RecyclerViewClickListener() {
+            @Override
+            public void onClick(View v, List<HabitEntity> habitEntityList, int position) {
+
+                HabitEntity entity = habitEntityList.get(position);
+
+                Intent intent = new Intent(getContext(), HabitSettingActivity.class);
+                intent.putExtra("habitId", entity.habitId);
+                startActivity(intent);
+
+            }
+        };
+
 
     }
 
@@ -130,4 +146,5 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         startActivity(intent);
 
     }
+
 }

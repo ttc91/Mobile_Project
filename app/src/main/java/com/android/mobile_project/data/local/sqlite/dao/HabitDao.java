@@ -46,4 +46,7 @@ public interface HabitDao {
     @Query("SELECT * FROM tbl_habit WHERE user_id = :id")
     public List<HabitEntity> getHabitListByUserId(Long id);
 
+    @Query("SELECT * FROM tbl_habit WHERE user_id = :userId AND id = :habitId")
+    public HabitEntity getHabitByUserIdAndHabitId(Long userId, Long habitId);
+
 }
