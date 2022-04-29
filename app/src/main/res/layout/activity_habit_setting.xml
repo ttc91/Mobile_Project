@@ -78,8 +78,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/btn_back"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="@dimen/_40sdp"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_35sdp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="@dimen/_5sdp"
@@ -95,8 +95,8 @@
                 android:background="@drawable/bck_circle_white_btn" />
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/_10sdp"
+                android:layout_height="@dimen/_10sdp"
                 app:layout_constraintTop_toTopOf="@+id/btn_back"
                 app:layout_constraintEnd_toEndOf="@+id/btn_back"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_back"
@@ -108,11 +108,12 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/btn_delete"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="@dimen/_40sdp"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_35sdp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="@dimen/_5sdp">
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:onClick="@{(v) -> a.onClick(v)}">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -124,13 +125,12 @@
                 android:background="@drawable/bck_circle_white_btn" />
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/_13sdp"
+                android:layout_height="@dimen/_13sdp"
                 app:layout_constraintTop_toTopOf="@+id/btn_delete"
                 app:layout_constraintEnd_toEndOf="@+id/btn_delete"
                 app:layout_constraintBottom_toBottomOf="@+id/btn_delete"
                 app:layout_constraintStart_toStartOf="@+id/btn_delete"
-                android:layout_marginEnd="@dimen/_2sdp"
                 android:src="@drawable/ic_delete" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -142,7 +142,8 @@
             android:background="@drawable/bck_habit"
             android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginEnd="@dimen/_10sdp"
-            android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:layout_marginBottom="@dimen/_15sdp"
             app:layout_constraintTop_toBottomOf="@+id/btn_delete"
             app:layout_constraintBottom_toBottomOf="parent"
             android:scrollbars="none">
@@ -300,7 +301,7 @@
                         <LinearLayout
                             android:id="@+id/time_any"
                             android:layout_width="0dp"
-                            android:layout_height="@dimen/_28sdp"
+                            android:layout_height="@dimen/_32sdp"
                             android:layout_weight="1"
                             android:orientation="horizontal"
                             android:gravity="center_vertical"
@@ -311,8 +312,7 @@
                                 android:id="@+id/lg_any"
                                 android:layout_width="@dimen/_14sdp"
                                 android:layout_height="@dimen/_14sdp"
-                                android:layout_marginStart="@dimen/_15sdp"
-                                android:src="@{!anytime ? @drawable/ic_lg_any : @drawable/ic_lg_any_white}" />
+                                android:layout_marginStart="@dimen/_15sdp"/>
 
                             <TextView
                                 android:id="@+id/t_any"
@@ -329,7 +329,7 @@
                         <LinearLayout
                             android:id="@+id/time_morning"
                             android:layout_width="0dp"
-                            android:layout_height="@dimen/_28sdp"
+                            android:layout_height="@dimen/_32sdp"
                             android:layout_weight="1"
                             android:orientation="horizontal"
                             android:gravity="center_vertical"
@@ -340,8 +340,7 @@
                                 android:id="@+id/lg_morning"
                                 android:layout_width="@dimen/_14sdp"
                                 android:layout_height="@dimen/_14sdp"
-                                android:layout_marginStart="@dimen/_15sdp"
-                                android:src="@{!morning ? @drawable/ic_lg_morning : @drawable/ic_lg_morning_white}" />
+                                android:layout_marginStart="@dimen/_15sdp"/>
 
                             <TextView
                                 android:id="@+id/t_morning"
@@ -367,7 +366,7 @@
                         <LinearLayout
                             android:id="@+id/time_afternoon"
                             android:layout_width="0dp"
-                            android:layout_height="@dimen/_28sdp"
+                            android:layout_height="@dimen/_32sdp"
                             android:layout_weight="1"
                             android:orientation="horizontal"
                             android:gravity="center_vertical"
@@ -379,8 +378,7 @@
                                 android:id="@+id/lg_afternoon"
                                 android:layout_width="@dimen/_14sdp"
                                 android:layout_height="@dimen/_14sdp"
-                                android:layout_marginStart="@dimen/_15sdp"
-                                android:src="@{!afternoon ? @drawable/ic_lg_afternoon : @drawable/ic_lg_afternoon_white}" />
+                                android:layout_marginStart="@dimen/_15sdp"/>
 
                             <TextView
                                 android:id="@+id/t_afternoon"
@@ -397,7 +395,7 @@
                         <LinearLayout
                             android:id="@+id/time_night"
                             android:layout_width="0dp"
-                            android:layout_height="@dimen/_28sdp"
+                            android:layout_height="@dimen/_32sdp"
                             android:layout_weight="1"
                             android:orientation="horizontal"
                             android:gravity="center_vertical"
@@ -409,8 +407,7 @@
                                 android:id="@+id/lg_night"
                                 android:layout_width="@dimen/_14sdp"
                                 android:layout_height="@dimen/_14sdp"
-                                android:layout_marginStart="@dimen/_15sdp"
-                                android:src="@{!night ? @drawable/ic_lg_night : @drawable/ic_lg_night_white}" />
+                                android:layout_marginStart="@dimen/_15sdp"/>
 
                             <TextView
                                 android:id="@+id/t_night"

@@ -49,4 +49,10 @@ public interface HabitDao {
     @Query("SELECT * FROM tbl_habit WHERE user_id = :userId AND id = :habitId")
     public HabitEntity getHabitByUserIdAndHabitId(Long userId, Long habitId);
 
+    @Query("UPDATE tbl_habit SET day_of_time_id = :dayOfTimeId WHERE id = :habitId")
+    public void updateDateOfTimeInHabit(Long dayOfTimeId, Long habitId);
+
+    @Query("UPDATE tbl_habit SET habit_name = :hName WHERE id = :habitId")
+    public void updateNameOfHabit(String hName, Long habitId);
+
 }

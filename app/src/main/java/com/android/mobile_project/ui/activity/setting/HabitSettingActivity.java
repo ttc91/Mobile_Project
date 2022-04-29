@@ -155,6 +155,28 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                         break;
                 }
 
+                if(viewModel.selectAnytime){
+                    binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any_white);
+                    binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning);
+                    binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon);
+                    binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night);
+                }else if(viewModel.selectMorning){
+                    binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any);
+                    binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning_white);
+                    binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon);
+                    binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night);
+                }else if(viewModel.selectAfternoon){
+                    binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any);
+                    binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning);
+                    binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon_white);
+                    binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night);
+                }else if(viewModel.selectNight){
+                    binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any);
+                    binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning);
+                    binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon);
+                    binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night_white);
+                }
+
                 binding.setAnytime(viewModel.selectAnytime);
                 binding.setAfternoon(viewModel.selectAfternoon);
                 binding.setMorning(viewModel.selectMorning);
@@ -177,10 +199,17 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             clickBtnDateOfTime(id);
         }else if(id == R.id.btn_back){
             onClickBackBtn();
-        }else if(id == R.id.btn_update){
+        }else if(id == R.id.btn_update) {
             onClickUpdate();
+        }else if(id == R.id.btn_delete){
+            onClickDelete();
         }
 
+    }
+
+    private void onClickDelete(){
+        HabitTrackerDatabase.getInstance(getApplicationContext()).habitDao().deleteHabit(viewModel.habitEntity);
+        onClickBackBtn();
     }
 
     private void onClickDayOfWeek(int id){
@@ -410,6 +439,23 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             }
 
         }
+
+        if(viewModel.selectAnytime){
+            DayOfTimeEntity entity = HabitTrackerDatabase.getInstance(getApplicationContext()).dayOfTimeDao().searchDayOfTimeByName("Anytime");
+            HabitTrackerDatabase.getInstance(getApplicationContext()).habitDao().updateDateOfTimeInHabit (entity.dayOfTimeId, viewModel.habitEntity.habitId);
+        }else if(viewModel.selectMorning){
+            DayOfTimeEntity entity = HabitTrackerDatabase.getInstance(getApplicationContext()).dayOfTimeDao().searchDayOfTimeByName("Morning");
+            HabitTrackerDatabase.getInstance(getApplicationContext()).habitDao().updateDateOfTimeInHabit (entity.dayOfTimeId, viewModel.habitEntity.habitId);
+        }else if(viewModel.selectAfternoon){
+            DayOfTimeEntity entity = HabitTrackerDatabase.getInstance(getApplicationContext()).dayOfTimeDao().searchDayOfTimeByName("Afternoon");
+            HabitTrackerDatabase.getInstance(getApplicationContext()).habitDao().updateDateOfTimeInHabit (entity.dayOfTimeId, viewModel.habitEntity.habitId);
+        }else if(viewModel.selectNight){
+            DayOfTimeEntity entity = HabitTrackerDatabase.getInstance(getApplicationContext()).dayOfTimeDao().searchDayOfTimeByName("Night");
+            HabitTrackerDatabase.getInstance(getApplicationContext()).habitDao().updateDateOfTimeInHabit (entity.dayOfTimeId, viewModel.habitEntity.habitId);
+        }
+
+        String habitUpdateName = binding.hname.getText().toString().trim();
+        HabitTrackerDatabase.getInstance(getApplicationContext()).habitDao().updateNameOfHabit (habitUpdateName, viewModel.habitEntity.habitId);
 
         onClickBackBtn();
 

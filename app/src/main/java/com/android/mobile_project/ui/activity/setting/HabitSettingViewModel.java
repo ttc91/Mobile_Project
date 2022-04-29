@@ -13,18 +13,18 @@ public class HabitSettingViewModel extends ViewModel {
 
     protected InitService initService;
 
-    protected static boolean selectSunDate = false;
-    protected static boolean selectMonDate = false;
-    protected static boolean selectTueDate = false;
-    protected static boolean selectWedDate = false;
-    protected static boolean selectThuDate = false;
-    protected static boolean selectFriDate = false;
-    protected static boolean selectSatDate = false;
+    protected boolean selectSunDate = false;
+    protected boolean selectMonDate = false;
+    protected boolean selectTueDate = false;
+    protected boolean selectWedDate = false;
+    protected boolean selectThuDate = false;
+    protected boolean selectFriDate = false;
+    protected boolean selectSatDate = false;
 
-    protected static boolean selectAnytime = false;
-    protected static boolean selectNight = false;
-    protected static boolean selectMorning = false;
-    protected static boolean selectAfternoon = false;
+    protected boolean selectAnytime = false;
+    protected boolean selectNight = false;
+    protected boolean selectMorning = false;
+    protected boolean selectAfternoon = false;
 
     protected HabitEntity habitEntity = new HabitEntity();
     protected List<HabitInWeekEntity> habitInWeekEntity = new ArrayList<>();
