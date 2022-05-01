@@ -30,8 +30,16 @@ public class RemainderEntity implements Serializable {
     @NonNull
     public Long habitId;
 
-    @ColumnInfo(name = "remainder_time")
+    @ColumnInfo(name = "hour_time")
     @NonNull
-    public Long remainderTime;
+    public Long hourTime;
+
+    @ColumnInfo(name = "minutes_time")
+    @NonNull
+    public Long minutesTime;
+
+    @ColumnInfo(name = "second_time")
+    @NonNull
+    public Long secondTime;
 
 }

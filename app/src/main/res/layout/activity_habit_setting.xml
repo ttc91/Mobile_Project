@@ -442,16 +442,57 @@
                         android:textStyle="bold"
                         android:gravity="center" />
 
-                    <EditText
+                    <LinearLayout
+                        android:id="@+id/btn_timer"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_40sdp"
                         android:layout_marginTop="@dimen/_10sdp"
                         android:layout_marginStart="@dimen/_40sdp"
                         android:layout_marginEnd="@dimen/_40sdp"
                         android:background="@drawable/bck_habit_name"
-                        android:hint="00 : 00 : 00"
-                        android:maxLength="20"
-                        android:gravity="center" />
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:onClick="@{(v) -> a.onClick(v)}">
+
+                        <TextView
+                            android:id="@+id/t_hour"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00"
+                            android:textSize="@dimen/_15sdp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" : "
+                            android:textSize="@dimen/_15sdp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/t_minutes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00"
+                            android:textSize="@dimen/_15sdp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" : "
+                            android:textSize="@dimen/_15sdp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/t_second"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00"
+                            android:textSize="@dimen/_15sdp"
+                            android:textStyle="bold"/>
+
+                    </LinearLayout>
 
                     <TextView
                         android:layout_width="match_parent"

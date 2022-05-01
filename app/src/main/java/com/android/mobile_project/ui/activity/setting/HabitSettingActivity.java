@@ -1,15 +1,23 @@
 package com.android.mobile_project.ui.activity.setting;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.print.PageRange;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.databinding.DataBindingUtil;
 
 import com.android.mobile_project.R;
 import com.android.mobile_project.data.local.DataLocalManager;
@@ -19,6 +27,7 @@ import com.android.mobile_project.data.local.model.db.HabitEntity;
 import com.android.mobile_project.data.local.model.db.HabitInWeekEntity;
 import com.android.mobile_project.data.local.sqlite.HabitTrackerDatabase;
 import com.android.mobile_project.databinding.ActivityHabitSettingBinding;
+import com.android.mobile_project.databinding.LayoutTimePickerDialogBinding;
 import com.android.mobile_project.time.DayOfWeek;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.main.MainActivity;
@@ -30,7 +39,9 @@ import java.util.List;
 public class HabitSettingActivity extends AppCompatActivity implements InitLayout, View.OnClickListener {
 
     private ActivityHabitSettingBinding binding;
+    private LayoutTimePickerDialogBinding dialogBinding;
     private HabitSettingViewModel viewModel;
+    private NumberPicker np_1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -182,6 +193,75 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                 binding.setMorning(viewModel.selectMorning);
                 binding.setNight(viewModel.selectNight);
 
+                for(HabitInWeekEntity en : viewModel.habitInWeekEntity){
+                    if(en.timerHour == null && en.timerMinute == null && en.timerSecond == null ){
+                        binding.tHour.setText("00");
+                        binding.tMinutes.setText("00");
+                        binding.tSecond.setText("00");
+                    }else {
+                        binding.tHour.setText(String.valueOf(en.timerHour));
+                        binding.tMinutes.setText(String.valueOf(en.timerMinute));
+                        binding.tSecond.setText(String.valueOf(en.timerSecond));
+                    }
+                    break;
+                }
+
+            }
+
+            @Override
+            public void initTimerDialog(int gravity) {
+
+                dialogBinding = LayoutTimePickerDialogBinding.inflate(getLayoutInflater());
+
+                final Dialog dialog = new Dialog(HabitSettingActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(dialogBinding.getRoot());
+                dialog.setCancelable(true);
+
+                Window window = dialog.getWindow();
+                if(window == null){
+                    return;
+                }
+
+                window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                WindowManager.LayoutParams windowAttributes = window.getAttributes();
+                windowAttributes.gravity = gravity;
+                window.setAttributes(windowAttributes);
+
+                dialogBinding.hNumPicker.setMinValue(0);
+                dialogBinding.hNumPicker.setMaxValue(59);
+
+                dialogBinding.mNumPicker.setMinValue(0);
+                dialogBinding.mNumPicker.setMaxValue(59);
+
+                dialogBinding.sNumPicker.setMinValue(0);
+                dialogBinding.sNumPicker.setMaxValue(59);
+
+                dialogBinding.hNumPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                    @Override
+                    public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+                        binding.tHour.setText(String.valueOf(i1));
+                    }
+                });
+
+                dialogBinding.mNumPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                    @Override
+                    public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+                        binding.tMinutes.setText(String.valueOf(i1));
+                    }
+                });
+
+                dialogBinding.sNumPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                    @Override
+                    public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+                        binding.tSecond.setText(String.valueOf(i1));
+                    }
+                });
+
+                dialog.show();
+
             }
         };
 
@@ -203,6 +283,8 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             onClickUpdate();
         }else if(id == R.id.btn_delete){
             onClickDelete();
+        }else if(id == R.id.btn_timer){
+            onCLickTimePicker();
         }
 
     }
@@ -387,6 +469,9 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                 entity.habitId = viewModel.habitEntity.habitId;
                 entity.userId = DataLocalManager.getUserId();
                 entity.dayOfWeekId = Long.valueOf(1);
+                entity.timerHour = Long.valueOf(binding.tHour.getText().toString().trim());
+                entity.timerMinute = Long.valueOf(binding.tMinutes.getText().toString().trim());
+                entity.timerSecond = Long.valueOf(binding.tSecond.getText().toString().trim());
                 HabitTrackerDatabase.getInstance(getApplicationContext()).habitInWeekDao().insertHabitInWeek(entity);
             }
 
@@ -395,6 +480,9 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                 entity.habitId = viewModel.habitEntity.habitId;
                 entity.userId = DataLocalManager.getUserId();
                 entity.dayOfWeekId = Long.valueOf(2);
+                entity.timerHour = Long.valueOf(binding.tHour.getText().toString().trim());
+                entity.timerMinute = Long.valueOf(binding.tMinutes.getText().toString().trim());
+                entity.timerSecond = Long.valueOf(binding.tSecond.getText().toString().trim());
                 HabitTrackerDatabase.getInstance(getApplicationContext()).habitInWeekDao().insertHabitInWeek(entity);
             }
 
@@ -403,6 +491,9 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                 entity.habitId = viewModel.habitEntity.habitId;
                 entity.userId = DataLocalManager.getUserId();
                 entity.dayOfWeekId = Long.valueOf(3);
+                entity.timerHour = Long.valueOf(binding.tHour.getText().toString().trim());
+                entity.timerMinute = Long.valueOf(binding.tMinutes.getText().toString().trim());
+                entity.timerSecond = Long.valueOf(binding.tSecond.getText().toString().trim());
                 HabitTrackerDatabase.getInstance(getApplicationContext()).habitInWeekDao().insertHabitInWeek(entity);
             }
 
@@ -411,6 +502,9 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                 entity.habitId = viewModel.habitEntity.habitId;
                 entity.userId = DataLocalManager.getUserId();
                 entity.dayOfWeekId = Long.valueOf(4);
+                entity.timerHour = Long.valueOf(binding.tHour.getText().toString().trim());
+                entity.timerMinute = Long.valueOf(binding.tMinutes.getText().toString().trim());
+                entity.timerSecond = Long.valueOf(binding.tSecond.getText().toString().trim());
                 HabitTrackerDatabase.getInstance(getApplicationContext()).habitInWeekDao().insertHabitInWeek(entity);
             }
 
@@ -419,6 +513,9 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                 entity.habitId = viewModel.habitEntity.habitId;
                 entity.userId = DataLocalManager.getUserId();
                 entity.dayOfWeekId = Long.valueOf(5);
+                entity.timerHour = Long.valueOf(binding.tHour.getText().toString().trim());
+                entity.timerMinute = Long.valueOf(binding.tMinutes.getText().toString().trim());
+                entity.timerSecond = Long.valueOf(binding.tSecond.getText().toString().trim());
                 HabitTrackerDatabase.getInstance(getApplicationContext()).habitInWeekDao().insertHabitInWeek(entity);
             }
 
@@ -427,6 +524,9 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                 entity.habitId = viewModel.habitEntity.habitId;
                 entity.userId = DataLocalManager.getUserId();
                 entity.dayOfWeekId = Long.valueOf(6);
+                entity.timerHour = Long.valueOf(binding.tHour.getText().toString().trim());
+                entity.timerMinute = Long.valueOf(binding.tMinutes.getText().toString().trim());
+                entity.timerSecond = Long.valueOf(binding.tSecond.getText().toString().trim());
                 HabitTrackerDatabase.getInstance(getApplicationContext()).habitInWeekDao().insertHabitInWeek(entity);
             }
 
@@ -435,6 +535,9 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                 entity.habitId = viewModel.habitEntity.habitId;
                 entity.userId = DataLocalManager.getUserId();
                 entity.dayOfWeekId = Long.valueOf(7);
+                entity.timerHour = Long.valueOf(binding.tHour.getText().toString().trim());
+                entity.timerMinute = Long.valueOf(binding.tMinutes.getText().toString().trim());
+                entity.timerSecond = Long.valueOf(binding.tSecond.getText().toString().trim());
                 HabitTrackerDatabase.getInstance(getApplicationContext()).habitInWeekDao().insertHabitInWeek(entity);
             }
 
@@ -461,4 +564,9 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
 
     }
 
+    private void onCLickTimePicker(){
+
+        viewModel.initService.initTimerDialog(Gravity.BOTTOM);
+
+    }
 }

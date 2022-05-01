@@ -37,8 +37,16 @@ public class HabitInWeekEntity extends BaseEntity implements Serializable {
     @NonNull
     public Long dayOfWeekId;
 
-    @ColumnInfo(name = "timer")
+    @ColumnInfo(name = "timer_hour")
     @Nullable
-    public Long habitTimer;
+    public Long timerHour;
+
+    @ColumnInfo(name = "timer_minute")
+    @Nullable
+    public Long timerMinute;
+
+    @ColumnInfo(name = "timer_second")
+    @Nullable
+    public Long timerSecond;
 
 }

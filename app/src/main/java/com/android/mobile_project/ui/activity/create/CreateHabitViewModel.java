@@ -6,13 +6,13 @@ import com.android.mobile_project.ui.activity.create.service.InitService;
 
 public class CreateHabitViewModel extends ViewModel {
 
-    protected static boolean selectSunDate = false;
-    protected static boolean selectMonDate = false;
-    protected static boolean selectTueDate = false;
-    protected static boolean selectWedDate = false;
-    protected static boolean selectThuDate = false;
-    protected static boolean selectFriDate = false;
-    protected static boolean selectSatDate = false;
+    protected boolean selectSunDate = false;
+    protected boolean selectMonDate = false;
+    protected boolean selectTueDate = false;
+    protected boolean selectWedDate = false;
+    protected boolean selectThuDate = false;
+    protected boolean selectFriDate = false;
+    protected boolean selectSatDate = false;
 
     protected static boolean selectAnytime = false;
     protected static boolean selectNight = false;

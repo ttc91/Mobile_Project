@@ -5,4 +5,16 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="TimePickerDialog" parent="Theme.AppCompat.Light">
+
+        <item name="colorAccent">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="android:textColorPrimary">#7C7979</item>
+        <item name="background">@color/black</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#7C7979</item>
+
+    </style>
+
 </resources>

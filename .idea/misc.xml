@@ -8,12 +8,15 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_car_date.xml" value="0.317" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_car_today.xml" value="0.26" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_habit.xml" value="0.306" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_header_timer_dialog.xml" value="0.1855" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_item_process.xml" value="0.292" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_item_process_miss.xml" value="0.292" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_item_your_record.xml" value="0.292" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_longest_planner.xml" value="0.292" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_name_titile.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_planner_ac_titile.xml" value="0.292" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_time_picker_line.xml" value="0.27" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_timer_dialog.xml" value="0.27" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_white.xml" value="0.3495" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_white_process.xml" value="0.3495" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/ic_bottom_nav_home.xml" value="0.1" />
@@ -42,6 +45,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/layout/layout_item_missing.xml" value="0.32708333333333334" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/layout/layout_missing_doing.xml" value="0.32708333333333334" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/layout/layout_reminder_item.xml" value="0.25" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/layout/layout_time_picker_dialog.xml" value="0.33" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/layout/layout_ver_calendar.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/layout/layout_your_record.xml" value="0.32708333333333334" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/layout/rcv_horizontal_calendar_text_date.xml" value="0.25" />

@@ -6,5 +6,6 @@ public interface InitService {
     public void getHabitInWeek();
 
     public void initUI();
+    public void initTimerDialog(int gravity);
 
 }
