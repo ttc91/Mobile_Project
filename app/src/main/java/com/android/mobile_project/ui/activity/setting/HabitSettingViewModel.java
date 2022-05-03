@@ -4,7 +4,10 @@ import androidx.lifecycle.ViewModel;
 
 import com.android.mobile_project.data.local.model.db.HabitEntity;
 import com.android.mobile_project.data.local.model.db.HabitInWeekEntity;
+import com.android.mobile_project.data.local.model.db.RemainderEntity;
+import com.android.mobile_project.ui.activity.setting.adapter.RemainderAdapter;
 import com.android.mobile_project.ui.activity.setting.service.InitService;
+import com.android.mobile_project.ui.dialog.RemainderDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,5 +31,6 @@ public class HabitSettingViewModel extends ViewModel {
 
     protected HabitEntity habitEntity = new HabitEntity();
     protected List<HabitInWeekEntity> habitInWeekEntity = new ArrayList<>();
+    protected List<RemainderEntity> remainderEntityList = new ArrayList<>();
 
 }

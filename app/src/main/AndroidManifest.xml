@@ -10,6 +10,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Mobile_Project">
 
+        <receiver android:name=".channel.AlarmReceiver"/>
+
         <activity android:name=".ui.activity.main.MainActivity"
             android:exported="false"/>
 

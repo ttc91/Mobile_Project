@@ -38,8 +38,4 @@ public class RemainderEntity implements Serializable {
     @NonNull
     public Long minutesTime;
 
-    @ColumnInfo(name = "second_time")
-    @NonNull
-    public Long secondTime;
-
 }

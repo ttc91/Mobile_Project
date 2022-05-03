@@ -31,4 +31,7 @@ public interface RemainderDao {
     @Query("DELETE FROM tbl_remainder WHERE habit_id = :habitId")
     public void deleteAllRemainderByHabitId(Long habitId);
 
+    @Query("SELECT * FROM tbl_remainder WHERE hour_time = :h AND minutes_time = :m")
+    public RemainderEntity checkExistRemainder(Long h, Long m);
+
 }

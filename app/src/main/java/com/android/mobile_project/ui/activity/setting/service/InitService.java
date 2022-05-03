@@ -7,5 +7,6 @@ public interface InitService {
 
     public void initUI();
     public void initTimerDialog(int gravity);
+    public void initRemainderDialog(int gravity);
 
 }

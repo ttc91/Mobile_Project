@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.print.PageRange;
 import android.util.Log;
@@ -15,9 +16,13 @@ import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.mobile_project.R;
 import com.android.mobile_project.data.local.DataLocalManager;
@@ -25,13 +30,22 @@ import com.android.mobile_project.data.local.model.db.DayOfTimeEntity;
 import com.android.mobile_project.data.local.model.db.DayOfWeekEntity;
 import com.android.mobile_project.data.local.model.db.HabitEntity;
 import com.android.mobile_project.data.local.model.db.HabitInWeekEntity;
+import com.android.mobile_project.data.local.model.db.RemainderEntity;
 import com.android.mobile_project.data.local.sqlite.HabitTrackerDatabase;
 import com.android.mobile_project.databinding.ActivityHabitSettingBinding;
+import com.android.mobile_project.databinding.LayoutRemainderDialogBinding;
 import com.android.mobile_project.databinding.LayoutTimePickerDialogBinding;
 import com.android.mobile_project.time.DayOfWeek;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.main.MainActivity;
+import com.android.mobile_project.ui.activity.setting.adapter.RemainderAdapter;
 import com.android.mobile_project.ui.activity.setting.service.InitService;
+import com.google.android.flexbox.AlignItems;
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexWrap;
+import com.google.android.flexbox.FlexboxLayout;
+import com.google.android.flexbox.FlexboxLayoutManager;
+import com.google.android.flexbox.JustifyContent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +53,9 @@ import java.util.List;
 public class HabitSettingActivity extends AppCompatActivity implements InitLayout, View.OnClickListener {
 
     private ActivityHabitSettingBinding binding;
-    private LayoutTimePickerDialogBinding dialogBinding;
+    private LayoutTimePickerDialogBinding timerBinding;
+    private LayoutRemainderDialogBinding remainderBinding;
     private HabitSettingViewModel viewModel;
-    private NumberPicker np_1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,6 +69,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
         viewModel.initService.getHabitInWeek();
 
         viewModel.initService.initUI();
+
     }
 
     @Override
@@ -85,6 +100,8 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                 HabitEntity habitEntity = HabitTrackerDatabase.getInstance(getApplicationContext()).habitDao().getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), habitId);
                 binding.setHabit(habitEntity);
                 viewModel.habitEntity = habitEntity;
+
+                viewModel.remainderEntityList = HabitTrackerDatabase.getInstance(getApplicationContext()).remainderDao().getRemainderListByHabitId(viewModel.habitEntity.habitId);
 
             }
 
@@ -206,16 +223,29 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                     break;
                 }
 
+                final FragmentManager manager = getSupportFragmentManager();
+
+                RemainderAdapter adapter = new RemainderAdapter(getApplicationContext(), viewModel.remainderEntityList,manager, viewModel.habitEntity);
+                adapter.notifyDataSetChanged();
+
+                FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getApplicationContext());
+                layoutManager.setFlexDirection(FlexDirection.ROW);
+                layoutManager.setJustifyContent(JustifyContent.CENTER);
+                layoutManager.setAlignItems(AlignItems.CENTER);
+
+                binding.rcvReminder.setLayoutManager(layoutManager);
+                binding.rcvReminder.setAdapter(adapter);
+
             }
 
             @Override
             public void initTimerDialog(int gravity) {
 
-                dialogBinding = LayoutTimePickerDialogBinding.inflate(getLayoutInflater());
+                timerBinding = LayoutTimePickerDialogBinding.inflate(getLayoutInflater());
 
                 final Dialog dialog = new Dialog(HabitSettingActivity.this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(dialogBinding.getRoot());
+                dialog.setContentView(timerBinding.getRoot());
                 dialog.setCancelable(true);
 
                 Window window = dialog.getWindow();
@@ -230,33 +260,103 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                 windowAttributes.gravity = gravity;
                 window.setAttributes(windowAttributes);
 
-                dialogBinding.hNumPicker.setMinValue(0);
-                dialogBinding.hNumPicker.setMaxValue(59);
+                timerBinding.hNumPicker.setMinValue(0);
+                timerBinding.hNumPicker.setMaxValue(59);
 
-                dialogBinding.mNumPicker.setMinValue(0);
-                dialogBinding.mNumPicker.setMaxValue(59);
+                timerBinding.mNumPicker.setMinValue(0);
+                timerBinding.mNumPicker.setMaxValue(59);
 
-                dialogBinding.sNumPicker.setMinValue(0);
-                dialogBinding.sNumPicker.setMaxValue(59);
+                timerBinding.sNumPicker.setMinValue(0);
+                timerBinding.sNumPicker.setMaxValue(59);
 
-                dialogBinding.hNumPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                timerBinding.hNumPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                     @Override
                     public void onValueChange(NumberPicker numberPicker, int i, int i1) {
                         binding.tHour.setText(String.valueOf(i1));
                     }
                 });
 
-                dialogBinding.mNumPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                timerBinding.mNumPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                     @Override
                     public void onValueChange(NumberPicker numberPicker, int i, int i1) {
                         binding.tMinutes.setText(String.valueOf(i1));
                     }
                 });
 
-                dialogBinding.sNumPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                timerBinding.sNumPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                     @Override
                     public void onValueChange(NumberPicker numberPicker, int i, int i1) {
                         binding.tSecond.setText(String.valueOf(i1));
+                    }
+                });
+
+                dialog.show();
+
+            }
+
+            @Override
+            public void initRemainderDialog(int gravity) {
+
+                remainderBinding = LayoutRemainderDialogBinding.inflate(getLayoutInflater());
+
+                final Dialog dialog = new Dialog(HabitSettingActivity.this);
+                dialog.setContentView(remainderBinding.getRoot());
+                dialog.setCancelable(true);
+
+                Window window = dialog.getWindow();
+                if(window == null){
+                    return;
+                }
+
+                window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                WindowManager.LayoutParams windowAttributes = window.getAttributes();
+                windowAttributes.gravity = gravity;
+                window.setAttributes(windowAttributes);
+
+                remainderBinding.hNumPicker.setMaxValue(59);
+                remainderBinding.hNumPicker.setMinValue(0);
+                remainderBinding.mNumPicker.setMaxValue(59);
+                remainderBinding.mNumPicker.setMinValue(0);
+
+                remainderBinding.btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+
+                remainderBinding.btnSelect.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        RemainderEntity entity = new RemainderEntity();
+                        entity.habitId = viewModel.habitEntity.habitId;
+                        entity.hourTime = Long.valueOf(remainderBinding.hNumPicker.getValue());
+                        entity.minutesTime = Long.valueOf(remainderBinding.mNumPicker.getValue());
+
+                        Log.e("Hour", String.valueOf(remainderBinding.hNumPicker.getValue()));
+                        Log.e("Minutes", String.valueOf(remainderBinding.mNumPicker.getValue()));
+
+                        HabitTrackerDatabase.getInstance(getApplicationContext()).remainderDao().insertRemainder(entity);
+
+                        viewModel.remainderEntityList = HabitTrackerDatabase.getInstance(getApplicationContext()).remainderDao().getRemainderListByHabitId(viewModel.habitEntity.habitId);
+
+                        final FragmentManager manager = getSupportFragmentManager();
+
+                        RemainderAdapter adapter = new RemainderAdapter(getApplicationContext(), viewModel.remainderEntityList, manager, viewModel.habitEntity);
+                        adapter.notifyDataSetChanged();
+
+                        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getApplicationContext());
+                        layoutManager.setFlexDirection(FlexDirection.ROW);
+                        layoutManager.setJustifyContent(JustifyContent.CENTER);
+                        layoutManager.setAlignItems(AlignItems.CENTER);
+
+                        binding.rcvReminder.setLayoutManager(layoutManager);
+                        binding.rcvReminder.setAdapter(adapter);
+
+                        dialog.dismiss();
+
                     }
                 });
 
@@ -285,6 +385,8 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             onClickDelete();
         }else if(id == R.id.btn_timer){
             onCLickTimePicker();
+        }else if(id == R.id.btn_add_reminder){
+            onClickRemainder();
         }
 
     }
@@ -292,6 +394,10 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
     private void onClickDelete(){
         HabitTrackerDatabase.getInstance(getApplicationContext()).habitDao().deleteHabit(viewModel.habitEntity);
         onClickBackBtn();
+    }
+
+    private void onClickRemainder(){
+        viewModel.initService.initRemainderDialog(Gravity.BOTTOM);
     }
 
     private void onClickDayOfWeek(int id){
@@ -569,4 +675,5 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
         viewModel.initService.initTimerDialog(Gravity.BOTTOM);
 
     }
+
 }
