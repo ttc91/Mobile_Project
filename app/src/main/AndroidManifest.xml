@@ -21,6 +21,9 @@
         <activity android:name=".ui.activity.setting.HabitSettingActivity"
             android:exported="false"/>
 
+        <activity android:name=".ui.activity.count.CountDownActivity"
+            android:exported="false"/>
+
         <activity android:name=".ui.activity.input.InputActivity"
             android:exported="true">
 

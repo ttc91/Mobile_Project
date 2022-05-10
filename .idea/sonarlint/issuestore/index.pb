@@ -3,8 +3,6 @@
 aapp/src/main/java/com/android/mobile_project/data/local/model/db/relation/DayOfWeekWithHabit.java,6\e\6e71ac3b64bdb2b7819e7c4fdf877c78854ad61f
 é
 ^app/src/main/java/com/android/mobile_project/data/local/model/db/relation/UserWithHistory.java,4\f\4ff3e91235f68c26988e929d2db50ce08189ef63
-è
-_app/src/main/java/com/android/mobile_project/data/local/model/db/relation/HabitWithHistory.java,7\0\7075b1eec03dccfbb6a3ed819f133404f9a51ab6
 ó
 gapp/src/main/java/com/android/mobile_project/data/local/model/db/relation/UserWithHabitInDayOfWeek.java,8\9\89d499ea63b017c4072f0c825fe0bc69e958ddae
 ê
@@ -93,8 +91,6 @@ Yapp/src/main/java/com/android/mobile_project/ui/activity/setting/service/InitSe
 Uapp/src/main/java/com/android/mobile_project/data/local/model/db/RemainderEntity.java,5\e\5eafb70dab3a6deec4ea704fa9db56658975ea52
 {
 Kapp/src/main/java/com/android/mobile_project/ui/dialog/RemainderDialog.java,0\2\022ac81805215c213414bd26731c48e70aac497c
-P
- app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 é
 ^app/src/main/java/com/android/mobile_project/ui/activity/setting/adapter/RemainderAdapter.java,f\5\f5f786cc46b6b31c339da90efdc1e1a14f596c58
 ã

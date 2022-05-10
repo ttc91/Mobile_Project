@@ -22,6 +22,10 @@ public class HomeViewModel extends ViewModel {
     protected List<HabitEntity> habitEntityList = new ArrayList<>();
     protected HabitAdapter adapter;
 
+    protected List<HabitEntity> habitEntityDoneList = new ArrayList();
+
+    protected List<HabitEntity> habitEntityFailedList = new ArrayList();
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void setDate(TextView text){
 

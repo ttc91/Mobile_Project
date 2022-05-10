@@ -44,6 +44,7 @@ import com.android.mobile_project.databinding.FragmentHomeBinding;
 import com.android.mobile_project.time.adapter.DailyCalendarAdapter;
 import com.android.mobile_project.time.utils.TimeUtils;
 import com.android.mobile_project.ui.InitLayout;
+import com.android.mobile_project.ui.activity.count.CountDownActivity;
 import com.android.mobile_project.ui.activity.create.CreateHabitActivity;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.HabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.service.InitUIService;
@@ -75,6 +76,13 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         viewModel.initUIService.initDailyCalendar();
         viewModel.initUIService.initHabitListUI();
 
+        List<HistoryEntity> list = new ArrayList<>();
+        list = HabitTrackerDatabase.getInstance(getContext()).historyDao().getAllHistoryList();
+        for (HistoryEntity entity : list){
+            Log.e("Habit id", String.valueOf(entity.habitId));
+            Log.e("State", String.valueOf(entity.historyHabitsState));
+            Log.e("Date", String.valueOf(entity.historyDate));
+        }
 
         return v;
     }
@@ -188,50 +196,69 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
             switch (direction){
                 case ItemTouchHelper.LEFT:
+
+                    LocalDate local = LocalDate.now();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    String historyTime = local.format(formatter);
+
+                    HistoryEntity historyEntity = HabitTrackerDatabase.getInstance(getContext()).historyDao()
+                            .getHistoryByHabitIdAndDate(viewModel.habitEntityList.get(position).habitId, historyTime);
+
+                    if(historyEntity != null){
+                        historyEntity.historyHabitsState = false;
+                        HabitTrackerDatabase.getInstance(getContext()).historyDao().updateHistory(historyEntity);
+                    }else {
+                        historyEntity = new HistoryEntity();
+                        historyEntity.historyDate = historyTime;
+                        historyEntity.historyHabitsState = false;
+                        historyEntity.userId = DataLocalManager.getUserId();
+                        historyEntity.habitId = viewModel.habitEntityList.get(position).habitId;
+
+                        HabitTrackerDatabase.getInstance(getContext()).historyDao().insertHistory(historyEntity);
+                    }
+
+                    Log.e("CHECK", "OK");
+                    viewModel.habitEntityList.remove(position);
+                    viewModel.adapter.notifyItemRemoved(position);
+
+                    break;
+
+                case ItemTouchHelper.RIGHT:
+
                     HabitEntity habitEntity = viewModel.habitEntityList.get(viewHolder.getAdapterPosition());
                     List<HabitInWeekEntity> entities = HabitTrackerDatabase.getInstance(getContext()).habitInWeekDao().
                             getDayOfWeekHabitListByUserAndHabitId(DataLocalManager.getUserId(), habitEntity.habitId);
+
+                    LocalDateTime time = LocalDateTime.now();
+                    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    String history = time.format(timeFormatter);
 
                     HabitInWeekEntity entity = entities.get(0);
 
                     if(entity.timerSecond == null && entity.timerMinute == null && entity.timerHour == null){
 
-                        HistoryEntity historyEntity = new HistoryEntity();
-                        LocalDateTime local = LocalDateTime.now();
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                        String historyTime = local.format(formatter);
+                        HistoryEntity h = HabitTrackerDatabase.getInstance(getContext()).historyDao()
+                                .getHistoryByHabitIdAndDate(viewModel.habitEntityList.get(position).habitId, history);
 
-                        historyEntity.historyDate = historyTime;
-                        historyEntity.historyHabitsState = true;
-                        historyEntity.userId = DataLocalManager.getUserId();
-                        historyEntity.habitId = viewModel.habitEntityList.get(position).habitId;
+                        if(h != null){
+                            h.historyHabitsState = true;
+                            HabitTrackerDatabase.getInstance(getContext()).historyDao().updateHistory(h);
+                        }else {
+                            h = new HistoryEntity();
+                            h.historyDate = history;
+                            h.historyHabitsState = true;
+                            h.userId = DataLocalManager.getUserId();
+                            h.habitId = viewModel.habitEntityList.get(position).habitId;
 
-                        HabitTrackerDatabase.getInstance(getContext()).historyDao().insertHistory(historyEntity);
+                            HabitTrackerDatabase.getInstance(getContext()).historyDao().insertHistory(h);
+                        }
 
                         viewModel.habitEntityList.remove(position);
                         viewModel.adapter.notifyItemRemoved(position);
-
                     }else {
-
+                        Intent intent = new Intent(getContext(), CountDownActivity.class);
+                        startActivity(intent);
                     }
-                    break;
-                case ItemTouchHelper.RIGHT:
-
-                    HistoryEntity historyEntity = new HistoryEntity();
-                    LocalDate local = LocalDate.now();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                    String historyTime = local.format(formatter);
-
-                    historyEntity.historyDate = historyTime;
-                    historyEntity.historyHabitsState = false;
-                    historyEntity.userId = DataLocalManager.getUserId();
-                    historyEntity.habitId = viewModel.habitEntityList.get(position).habitId;
-
-                    HabitTrackerDatabase.getInstance(getContext()).historyDao().insertHistory(historyEntity);
-
-                    viewModel.habitEntityList.remove(position);
-                    viewModel.adapter.notifyItemRemoved(position);
-
                     break;
             }
 
@@ -262,41 +289,48 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
                 if(dX > 0) {
 
-                    HabitEntity habitEntity = viewModel.habitEntityList.get(viewHolder.getAdapterPosition());
-                    List<HabitInWeekEntity> entities = HabitTrackerDatabase.getInstance(getContext()).habitInWeekDao().
-                            getDayOfWeekHabitListByUserAndHabitId(DataLocalManager.getUserId(), habitEntity.habitId);
+                    Log.e("Length", String.valueOf(viewModel.habitEntityList.size()));
+                    Log.e("Position", String.valueOf(viewHolder.getAdapterPosition()));
 
-                    HabitInWeekEntity entity = entities.get(0);
+                    int position = viewHolder.getAdapterPosition();
 
-                    Log.e("Lenght", String.valueOf(entities.size()));
+                    if(position != -1){
 
-                    if(entity.timerSecond == null && entity.timerMinute == null && entity.timerHour == null){
-                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_green_check);
+                        HabitEntity habitEntity = viewModel.habitEntityList.get(position);
+                        List<HabitInWeekEntity> entities = HabitTrackerDatabase.getInstance(getContext()).habitInWeekDao().
+                                getDayOfWeekHabitListByUserAndHabitId(DataLocalManager.getUserId(), habitEntity.habitId);
 
-                        p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
+                        HabitInWeekEntity entity = entities.get(0);
 
-                        c.drawBitmap(icon,
-                                (float) itemView.getLeft() + 10,
-                                (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight())/2,
-                                p);
-                    }else {
-                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_purple_clock);
+                        if(entity.timerSecond == null && entity.timerMinute == null && entity.timerHour == null){
+                            icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_green_check);
 
-                        p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
+                            p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
 
-                        c.drawBitmap(icon,
-                                (float) itemView.getLeft() + 10,
-                                (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight())/2,
-                                p);
+                            c.drawBitmap(icon,
+                                    (float) itemView.getLeft() + 10,
+                                    (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight())/2,
+                                    p);
+                        }else {
+                            icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_purple_clock);
+
+                            p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
+
+                            c.drawBitmap(icon,
+                                    (float) itemView.getLeft() + 10,
+                                    (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight())/2,
+                                    p);
+                        }
+
                     }
+
+                    final float alpha = ALPHA_FULL - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
+                    viewHolder.itemView.setAlpha(alpha);
+                    viewHolder.itemView.setTranslationX(dX);
 
                 }
 
-                final float alpha = ALPHA_FULL - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
-                viewHolder.itemView.setAlpha(alpha);
-                viewHolder.itemView.setTranslationX(dX);
-
-
+                return;
             }else {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }

@@ -4,6 +4,14 @@
 
     <data>
 
+        <variable
+            name="a"
+            type="com.android.mobile_project.ui.activity.count.CountDownActivity" />
+
+        <variable
+            name="vm"
+            type="com.android.mobile_project.ui.activity.count.CountDownViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
