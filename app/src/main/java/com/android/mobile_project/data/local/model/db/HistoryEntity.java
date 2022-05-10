@@ -6,6 +6,9 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -26,7 +29,7 @@ public class HistoryEntity {
 
     @ColumnInfo(name = "date")
     @Nullable
-    public Long historyDate;
+    public String historyDate;
 
     @NonNull
     @ColumnInfo(defaultValue = "true")

@@ -10,13 +10,17 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.data.local.model.db.HabitEntity;
+import com.android.mobile_project.data.local.model.db.HabitInWeekEntity;
+import com.android.mobile_project.data.local.sqlite.HabitTrackerDatabase;
 import com.android.mobile_project.databinding.RcvHorizontalCalendarTextDateBinding;
 import com.android.mobile_project.databinding.RcvItemHabitBinding;
 import com.android.mobile_project.time.adapter.DailyCalendarAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.service.InitUIService;
 import com.android.mobile_project.ui.activity.main.fragment.home.service.RecyclerViewInterface;
 import com.android.mobile_project.ui.activity.setting.HabitSettingActivity;
+import com.daimajia.swipe.SwipeLayout;
 
 import java.util.List;
 
@@ -47,6 +51,20 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder>{
         HabitEntity habit = habitEntityList.get(position);
 
         holder.binding.hname.setText(habit.habitName);
+
+        List<HabitInWeekEntity> habitInWeekEntities = HabitTrackerDatabase.getInstance(context).habitInWeekDao()
+                .getDayOfWeekHabitListByUserAndHabitId(DataLocalManager.getUserId(), habit.habitId);
+
+        HabitInWeekEntity entity = habitInWeekEntities.get(0);
+
+        if(entity.timerHour != null && entity.timerMinute != null && entity.timerSecond != null){
+            holder.binding.timer.setVisibility(View.VISIBLE);
+            holder.binding.hTimer.setText(String.valueOf(habitInWeekEntities.get(0).timerHour));
+            holder.binding.mTimer.setText(String.valueOf(habitInWeekEntities.get(0).timerMinute));
+            holder.binding.sTimer.setText(String.valueOf(habitInWeekEntities.get(0).timerSecond));
+        }else {
+            holder.binding.timer.setVisibility(View.GONE);
+        }
 
     }
 

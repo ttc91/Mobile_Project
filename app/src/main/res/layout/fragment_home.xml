@@ -112,6 +112,21 @@
                 android:textSize="@dimen/_13ssp"
                 android:textStyle="bold"/>
 
+
+            <TextView
+                android:id="@+id/t_todo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_7sdp"
+                android:layout_marginEnd="@dimen/_7sdp"
+                android:text="List to do"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                android:background="#E0E0E0"
+                android:visibility="gone"
+                android:gravity="center"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcv_habit_list"
                 android:layout_width="match_parent"
@@ -119,6 +134,21 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginEnd="@dimen/_10sdp"
                 android:layout_marginStart="@dimen/_10sdp"/>
+
+
+            <TextView
+                android:id="@+id/t_done"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginStart="@dimen/_7sdp"
+                android:layout_marginEnd="@dimen/_7sdp"
+                android:text="DONE"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold"
+                android:background="#E0E0E0"
+                android:visibility="gone"
+                android:gravity="center"/>
 
         </LinearLayout>
 

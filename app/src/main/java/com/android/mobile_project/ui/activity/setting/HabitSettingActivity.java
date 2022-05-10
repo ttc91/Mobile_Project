@@ -335,8 +335,11 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                         entity.hourTime = Long.valueOf(remainderBinding.hNumPicker.getValue());
                         entity.minutesTime = Long.valueOf(remainderBinding.mNumPicker.getValue());
 
-                        Log.e("Hour", String.valueOf(remainderBinding.hNumPicker.getValue()));
-                        Log.e("Minutes", String.valueOf(remainderBinding.mNumPicker.getValue()));
+                        RemainderEntity remainderEntity = HabitTrackerDatabase.getInstance(getApplicationContext()).remainderDao().checkExistRemainder(entity.hourTime, entity.minutesTime, entity.habitId);
+                        if(remainderEntity != null){
+                            Toast.makeText(getApplicationContext(), "Your remainder is exist !", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
                         HabitTrackerDatabase.getInstance(getApplicationContext()).remainderDao().insertRemainder(entity);
 

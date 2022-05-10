@@ -210,8 +210,6 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
     @Override
     public void onClick(View view) {
 
-        Log.e("Check", "OK");
-
         int id = view.getId();
 
         if(id == R.id.btn_back){
@@ -222,7 +220,6 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
             clickBtnDateOfTime(id);
         }else if(id == R.id.btn_create){
             viewModel.initService.initCreateHabitEvent();
-            Log.e("CHECK", "CREATE OK !");
         }
 
     }
