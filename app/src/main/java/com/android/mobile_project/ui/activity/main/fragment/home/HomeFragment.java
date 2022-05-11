@@ -178,6 +178,9 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                     binding.rcvHabitDoneList.setAdapter(viewModel.doneHabitAdapter);
                     binding.rcvHabitDoneList.setLayoutManager(manager);
 
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback_1);
+                    itemTouchHelper.attachToRecyclerView(binding.rcvHabitDoneList);
+
                 }
 
                 if(viewModel.habitEntityFailedList.size() > 0){
@@ -191,6 +194,9 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
                     binding.rcvHabitFailedList.setAdapter(viewModel.failedHabitAdapter);
                     binding.rcvHabitFailedList.setLayoutManager(manager);
+
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback_2);
+                    itemTouchHelper.attachToRecyclerView(binding.rcvHabitFailedList);
 
                 }
 
@@ -243,8 +249,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                     }
 
                 }
-
-
             }
         };
 
@@ -339,7 +343,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                     if(viewModel.habitEntityList.size() == 0){
                         binding.tTodo.setVisibility(View.GONE);
                         binding.rcvHabitList.setVisibility(View.GONE);
-                        viewModel.hideToDo = false;
+                        viewModel.hideToDo = true;
                     }
 
                     if(viewModel.habitEntityFailedList.size() == 0){
@@ -347,7 +351,8 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                         viewModel.habitEntityFailedList.add(habit);
 
                         binding.tFailed.setVisibility(View.VISIBLE);
-                        binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
+                        binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
+                        viewModel.hideFailed = false;
 
                         viewModel.failedHabitAdapter = new FailedHabitAdapter(viewModel.habitEntityFailedList, getContext());
                         viewModel.failedHabitAdapter.notifyDataSetChanged();
@@ -356,7 +361,15 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                         binding.rcvHabitFailedList.setAdapter(viewModel.failedHabitAdapter);
                         binding.rcvHabitFailedList.setLayoutManager(manager);
 
+                        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback_2);
+                        itemTouchHelper.attachToRecyclerView(binding.rcvHabitFailedList);
+
                     }else {
+
+                        binding.tFailed.setVisibility(View.VISIBLE);
+                        binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
+                        viewModel.hideFailed = false;
+
                         viewModel.habitEntityFailedList.add(habit);
                         viewModel.failedHabitAdapter.notifyItemInserted(viewModel.habitEntityFailedList.size());
                     }
@@ -390,7 +403,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                         if(viewModel.habitEntityList.size() == 0){
                             binding.tTodo.setVisibility(View.GONE);
                             binding.rcvHabitList.setVisibility(View.GONE);
-                            viewModel.hideToDo = false;
+                            viewModel.hideToDo = true;
                         }
 
                         if(viewModel.habitEntityDoneList.size() == 0){
@@ -398,7 +411,8 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                             viewModel.habitEntityDoneList.add(habitEntity);
 
                             binding.tDone.setVisibility(View.VISIBLE);
-                            binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
+                            binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
+                            viewModel.hideDone = false;
 
                             viewModel.doneHabitAdapter = new DoneHabitAdapter(getContext(), viewModel.habitEntityDoneList);
                             viewModel.doneHabitAdapter.notifyDataSetChanged();
@@ -407,12 +421,21 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                             binding.rcvHabitDoneList.setAdapter(viewModel.doneHabitAdapter);
                             binding.rcvHabitDoneList.setLayoutManager(manager);
 
+                            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback_1);
+                            itemTouchHelper.attachToRecyclerView(binding.rcvHabitDoneList);
+
                         }else {
+
+                            binding.tDone.setVisibility(View.VISIBLE);
+                            binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
+                            viewModel.hideFailed = false;
+
                             viewModel.habitEntityDoneList.add(habitEntity);
                             viewModel.doneHabitAdapter.notifyItemInserted(viewModel.habitEntityDoneList.size());
                         }
 
                     }else {
+
                         viewModel.adapter.notifyItemChanged(viewHolder.getAdapterPosition());
                         Intent intent = new Intent(getContext(), CountDownActivity.class);
                         startActivity(intent);
@@ -492,15 +515,146 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         }
     };
 
-    ItemTouchHelper.SimpleCallback simpleCallback_1 = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+    ItemTouchHelper.SimpleCallback simpleCallback_1 = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
+            int position = viewHolder.getAdapterPosition();
+
+            switch (direction) {
+                case ItemTouchHelper.LEFT:
+                    break;
+                case ItemTouchHelper.RIGHT:
+
+                    LocalDateTime time = LocalDateTime.now();
+                    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    String history = time.format(timeFormatter);
+
+                    HabitEntity habitEntity = viewModel.habitEntityDoneList.get(viewHolder.getAdapterPosition());
+
+                    viewModel.habitEntityDoneList.remove(habitEntity);
+                    viewModel.doneHabitAdapter.notifyItemRemoved(position);
+
+                    HistoryEntity historyEntity = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByHabitIdAndDate(habitEntity.habitId, history);
+                    historyEntity.historyHabitsState = "null";
+                    HabitTrackerDatabase.getInstance(getContext()).historyDao().updateHistory(historyEntity);
+
+                    if(viewModel.habitEntityList.size() == 0){
+
+                        viewModel.habitEntityList.add(habitEntity);
+
+                        viewModel.adapter = new HabitAdapter(getContext(), viewModel.habitEntityList, viewModel.recyclerViewClickListener);
+                        viewModel.adapter.notifyDataSetChanged();
+                        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+
+                        binding.rcvHabitList.setAdapter(viewModel.adapter);
+                        binding.rcvHabitList.setLayoutManager(manager);
+
+                        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+                        itemTouchHelper.attachToRecyclerView(binding.rcvHabitList);
+
+                        binding.tTodo.setVisibility(View.VISIBLE);
+                        binding.rcvHabitList.setVisibility(View.VISIBLE);
+                        viewModel.hideToDo = false;
+
+                    }else {
+                        viewModel.habitEntityList.add(habitEntity);
+                        viewModel.adapter.notifyItemInserted(viewModel.habitEntityList.size());
+                    }
+
+                    if(viewModel.habitEntityDoneList.size() == 0){
+                        binding.tDone.setVisibility(View.GONE);
+                        binding.rcvHabitDoneList.setVisibility(View.GONE);
+                        viewModel.hideDone = true;
+                    }
+
+                    break;
+
+            }
+
+        }
+
+        @Override
+        public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+
+        }
+    };
+
+    ItemTouchHelper.SimpleCallback simpleCallback_2 = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+            int position = viewHolder.getAdapterPosition();
+
+            switch (direction) {
+                case ItemTouchHelper.LEFT:
+                    break;
+                case ItemTouchHelper.RIGHT:
+
+                    LocalDateTime time = LocalDateTime.now();
+                    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    String history = time.format(timeFormatter);
+
+                    HabitEntity habitEntity = viewModel.habitEntityFailedList.get(viewHolder.getAdapterPosition());
+
+                    viewModel.habitEntityFailedList.remove(habitEntity);
+                    viewModel.failedHabitAdapter.notifyItemRemoved(position);
+
+                    HistoryEntity historyEntity = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByHabitIdAndDate(habitEntity.habitId, history);
+                    historyEntity.historyHabitsState = "null";
+                    HabitTrackerDatabase.getInstance(getContext()).historyDao().updateHistory(historyEntity);
+
+                    if(viewModel.habitEntityList.size() == 0){
+
+                        viewModel.habitEntityList.add(habitEntity);
+
+                        viewModel.adapter = new HabitAdapter(getContext(), viewModel.habitEntityList, viewModel.recyclerViewClickListener);
+                        viewModel.adapter.notifyDataSetChanged();
+                        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+
+                        binding.rcvHabitList.setAdapter(viewModel.adapter);
+                        binding.rcvHabitList.setLayoutManager(manager);
+
+                        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+                        itemTouchHelper.attachToRecyclerView(binding.rcvHabitList);
+
+                        binding.tTodo.setVisibility(View.VISIBLE);
+                        binding.rcvHabitList.setVisibility(View.VISIBLE);
+                        viewModel.hideToDo = false;
+
+                    }else {
+                        viewModel.habitEntityList.add(habitEntity);
+                        viewModel.adapter.notifyItemInserted(viewModel.habitEntityList.size());
+                    }
+
+                    if(viewModel.habitEntityFailedList.size() == 0){
+                        binding.tFailed.setVisibility(View.GONE);
+                        binding.rcvHabitFailedList.setVisibility(View.GONE);
+                        viewModel.hideFailed = true;
+                    }
+
+                    break;
+            }
+
+        }
+
+        @Override
+        public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
         }
     };
 
