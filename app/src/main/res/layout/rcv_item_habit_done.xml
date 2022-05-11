@@ -25,9 +25,8 @@
                 android:layout_marginStart="@dimen/_20sdp">
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/logo"
-                    android:layout_width="@dimen/_45sdp"
-                    android:layout_height="@dimen/_45sdp"
+                    android:layout_width="@dimen/_40sdp"
+                    android:layout_height="@dimen/_40sdp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +40,7 @@
                 android:id="@+id/hname"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/_10sdp"
+                android:layout_marginEnd="@dimen/_20sdp"
                 android:layout_gravity="center"
                 android:layout_weight="4"
                 android:gravity="center"

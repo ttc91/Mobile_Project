@@ -39,8 +39,6 @@ Papp/src/main/java/com/android/mobile_project/data/local/model/db/UserEntity.jav
 Oapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/UserDao.java,7\4\748d7b782a36521af9a96d6976d95660341939ce
 Å
 Qapp/src/main/java/com/android/mobile_project/ui/activity/input/InputActivity.java,e\2\e23e3c5ffd532214b4555895bd1ca1925f400763
-ñ
-fapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/home/service/InitUIService.java,c\5\c5d3cd0ac1184b190f5b4cec95c6f34cd3da333b
 î
 dapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/planner/PlannerViewModel.java,1\5\15f822eb5a2f9152f327473b1ea4f0c58d6c9392
 ì
@@ -101,3 +99,23 @@ w
 Gapp/src/main/java/com/android/mobile_project/channel/AlarmReceiver.java,e\2\e271dc2c1152805b8ec4c623a1079f9c0f789c98
 <
 build.gradle,f\0\f07866736216be0ee2aba49e392191aeae700a35
+à
+Xapp/src/main/java/com/android/mobile_project/ui/activity/create/service/InitService.java,f\b\fb4ab54f26b49fbc12b1d4c6f1e4ab13248d3cb5
+?
+settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
+Ñ
+Tapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/RemainderDao.java,e\b\eb4f1b53bab0a8eac4e75bab51b03889f3ca1699
+@
+app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
+ä
+Zapp/src/main/java/com/android/mobile_project/ui/activity/setting/HabitSettingActivity.java,c\f\cfbc2cd1f1f778eaa0128357e60d0a76b1e48ddb
+ö
+japp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/home/service/CallBackItemTouch.java,d\7\d73b16d2f44198bd7e8f5f311d6b5782d20f33c7
+è
+_app/src/main/java/com/android/mobile_project/data/local/model/db/relation/HabitWithHistory.java,7\0\7075b1eec03dccfbb6a3ed819f133404f9a51ab6
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
+Ö
+Uapp/src/main/java/com/android/mobile_project/ui/activity/count/CountDownActivity.java,e\7\e7c37a6b250a8874814b499f863b4fe4fade6ee9
+Ü
+Vapp/src/main/java/com/android/mobile_project/ui/activity/count/CountDownViewModel.java,4\a\4a38d91562da916c27b2bac487c14f26520fbb06

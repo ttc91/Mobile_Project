@@ -1,13 +1,9 @@
 package com.android.mobile_project.data.local.model.db;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
-import java.time.LocalDateTime;
-import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,9 +27,9 @@ public class HistoryEntity {
     @Nullable
     public String historyDate;
 
-    @NonNull
-    @ColumnInfo(defaultValue = "true")
-    public boolean historyHabitsState;
+    @ColumnInfo(name = "state", defaultValue = "null")
+    @Nullable
+    public String historyHabitsState;
 
     @ColumnInfo(name = "user_id")
     public Long userId;
