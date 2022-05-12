@@ -35,13 +35,14 @@
                 android:layout_width="@dimen/_45sdp"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_marginTop="@dimen/_2sdp"
-                android:background="@drawable/btn_process_back"/>
+                android:background="@drawable/btn_process_back"
+                android:onClick="@{(v) -> a.onClick(v)}"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_2sdp"
-                android:text="Habbit name"
+                android:text="@{vm.habitEntity.habitName}"
                 android:textSize="@dimen/_18sdp"
                 android:textStyle="bold"
                 android:gravity="center"/>
@@ -52,16 +53,17 @@
                 android:layout_marginTop="@dimen/_30sdp"
                 android:layout_gravity="center">
 
-                <com.google.android.material.progressindicator.CircularProgressIndicator
+                <com.mikhaellopez.circularprogressbar.CircularProgressBar
                     android:id="@+id/cir_bar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:cpb_background_progressbar_color="#b6bbd8"
-                    app:cpb_background_progressbar_width="5dp"
+                    app:cpb_background_progressbar_color="#C7C3C3"
+                    app:cpb_background_progressbar_width="@dimen/_8sdp"
                     app:cpb_progress_direction="to_right"
-                    app:cpb_progressbar_color="#3f51b5"
+                    app:cpb_progressbar_color="#969ECD"
                     app:cpb_progressbar_width="10dp"
-                    app:cpb_round_border="false"/>
+                    my_progress="@{vm.percent}"
+                    android:visibility="visible"/>
 
                 <ImageView
                     android:id="@+id/ic_tree"
@@ -80,8 +82,10 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="@id/cir_bar"
                     app:layout_constraintTop_toBottomOf="@+id/ic_tree"
+                    android:layout_marginEnd="@dimen/_20sdp"
+                    android:layout_marginStart="@dimen/_20sdp"
                     android:text="00 : 00"
-                    android:textSize="@dimen/_25ssp"
+                    android:textSize="@dimen/_20ssp"
                     android:textStyle="bold"
                     android:gravity="center"/>
 
@@ -97,35 +101,34 @@
                     android:id="@+id/btn_reset"
                     android:layout_width="@dimen/_38sdp"
                     android:layout_height="@dimen/_38sdp"
+                    android:layout_alignBottom="@id/btn_play"
                     android:layout_marginEnd="@dimen/_20sdp"
                     android:layout_marginBottom="@dimen/_5sdp"
                     android:layout_toStartOf="@id/btn_play"
-                    android:layout_alignBottom="@id/btn_play"
-                    android:background="@drawable/ic_btn_process_reset"/>
+                    android:background="@drawable/ic_btn_process_reset"
+                    android:onClick="@{(v) -> a.onClick(v)}"/>
 
                 <Button
                     android:id="@+id/btn_play"
                     android:layout_width="@dimen/_70sdp"
                     android:layout_height="@dimen/_70sdp"
-                    android:background="@drawable/btn_process_play"/>
+                    android:background="@drawable/btn_process_play"
+                    android:onClick="@{(v) -> a.onClick(v)}" />
 
                 <Button
                     android:id="@+id/btn_finish"
                     android:layout_width="@dimen/_38sdp"
                     android:layout_height="@dimen/_38sdp"
+                    android:layout_alignBottom="@id/btn_play"
                     android:layout_marginStart="@dimen/_20sdp"
                     android:layout_marginBottom="@dimen/_5sdp"
                     android:layout_toEndOf="@id/btn_play"
-                    android:layout_alignBottom="@id/btn_play"
-                    android:background="@drawable/ic_btn_process_finish"/>
+                    android:background="@drawable/ic_btn_process_finish"
+                    android:onClick="@{(v) -> a.onClick(v)}" />
 
             </RelativeLayout>
 
         </LinearLayout>
-
-
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

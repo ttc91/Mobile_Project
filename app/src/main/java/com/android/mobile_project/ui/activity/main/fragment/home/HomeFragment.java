@@ -438,6 +438,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
                         viewModel.adapter.notifyItemChanged(viewHolder.getAdapterPosition());
                         Intent intent = new Intent(getContext(), CountDownActivity.class);
+                        intent.putExtra("habitId", habitEntity.habitId);
                         startActivity(intent);
                     }
                     break;
