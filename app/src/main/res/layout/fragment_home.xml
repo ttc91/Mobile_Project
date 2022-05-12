@@ -197,6 +197,24 @@
                         android:layout_marginStart="@dimen/_10sdp"
                         android:visibility="gone"/>
 
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcv_before"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:visibility="gone"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcv_after"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:layout_marginStart="@dimen/_10sdp"
+                        android:visibility="gone"/>
+
 
                 </LinearLayout>
 

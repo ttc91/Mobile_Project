@@ -2,9 +2,11 @@ package com.android.mobile_project.data.local.sqlite;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
@@ -23,6 +25,10 @@ import com.android.mobile_project.data.local.sqlite.dao.HabitInWeekDao;
 import com.android.mobile_project.data.local.sqlite.dao.HistoryDao;
 import com.android.mobile_project.data.local.sqlite.dao.RemainderDao;
 import com.android.mobile_project.data.local.sqlite.dao.UserDao;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 @androidx.room.Database(entities = {UserEntity.class, HabitEntity.class, DayOfWeekEntity.class, DayOfTimeEntity.class,
         HabitInWeekEntity.class, HistoryEntity.class, RemainderEntity.class}, version = 15)
@@ -109,8 +115,6 @@ public abstract class HabitTrackerDatabase extends RoomDatabase {
             this.dayOfWeekDao.insertDayOfWeek(thursday);
             this.dayOfWeekDao.insertDayOfWeek(friday);
             this.dayOfWeekDao.insertDayOfWeek(saturday);
-
-            Log.e("INSERT", "OK !");
 
             return null;
         }

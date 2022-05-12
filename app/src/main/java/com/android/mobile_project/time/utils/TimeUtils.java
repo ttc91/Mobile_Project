@@ -17,6 +17,10 @@ public class TimeUtils {
 
     private LocalDate selectedDate = LocalDate.now();
 
+    public LocalDate getSelectedDate() {
+        return selectedDate;
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<String> daysInMonthArray(){
 

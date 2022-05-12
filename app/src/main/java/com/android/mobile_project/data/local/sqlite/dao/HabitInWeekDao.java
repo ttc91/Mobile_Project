@@ -27,4 +27,7 @@ public interface HabitInWeekDao {
     @Query("SELECT * FROM tbl_habit_in_week WHERE user_id = :userId AND habit_id = :habitId ")
     public List<HabitInWeekEntity> getDayOfWeekHabitListByUserAndHabitId(Long userId, Long habitId);
 
+    @Query("SELECT * FROM tbl_habit_in_week WHERE day_of_week_id = :id")
+    public List<HabitInWeekEntity> getHabitInWeekEntityByDayOfWeekId(Long id);
+
 }

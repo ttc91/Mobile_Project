@@ -5,5 +5,6 @@ public interface InitUIService {
     public void initDailyCalendar();
     public void initHabitListUI();
     public void initHistoryListOfDay();
+    public void updateHabitStateOfYesterday();
 
 }

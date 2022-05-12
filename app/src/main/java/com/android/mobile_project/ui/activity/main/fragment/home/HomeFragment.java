@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +30,7 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import com.android.mobile_project.R;
 import com.android.mobile_project.data.local.DataLocalManager;
+import com.android.mobile_project.data.local.model.db.DayOfWeekEntity;
 import com.android.mobile_project.data.local.model.db.HabitEntity;
 import com.android.mobile_project.data.local.model.db.HabitInWeekEntity;
 import com.android.mobile_project.data.local.model.db.HistoryEntity;
@@ -39,17 +41,24 @@ import com.android.mobile_project.time.utils.TimeUtils;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.count.CountDownActivity;
 import com.android.mobile_project.ui.activity.create.CreateHabitActivity;
+import com.android.mobile_project.ui.activity.main.fragment.home.adapter.AfterAdapter;
+import com.android.mobile_project.ui.activity.main.fragment.home.adapter.BeforeAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.DoneHabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.FailedHabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.HabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.service.InitUIService;
 import com.android.mobile_project.ui.activity.setting.HabitSettingActivity;
 
+import java.text.DateFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeFragment extends Fragment implements InitLayout, View.OnClickListener{
 
@@ -70,11 +79,12 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         viewModel.initUIService.initDailyCalendar();
         viewModel.initUIService.initHistoryListOfDay();
         viewModel.initUIService.initHabitListUI();
+        viewModel.initUIService.updateHabitStateOfYesterday();
 
 //        LocalDate local = LocalDate.now();
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 //        String historyTime = local.format(formatter);
-//
+
 //        List<HistoryEntity> list = new ArrayList<>();
 //        list = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByDate(historyTime);
 //        Log.e("Size", String.valueOf(list.size()));
@@ -103,21 +113,131 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         viewModel = new HomeViewModel();
         binding.setVm(viewModel);
 
+        DayOfWeekEntity dayOfWeekEntity = HabitTrackerDatabase.getInstance(getContext()).dayOfWeekDao().searchDayOfWeekByName(viewModel.dayName);
+        viewModel.dayOfWeekId = dayOfWeekEntity.dayOfWeekId;
+
+        viewModel.onClickItem = new DailyCalendarAdapter.OnClickItem() {
+            @Override
+            public void onClick(View view, List<LocalDate> dates, int position) {
+
+                LocalDate date = dates.get(position);
+
+                TimeUtils utils = new TimeUtils();
+                if(date.isAfter(utils.getSelectedDate())){
+
+                    DayOfWeek day = date.getDayOfWeek();
+                    String dayName = day.getDisplayName(TextStyle.FULL, Locale.getDefault());
+
+                    DayOfWeekEntity dayOfWeek = HabitTrackerDatabase.getInstance(getContext()).dayOfWeekDao().searchDayOfWeekByName(dayName);
+                    Long dayOfWeekId = dayOfWeek.dayOfWeekId;
+
+                    binding.rcvBefore.setVisibility(View.GONE);
+                    binding.rcvHabitList.setVisibility(View.GONE);
+                    binding.rcvHabitFailedList.setVisibility(View.GONE);
+                    binding.rcvHabitDoneList.setVisibility(View.GONE);
+                    binding.tTodo.setVisibility(View.GONE);
+                    binding.tFailed.setVisibility(View.GONE);
+                    binding.tDone.setVisibility(View.GONE);
+
+                    viewModel.hideDone = false;
+                    viewModel.hideFailed = false;
+                    viewModel.hideToDo = false;
+
+                    List<HabitInWeekEntity> habitInWeekEntityList = HabitTrackerDatabase.getInstance(getContext()).habitInWeekDao().getHabitInWeekEntityByDayOfWeekId(dayOfWeekId);
+                    List<HabitEntity> list = new ArrayList<>();
+
+                    for(HabitInWeekEntity entity : habitInWeekEntityList){
+                        HabitEntity habit = HabitTrackerDatabase.getInstance(getContext()).habitDao().getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), entity.habitId);
+                        list.add(habit);
+                    }
+
+                    AfterAdapter adapter  = new AfterAdapter(getContext(), list);
+                    adapter.notifyDataSetChanged();
+                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
+
+                    binding.rcvAfter.setLayoutManager(layoutManager);
+                    binding.rcvAfter.setAdapter(adapter);
+
+                    binding.rcvAfter.setVisibility(View.VISIBLE);
+
+
+                }else if(date.isBefore(utils.getSelectedDate())){
+
+                    binding.rcvAfter.setVisibility(View.GONE);
+                    binding.rcvHabitList.setVisibility(View.GONE);
+                    binding.rcvHabitFailedList.setVisibility(View.GONE);
+                    binding.rcvHabitDoneList.setVisibility(View.GONE);
+                    binding.tTodo.setVisibility(View.GONE);
+                    binding.tFailed.setVisibility(View.GONE);
+                    binding.tDone.setVisibility(View.GONE);
+
+                    viewModel.hideDone = false;
+                    viewModel.hideFailed = false;
+                    viewModel.hideToDo = false;
+
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    String historyTime = date.format(formatter);
+
+                    List<HistoryEntity> history = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByDate(DataLocalManager.getUserId(), historyTime);
+                    List<HabitEntity> list = new ArrayList<>();
+
+                    for(HistoryEntity entity : history){
+                        HabitEntity habit = HabitTrackerDatabase.getInstance(getContext()).habitDao().getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), entity.habitId);
+                        list.add(habit);
+                    }
+
+                    BeforeAdapter adapter  = new BeforeAdapter(getContext(), list, historyTime);
+                    adapter.notifyDataSetChanged();
+                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
+
+                    binding.rcvBefore.setLayoutManager(layoutManager);
+                    binding.rcvBefore.setAdapter(adapter);
+
+                    binding.rcvBefore.setVisibility(View.VISIBLE);
+
+                }else {
+
+                    binding.rcvAfter.setVisibility(View.GONE);
+                    binding.rcvBefore.setVisibility(View.GONE);
+
+                    if(viewModel.habitEntityFailedList.size() > 0){
+                        binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
+                        binding.tFailed.setVisibility(View.VISIBLE);
+                        viewModel.hideFailed = true;
+                    }
+
+                    if(viewModel.habitEntityDoneList.size() > 0){
+                        binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
+                        binding.tDone.setVisibility(View.VISIBLE);
+                        viewModel.hideDone = true;
+                    }
+
+                    if(viewModel.habitEntityList.size() > 0){
+                        binding.rcvHabitList.setVisibility(View.VISIBLE);
+                        binding.tTodo.setVisibility(View.VISIBLE);
+                        viewModel.hideToDo = true;
+                    }
+
+                }
+
+            }
+        };
+
         viewModel.initUIService = new InitUIService() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void initDailyCalendar() {
 
                 com.android.mobile_project.time.utils.TimeUtils utils = new TimeUtils();
-                ArrayList<LocalDate> days = utils.getSixtyDaysArray();
+                viewModel.days = utils.getSixtyDaysArray();
 
-                DailyCalendarAdapter adapter = new DailyCalendarAdapter(getContext(), days);
-                adapter.notifyDataSetChanged();
+                viewModel.dailyCalendarAdapter = new DailyCalendarAdapter(getContext(), viewModel.days, viewModel.onClickItem);
+                viewModel.dailyCalendarAdapter.notifyDataSetChanged();
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
 
                 binding.rvHorCalendar.setLayoutManager(layoutManager);
-                binding.rvHorCalendar.setAdapter(adapter);
-                binding.rvHorCalendar.smoothScrollToPosition(days.size() / 2 + 1);
+                binding.rvHorCalendar.setAdapter(viewModel.dailyCalendarAdapter);
+                binding.rvHorCalendar.smoothScrollToPosition(viewModel.days.size() / 2 + 1);
 
                 SnapHelper helper = new LinearSnapHelper();
                 helper.attachToRecyclerView(binding.rvHorCalendar);
@@ -144,10 +264,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                         viewModel.habitEntityList.add(habit);
                     }
                 }
-
-                Log.e("Done list", String.valueOf(viewModel.habitEntityDoneList.size()));
-                Log.e("List", String.valueOf(viewModel.habitEntityList.size()));
-                Log.e("Failed list", String.valueOf(viewModel.habitEntityFailedList.size()));
 
                 if(viewModel.habitEntityList.size() > 0){
 
@@ -209,11 +325,19 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 String historyTime = local.format(formatter);
 
-                viewModel.historyEntityList = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByDate(historyTime);
+                List<HabitInWeekEntity> habitInWeekEntityList = HabitTrackerDatabase.getInstance(getContext()).habitInWeekDao().getHabitInWeekEntityByDayOfWeekId(viewModel.dayOfWeekId);
+
+                viewModel.historyEntityList = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByDate(DataLocalManager.getUserId(), historyTime);
 
                 if(viewModel.historyEntityList.size() == 0){
 
-                    List<HabitEntity> list = HabitTrackerDatabase.getInstance(getContext()).habitDao().getHabitListByUserId(DataLocalManager.getUserId());
+                    List<HabitEntity> list = new ArrayList<>();
+
+                    for(HabitInWeekEntity entity : habitInWeekEntityList){
+                        HabitEntity habit = HabitTrackerDatabase.getInstance(getContext()).habitDao().getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), entity.habitId);
+                        list.add(habit);
+                    }
+
                     for(HabitEntity entity : list){
 
                         HistoryEntity historyEntity = new HistoryEntity();
@@ -230,7 +354,13 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
                 }else {
 
-                    List<HabitEntity> list = HabitTrackerDatabase.getInstance(getContext()).habitDao().getHabitListByUserId(DataLocalManager.getUserId());
+                    List<HabitEntity> list = new ArrayList<>();
+
+                    for(HabitInWeekEntity entity : habitInWeekEntityList){
+                        HabitEntity habit = HabitTrackerDatabase.getInstance(getContext()).habitDao().getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), entity.habitId);
+                        list.add(habit);
+                    }
+
                     for(HabitEntity entity : list){
 
                         HistoryEntity historyEntity = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByHabitIdAndDate(entity.habitId, historyTime);
@@ -250,6 +380,26 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
                 }
             }
+
+            @Override
+            public void updateHabitStateOfYesterday() {
+
+                LocalDate local = LocalDate.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate yesterday = local.minus(1, ChronoUnit.DAYS);
+                String historyTime = yesterday.format(formatter);
+
+                List<HistoryEntity> entities = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByDate(
+                        DataLocalManager.getUserId(), historyTime);
+
+                for(HistoryEntity entity : entities){
+                    if(entity.historyHabitsState.equals("null") || entity.historyHabitsState == "null"){
+                        entity.historyHabitsState = "false";
+                        HabitTrackerDatabase.getInstance(getContext()).historyDao().updateHistory(entity);
+                    }
+                }
+
+            }
         };
 
         viewModel.recyclerViewClickListener = new HabitAdapter.RecyclerViewClickListener() {
@@ -267,6 +417,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onClick(View view) {
 
@@ -446,6 +597,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX,
                                 float dY, int actionState, boolean isCurrentlyActive) {

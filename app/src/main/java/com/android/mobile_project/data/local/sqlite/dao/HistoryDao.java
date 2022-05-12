@@ -38,8 +38,8 @@ public interface HistoryDao {
     @Query("SELECT * FROM tbl_history WHERE habit_id = :h_id AND date = :date")
     public HistoryEntity getHistoryByHabitIdAndDate(Long h_id, String date);
 
-    @Query("SELECT * FROM tbl_history WHERE date = :date")
-    public List<HistoryEntity> getHistoryByDate(String date);
+    @Query("SELECT * FROM tbl_history WHERE user_id = :u_id AND date = :date")
+    public List<HistoryEntity> getHistoryByDate(Long u_id, String date);
 
 
 }

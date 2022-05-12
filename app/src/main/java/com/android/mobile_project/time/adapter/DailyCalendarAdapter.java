@@ -22,19 +22,22 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class DailyCalendarAdapter extends RecyclerView.Adapter<DailyCalendarAdapter.ViewHolder> {
 
-    private final ArrayList<LocalDate> days;
+    private final List<LocalDate> days;
     private static int selectedItemPosition;
     private static boolean isFirstInit = true;
+    private OnClickItem onClickItem;
 
     private Context context;
 
-    public DailyCalendarAdapter(Context context, ArrayList<LocalDate> days) {
+    public DailyCalendarAdapter(Context context, List<LocalDate> days, OnClickItem onClickItem) {
         this.days = days;
         this.context = context;
+        this.onClickItem = onClickItem;
     }
 
     @NonNull
@@ -89,8 +92,8 @@ public class DailyCalendarAdapter extends RecyclerView.Adapter<DailyCalendarAdap
 
                 selectedItemPosition = position;
                 notifyDataSetChanged();
+                onClickItem.onClick(view, days, position);
             }
-
         });
 
         if(isFirstInit){
@@ -118,6 +121,10 @@ public class DailyCalendarAdapter extends RecyclerView.Adapter<DailyCalendarAdap
         return 0;
     }
 
+    public interface OnClickItem{
+        public void onClick(View view, List<LocalDate> dates, int position);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         RcvHorizontalCalendarTextDateBinding binding;
@@ -129,5 +136,4 @@ public class DailyCalendarAdapter extends RecyclerView.Adapter<DailyCalendarAdap
 
         }
     }
-
 }

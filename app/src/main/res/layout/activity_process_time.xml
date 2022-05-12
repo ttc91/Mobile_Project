@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_2sdp"
                 android:text="@{vm.habitEntity.habitName}"
-                android:textSize="@dimen/_18sdp"
+                android:textSize="@dimen/_22sdp"
                 android:textStyle="bold"
                 android:gravity="center"/>
 
