@@ -79,7 +79,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         viewModel.initUIService.initDailyCalendar();
         viewModel.initUIService.initHistoryListOfDay();
         viewModel.initUIService.initHabitListUI();
-        viewModel.initUIService.updateHabitStateOfYesterday();
 
 //        LocalDate local = LocalDate.now();
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -153,7 +152,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
                     AfterAdapter adapter  = new AfterAdapter(getContext(), list);
                     adapter.notifyDataSetChanged();
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
+                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
                     binding.rcvAfter.setLayoutManager(layoutManager);
                     binding.rcvAfter.setAdapter(adapter);
@@ -188,7 +187,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
                     BeforeAdapter adapter  = new BeforeAdapter(getContext(), list, historyTime);
                     adapter.notifyDataSetChanged();
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
+                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
                     binding.rcvBefore.setLayoutManager(layoutManager);
                     binding.rcvBefore.setAdapter(adapter);
@@ -379,26 +378,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                     }
 
                 }
-            }
-
-            @Override
-            public void updateHabitStateOfYesterday() {
-
-                LocalDate local = LocalDate.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                LocalDate yesterday = local.minus(1, ChronoUnit.DAYS);
-                String historyTime = yesterday.format(formatter);
-
-                List<HistoryEntity> entities = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByDate(
-                        DataLocalManager.getUserId(), historyTime);
-
-                for(HistoryEntity entity : entities){
-                    if(entity.historyHabitsState.equals("null") || entity.historyHabitsState == "null"){
-                        entity.historyHabitsState = "false";
-                        HabitTrackerDatabase.getInstance(getContext()).historyDao().updateHistory(entity);
-                    }
-                }
-
             }
         };
 
