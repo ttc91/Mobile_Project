@@ -15,6 +15,7 @@ import com.android.mobile_project.ui.activity.main.fragment.home.adapter.DoneHab
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.FailedHabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.HabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.service.InitUIService;
+import com.android.mobile_project.ui.activity.main.fragment.home.service.UpdateService;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -26,6 +27,7 @@ import java.util.Locale;
 public class HomeViewModel extends ViewModel {
 
     protected InitUIService initUIService;
+    protected UpdateService updateService;
     protected HabitAdapter.RecyclerViewClickListener recyclerViewClickListener;
 
     protected List<HabitEntity> habitEntityList = new ArrayList<>();

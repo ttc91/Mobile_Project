@@ -55,4 +55,7 @@ public interface HabitDao {
     @Query("UPDATE tbl_habit SET habit_name = :hName WHERE id = :habitId")
     public void updateNameOfHabit(String hName, Long habitId);
 
+    @Query("SELECT * FROM tbl_habit ORDER BY longest_steak DESC")
+    public List<HabitEntity> getHabitListDescByLongestSteak();
+
 }

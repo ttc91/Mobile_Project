@@ -33,8 +33,6 @@ Rapp/src/main/java/com/android/mobile_project/ui/activity/input/InputViewModel.j
 Uapp/src/main/java/com/android/mobile_project/ui/activity/input/service/DbService.java,b\0\b08afbbe1295cf41e3d11e47b51225fce12e5c06
 Ä
 Papp/src/main/java/com/android/mobile_project/data/local/model/db/UserEntity.java,9\8\98933531720d379902ecb10a568d84ed1ecd8aef
-î
-dapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/planner/PlannerViewModel.java,1\5\15f822eb5a2f9152f327473b1ea4f0c58d6c9392
 Ö
 Uapp/src/main/java/com/android/mobile_project/data/local/pref/MySharedPreferences.java,b\6\b6bfd8d2b1a7e500c343b951202653b9021a847f
 p
@@ -79,10 +77,6 @@ Oapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/UserDao.java
 Uapp/src/main/java/com/android/mobile_project/data/local/model/db/RemainderEntity.java,5\e\5eafb70dab3a6deec4ea704fa9db56658975ea52
 Ö
 Uapp/src/main/java/com/android/mobile_project/data/local/model/db/DayOfWeekEntity.java,f\5\f5b15b7d363577d4336968c0e2c89005c2475aa4
-ì
-capp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/setting/SettingFragment.java,9\c\9c035b01219191a498110df442c167bc78f025b2
-î
-dapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/setting/SettingViewModel.java,e\8\e8a80d52207d1d17e6d3f5d119a5bbfbb74d9040
 Ñ
 Tapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/DayOfTimeDao.java,b\5\b5cbe02535433e74f1573760851628b533cce171
 Ö
@@ -91,8 +85,6 @@ Uapp/src/main/java/com/android/mobile_project/data/local/model/db/DayOfTimeEntit
 Qapp/src/main/java/com/android/mobile_project/data/local/model/db/HabitEntity.java,e\d\edf3561c465c54c5f20c553d5f96b4ac7446bc73
 @
 app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
-à
-Xapp/src/main/java/com/android/mobile_project/ui/activity/create/CreateHabitActivity.java,7\e\7ea7b6c6db07398aaefa67d00a21fff053ac5232
 à
 Xapp/src/main/java/com/android/mobile_project/ui/activity/count/service/TimerService.java,0\e\0ee02fe5c92510a7c7a219f054141ce8eaa99e74
 á
@@ -105,8 +97,6 @@ Kapp/src/main/java/com/android/mobile_project/ui/binding/BindingAdapter.java,4\
 Vapp/src/main/java/com/android/mobile_project/ui/activity/count/CountDownViewModel.java,4\a\4a38d91562da916c27b2bac487c14f26520fbb06
 á
 Wapp/src/main/java/com/android/mobile_project/data/local/model/db/HabitInWeekEntity.java,e\9\e9e36ca10a02d0b474af7d0630450928bdbc11de
-Ä
-Papp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/HabitDao.java,3\6\368da22ca66a827afc06261d697e5bf3635b2519
 ï
 eapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/home/adapter/HabitAdapter.java,2\e\2e23f680d0109d2991eca4d653d786045a7ef45a
 Ñ
@@ -117,19 +107,11 @@ Vapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/HabitInWeekD
 Sapp/src/main/java/com/android/mobile_project/time/adapter/DailyCalendarAdapter.java,b\0\b015ae51a3e388612510d66f2d8581af143b08db
 ï
 eapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/home/adapter/AfterAdapter.java,e\0\e08299d1903ae6ac19f9e7a2812b59b16733ddef
-é
-^app/src/main/java/com/android/mobile_project/ui/activity/main/fragment/home/HomeViewModel.java,6\a\6a61faaa3b5a4e2b948669e3f40f13d3a7181e17
 û
 napp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/home/service/RecyclerViewInterface.java,7\5\75573b488e502a14d303465f44973e8a3bcb6db8
 à
 Xapp/src/main/java/com/android/mobile_project/data/local/sqlite/HabitTrackerDatabase.java,2\0\207f799e043d5725fb9e5069589673d7d854cf8a
-é
-^app/src/main/java/com/android/mobile_project/ui/activity/setting/adapter/RemainderAdapter.java,f\5\f5f786cc46b6b31c339da90efdc1e1a14f596c58
 ñ
 fapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/home/adapter/BeforeAdapter.java,3\2\3293f33bf59f2718e33a733f66bea4a8a0d49083
-ñ
-fapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/home/service/InitUIService.java,c\5\c5d3cd0ac1184b190f5b4cec95c6f34cd3da333b
 Å
 Qapp/src/main/java/com/android/mobile_project/ui/activity/input/InputActivity.java,e\2\e23e3c5ffd532214b4555895bd1ca1925f400763
-õ
-kapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/planner/service/CalendarService.java,7\4\746ae5e64f786376e917f8deace59dec00858920

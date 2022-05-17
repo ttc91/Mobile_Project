@@ -47,6 +47,7 @@ import com.android.mobile_project.ui.activity.main.fragment.home.adapter.DoneHab
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.FailedHabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.HabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.service.InitUIService;
+import com.android.mobile_project.ui.activity.main.fragment.home.service.UpdateService;
 import com.android.mobile_project.ui.activity.setting.HabitSettingActivity;
 
 import java.text.DateFormat;
@@ -76,22 +77,11 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         viewModel.setDate(binding.tvDate);
         viewModel.setMonth(binding.titleMonth);
 
+        viewModel.updateService.updateHabitLongestSteak();
+
         viewModel.initUIService.initDailyCalendar();
         viewModel.initUIService.initHistoryListOfDay();
         viewModel.initUIService.initHabitListUI();
-
-        LocalDate local = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String historyTime = local.format(formatter);
-
-        List<HistoryEntity> list = new ArrayList<>();
-        list = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByDate(DataLocalManager.getUserId(), historyTime);
-        Log.e("Size", String.valueOf(list.size()));
-        for (HistoryEntity entity : list){
-            Log.e("Habit id", String.valueOf(entity.habitId));
-            Log.e("State", String.valueOf(entity.historyHabitsState));
-            Log.e("Date", String.valueOf(entity.historyDate));
-        }
 
         return v;
     }
@@ -379,6 +369,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
                 }
             }
+
         };
 
         viewModel.recyclerViewClickListener = new HabitAdapter.RecyclerViewClickListener() {
@@ -390,6 +381,29 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 Intent intent = new Intent(getContext(), HabitSettingActivity.class);
                 intent.putExtra("habitId", entity.habitId);
                 startActivity(intent);
+
+            }
+        };
+
+        viewModel.updateService = new UpdateService() {
+            @Override
+            public void updateHabitLongestSteak() {
+
+                TimeUtils utils = new TimeUtils();
+                LocalDate yesterday = utils.getSelectedDate().minus(1, ChronoUnit.DAYS);
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                String y_String = yesterday.format(formatter);
+                List<HistoryEntity> list = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByDate(DataLocalManager.getUserId(), y_String);
+
+                for(HistoryEntity entity : list){
+                    if (entity.historyHabitsState.equals("true") || entity.historyHabitsState == "true"){
+                        HabitEntity habitEntity = HabitTrackerDatabase.getInstance(getContext()).habitDao()
+                                .getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), entity.habitId);
+                        habitEntity.numOfLongestSteak += 1;
+                        HabitTrackerDatabase.getInstance(getContext()).habitDao().updateHabit(habitEntity);
+                    }
+                }
 
             }
         };

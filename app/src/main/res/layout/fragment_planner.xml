@@ -148,6 +148,7 @@
                     android:gravity="center"/>
 
                 <include
+                    android:id="@+id/record"
                     layout="@layout/layout_your_record"/>
 
                 <TextView

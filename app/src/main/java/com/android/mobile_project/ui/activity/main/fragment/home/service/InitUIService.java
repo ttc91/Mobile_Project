@@ -6,4 +6,5 @@ public interface InitUIService {
     public void initHabitListUI();
     public void initHistoryListOfDay();
 
+
 }
