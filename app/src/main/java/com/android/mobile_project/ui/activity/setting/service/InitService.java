@@ -9,4 +9,6 @@ public interface InitService {
     public void initTimerDialog(int gravity);
     public void initRemainderDialog(int gravity);
 
+    public void setCalendarOfMonthView();
+
 }

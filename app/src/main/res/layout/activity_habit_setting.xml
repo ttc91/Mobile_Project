@@ -549,6 +549,7 @@
                         android:background="@color/bck_ground" />
 
                     <include
+                        android:id="@+id/ver_car"
                         layout="@layout/layout_ver_calendar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

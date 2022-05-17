@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,14 +31,18 @@ import com.android.mobile_project.data.local.model.db.DayOfTimeEntity;
 import com.android.mobile_project.data.local.model.db.DayOfWeekEntity;
 import com.android.mobile_project.data.local.model.db.HabitEntity;
 import com.android.mobile_project.data.local.model.db.HabitInWeekEntity;
+import com.android.mobile_project.data.local.model.db.HistoryEntity;
 import com.android.mobile_project.data.local.model.db.RemainderEntity;
 import com.android.mobile_project.data.local.sqlite.HabitTrackerDatabase;
 import com.android.mobile_project.databinding.ActivityHabitSettingBinding;
 import com.android.mobile_project.databinding.LayoutRemainderDialogBinding;
 import com.android.mobile_project.databinding.LayoutTimePickerDialogBinding;
 import com.android.mobile_project.time.DayOfWeek;
+import com.android.mobile_project.time.adapter.MonthlyCalendarAdapter;
+import com.android.mobile_project.time.utils.TimeUtils;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.main.MainActivity;
+import com.android.mobile_project.ui.activity.setting.adapter.MonthlyCalendarHabitAdapter;
 import com.android.mobile_project.ui.activity.setting.adapter.RemainderAdapter;
 import com.android.mobile_project.ui.activity.setting.service.InitService;
 import com.google.android.flexbox.AlignItems;
@@ -47,6 +52,8 @@ import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.flexbox.FlexboxLayoutManager;
 import com.google.android.flexbox.JustifyContent;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +64,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
     private LayoutRemainderDialogBinding remainderBinding;
     private HabitSettingViewModel viewModel;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +77,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
         viewModel.initService.getHabitInWeek();
 
         viewModel.initService.initUI();
+        viewModel.initService.setCalendarOfMonthView();
 
     }
 
@@ -364,6 +373,31 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                 });
 
                 dialog.show();
+
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void setCalendarOfMonthView() {
+
+                LocalDate date = LocalDate.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                String dateString = date.format(formatter);
+                String[] dateStringSplit = dateString.split("-");
+                String getPresentMonthYear = dateStringSplit[0] + "-" + dateStringSplit[1];
+
+                TimeUtils utils = new TimeUtils();
+
+                formatter = DateTimeFormatter.ofPattern("dd");
+                String today = date.format(formatter);
+
+                ArrayList<String> daysInMonth = utils.daysInMonthArray();
+
+                MonthlyCalendarHabitAdapter calendarAdapter = new MonthlyCalendarHabitAdapter(getApplicationContext(), today, daysInMonth, getPresentMonthYear, viewModel.habitEntity.habitId);
+                RecyclerView.LayoutManager manager = new GridLayoutManager(getApplicationContext(), 7);
+
+                binding.verCar.rcvCalendarVer.setLayoutManager(manager);
+                binding.verCar.rcvCalendarVer.setAdapter(calendarAdapter);
 
             }
         };

@@ -80,18 +80,18 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         viewModel.initUIService.initHistoryListOfDay();
         viewModel.initUIService.initHabitListUI();
 
-//        LocalDate local = LocalDate.now();
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//        String historyTime = local.format(formatter);
+        LocalDate local = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String historyTime = local.format(formatter);
 
-//        List<HistoryEntity> list = new ArrayList<>();
-//        list = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByDate(historyTime);
-//        Log.e("Size", String.valueOf(list.size()));
-//        for (HistoryEntity entity : list){
-//            Log.e("Habit id", String.valueOf(entity.habitId));
-//            Log.e("State", String.valueOf(entity.historyHabitsState));
-//            Log.e("Date", String.valueOf(entity.historyDate));
-//        }
+        List<HistoryEntity> list = new ArrayList<>();
+        list = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByDate(DataLocalManager.getUserId(), historyTime);
+        Log.e("Size", String.valueOf(list.size()));
+        for (HistoryEntity entity : list){
+            Log.e("Habit id", String.valueOf(entity.habitId));
+            Log.e("State", String.valueOf(entity.historyHabitsState));
+            Log.e("Date", String.valueOf(entity.historyDate));
+        }
 
         return v;
     }
