@@ -5,5 +5,6 @@ public interface InitService {
     void setCalendarOfMonthView();
     void setLongestSteak();
     void setBestHabit();
+    void setWeeklyCalendar();
 
 }
