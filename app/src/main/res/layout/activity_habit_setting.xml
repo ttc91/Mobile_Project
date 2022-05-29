@@ -191,14 +191,16 @@
                         android:textSize="@dimen/_10ssp"
                         android:textStyle="bold"
                         android:gravity="center"
-                        android:background="@color/bck_ground" />
+                        android:background="@color/bck_ground"
+                        android:visibility="gone"/>
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:layout_width="@dimen/_70sdp"
                         android:layout_height="@dimen/_70sdp"
                         android:layout_marginTop="@dimen/_20sdp"
                         android:src="@drawable/ic_feedback"
-                        app:shapeAppearanceOverlay="@style/corner" />
+                        app:shapeAppearanceOverlay="@style/corner"
+                        android:visibility="gone"/>
 
                     <TextView
                         android:layout_width="match_parent"
@@ -212,15 +214,16 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/_40sdp"
                         android:layout_marginTop="@dimen/_20sdp"
                         android:gravity="center_horizontal"
                         android:orientation="horizontal">
 
                         <Button
                             android:id="@+id/sun_date"
-                            android:layout_width="@dimen/_40sdp"
-                            android:layout_height="@dimen/_40sdp"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
                             android:background="@{!sun ? @drawable/bck_cir_date : @drawable/bck_cir_date_select}"
                             android:textColor="@{!sun ? @color/black : @color/white}"
                             android:text="S"
@@ -228,8 +231,9 @@
 
                         <Button
                             android:id="@+id/mon_date"
-                            android:layout_width="@dimen/_40sdp"
-                            android:layout_height="@dimen/_40sdp"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
                             android:background="@{!mon ? @drawable/bck_cir_date : @drawable/bck_cir_date_select}"
                             android:textColor="@{!mon ? @color/black : @color/white}"
                             android:text="M"
@@ -237,8 +241,9 @@
 
                         <Button
                             android:id="@+id/tue_date"
-                            android:layout_width="@dimen/_40sdp"
-                            android:layout_height="@dimen/_40sdp"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
                             android:background="@{!tue ? @drawable/bck_cir_date : @drawable/bck_cir_date_select}"
                             android:textColor="@{!tue ? @color/black : @color/white}"
                             android:text="t"
@@ -246,8 +251,9 @@
 
                         <Button
                             android:id="@+id/wed_date"
-                            android:layout_width="@dimen/_40sdp"
-                            android:layout_height="@dimen/_40sdp"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
                             android:background="@{!wed ? @drawable/bck_cir_date : @drawable/bck_cir_date_select}"
                             android:textColor="@{!wed ? @color/black : @color/white}"
                             android:text="w"
@@ -255,8 +261,9 @@
 
                         <Button
                             android:id="@+id/thu_date"
-                            android:layout_width="@dimen/_40sdp"
-                            android:layout_height="@dimen/_40sdp"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
                             android:background="@{!thu ? @drawable/bck_cir_date : @drawable/bck_cir_date_select}"
                             android:textColor="@{!thu ? @color/black : @color/white}"
                             android:text="t"
@@ -264,8 +271,9 @@
 
                         <Button
                             android:id="@+id/fri_date"
-                            android:layout_width="@dimen/_40sdp"
-                            android:layout_height="@dimen/_40sdp"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
                             android:background="@{!fri ? @drawable/bck_cir_date : @drawable/bck_cir_date_select}"
                             android:textColor="@{!fri ? @color/black : @color/white}"
                             android:text="f"
@@ -273,8 +281,9 @@
 
                         <Button
                             android:id="@+id/sat_date"
-                            android:layout_width="@dimen/_40sdp"
-                            android:layout_height="@dimen/_40sdp"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
                             android:background="@{!sat ? @drawable/bck_cir_date : @drawable/bck_cir_date_select}"
                             android:textColor="@{!sat ? @color/black : @color/white}"
                             android:text="S"
