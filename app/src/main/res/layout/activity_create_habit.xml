@@ -74,15 +74,17 @@
                             android:textSize="@dimen/_10ssp"
                             android:textStyle="bold"
                             android:gravity="center"
-                            android:background="@color/bck_ground"/>
+                            android:background="@color/bck_ground"
+                            android:visibility="gone"/>
 
                         <com.google.android.material.imageview.ShapeableImageView
                             android:id="@+id/hicon"
                             android:layout_width="@dimen/_70sdp"
                             android:layout_height="@dimen/_70sdp"
                             android:layout_marginTop="@dimen/_20sdp"
-                            android:src="@drawable/ic_launcher_background"
-                            app:shapeAppearanceOverlay="@style/corner"/>
+                            android:src="@drawable/icon_habit"
+                            app:shapeAppearanceOverlay="@style/corner"
+                            android:visibility="gone"/>
 
                         <TextView
                             android:layout_width="match_parent"
@@ -96,63 +98,70 @@
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="@dimen/_40sdp"
                             android:layout_marginTop="@dimen/_20sdp"
                             android:gravity="center_horizontal"
                             android:orientation="horizontal">
 
                             <Button
                                 android:id="@+id/sun_date"
-                                android:layout_width="@dimen/_40sdp"
-                                android:layout_height="@dimen/_40sdp"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
                                 android:background="@drawable/bck_cir_date"
                                 android:onClick="@{(v) -> a.onClick(v)}"
                                 android:text="S" />
 
                             <Button
                                 android:id="@+id/mon_date"
-                                android:layout_width="@dimen/_40sdp"
-                                android:layout_height="@dimen/_40sdp"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
                                 android:background="@drawable/bck_cir_date"
                                 android:onClick="@{(v) -> a.onClick(v)}"
                                 android:text="M"/>
 
                             <Button
                                 android:id="@+id/tue_date"
-                                android:layout_width="@dimen/_40sdp"
-                                android:layout_height="@dimen/_40sdp"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
                                 android:background="@drawable/bck_cir_date"
                                 android:onClick="@{(v) -> a.onClick(v)}"
                                 android:text="t"/>
 
                             <Button
                                 android:id="@+id/wed_date"
-                                android:layout_width="@dimen/_40sdp"
-                                android:layout_height="@dimen/_40sdp"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
                                 android:background="@drawable/bck_cir_date"
                                 android:onClick="@{(v) -> a.onClick(v)}"
                                 android:text="w"/>
 
                             <Button
                                 android:id="@+id/thu_date"
-                                android:layout_width="@dimen/_40sdp"
-                                android:layout_height="@dimen/_40sdp"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
                                 android:background="@drawable/bck_cir_date"
                                 android:onClick="@{(v) -> a.onClick(v)}"
                                 android:text="t"/>
 
                             <Button
                                 android:id="@+id/fri_date"
-                                android:layout_width="@dimen/_40sdp"
-                                android:layout_height="@dimen/_40sdp"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
                                 android:background="@drawable/bck_cir_date"
                                 android:onClick="@{(v) -> a.onClick(v)}"
                                 android:text="f"/>
 
                             <Button
                                 android:id="@+id/sat_date"
-                                android:layout_width="@dimen/_40sdp"
-                                android:layout_height="@dimen/_40sdp"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
                                 android:background="@drawable/bck_cir_date"
                                 android:onClick="@{(v) -> a.onClick(v)}"
                                 android:text="S"/>
@@ -308,7 +317,7 @@
                             android:id="@+id/btn_create"
                             android:layout_width="@dimen/_270sdp"
                             android:layout_height="@dimen/_45sdp"
-                            android:layout_marginTop="@dimen/_100sdp"
+                            android:layout_marginTop="@dimen/_130sdp"
                             android:text="CREATE"
                             android:textColor="@color/white"
                             android:textStyle="bold"

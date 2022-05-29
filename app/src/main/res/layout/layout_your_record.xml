@@ -165,7 +165,7 @@
             android:layout_width="@dimen/_80sdp"
             android:layout_height="@dimen/_80sdp"
             android:layout_marginEnd="@dimen/_5sdp"
-            android:src="@drawable/ic_launcher_background"
+            android:src="@drawable/icon_best_habit"
             app:shapeAppearanceOverlay="@style/corner"/>
 
     </LinearLayout>

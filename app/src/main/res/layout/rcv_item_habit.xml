@@ -26,13 +26,13 @@
 
                 <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/logo"
-                    android:layout_width="@dimen/_45sdp"
-                    android:layout_height="@dimen/_45sdp"
+                    android:layout_width="@dimen/_50sdp"
+                    android:layout_height="@dimen/_50sdp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:src="@drawable/ic_launcher_background"
+                    android:src="@drawable/icon_tracer"
                     app:shapeAppearanceOverlay="@style/corner" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
