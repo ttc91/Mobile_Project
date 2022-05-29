@@ -2,6 +2,7 @@ package com.android.mobile_project.ui.activity.main.fragment.planner;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -223,7 +224,8 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
                             count = count + 1;
                         }
                     }
-                    binding.wCar.proMon.gl.setGuidelinePercent(1- (float)(count/entities.size()));
+                    float percent = (float)((float)count/(float)entities.size());
+                    binding.wCar.proMon.gl.setGuidelinePercent(percent);
                 }
 
                 //Tuesday:
@@ -237,7 +239,8 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
                             count = count + 1;
                         }
                     }
-                    binding.wCar.proTue.gl.setGuidelinePercent(1- (float)(count/entities.size()));
+                    float percent = (float)((float)count/(float)entities.size());
+                    binding.wCar.proTue.gl.setGuidelinePercent(percent);
                 }
 
                 //Wednesday:
@@ -251,7 +254,8 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
                             count = count + 1;
                         }
                     }
-                    binding.wCar.proWeb.gl.setGuidelinePercent(1- (float)(count/entities.size()));
+                    float percent = (float)((float)count/(float)entities.size());
+                    binding.wCar.proWeb.gl.setGuidelinePercent(percent);
                 }
 
                 //Thursday:
@@ -265,7 +269,8 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
                             count = count + 1;
                         }
                     }
-                    binding.wCar.proThu.gl.setGuidelinePercent(1- (float)(count/entities.size()));
+                    float percent = (float)((float)count/(float)entities.size());
+                    binding.wCar.proThu.gl.setGuidelinePercent(percent);
                 }
 
                 //Friday:
@@ -279,7 +284,8 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
                             count = count + 1;
                         }
                     }
-                    binding.wCar.proFri.gl.setGuidelinePercent(1- (float)(count/entities.size()));
+                    float percent = (float)((float)count/(float)entities.size());
+                    binding.wCar.proFri.gl.setGuidelinePercent(percent);
                 }
 
                 //Saturday:
@@ -293,7 +299,8 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
                             count = count + 1;
                         }
                     }
-                    binding.wCar.proSat.gl.setGuidelinePercent(1- (float)(count/entities.size()));
+                    float percent = (float)((float)count/(float)entities.size());
+                    binding.wCar.proSat.gl.setGuidelinePercent(percent);
                 }
 
                 //Sunday:
@@ -307,7 +314,8 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
                             count = count + 1;
                         }
                     }
-                    binding.wCar.proSun.gl.setGuidelinePercent(1- (float)(count/entities.size()));
+                    float percent = (float)((float)count/(float)entities.size());
+                    binding.wCar.proSun.gl.setGuidelinePercent(percent);
                 }
 
             }

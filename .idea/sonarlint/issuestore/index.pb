@@ -127,10 +127,6 @@ Wapp/src/main/java/com/android/mobile_project/ui/activity/count/service/InitServ
 dapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/setting/SettingViewModel.java,e\8\e8a80d52207d1d17e6d3f5d119a5bbfbb74d9040
 ì
 capp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/setting/SettingFragment.java,9\c\9c035b01219191a498110df442c167bc78f025b2
-ó
-gapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/planner/service/InitService.java,8\0\80f541035d2d4ae7ea8f152f7cb629a1575e3e97
-ì
-capp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/planner/PlannerFragment.java,f\2\f256bdfd999b8252ff8ff82878e2c8e02501e1d8
 î
 dapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/planner/PlannerViewModel.java,1\5\15f822eb5a2f9152f327473b1ea4f0c58d6c9392
 é
@@ -145,3 +141,13 @@ Qapp/src/main/java/com/android/mobile_project/data/local/model/db/HabitEntity.ja
 Mapp/src/main/java/com/android/mobile_project/data/local/DataLocalManager.java,e\4\e402ade484093691270991949b5421c5995340c8
 ç
 ]app/src/main/java/com/android/mobile_project/ui/activity/main/fragment/home/HomeFragment.java,4\0\408bb331b8925889845bd28e8bf300818319cd64
+Ö
+Uapp/src/main/java/com/android/mobile_project/ui/activity/count/CountDownActivity.java,e\7\e7c37a6b250a8874814b499f863b4fe4fade6ee9
+Ü
+Vapp/src/main/java/com/android/mobile_project/ui/activity/count/CountDownViewModel.java,4\a\4a38d91562da916c27b2bac487c14f26520fbb06
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
+w
+Gapp/src/main/java/com/android/mobile_project/channel/AlarmReceiver.java,e\2\e271dc2c1152805b8ec4c623a1079f9c0f789c98
+ó
+gapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/planner/service/InitService.java,8\0\80f541035d2d4ae7ea8f152f7cb629a1575e3e97
