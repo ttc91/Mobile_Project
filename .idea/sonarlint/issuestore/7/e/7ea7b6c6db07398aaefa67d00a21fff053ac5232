@@ -1,50 +1,8 @@
 
 m
 java:S37766"RRefactor this method to reduce its Cognitive Complexity from 31 to the 15 allowed.(Ì×áÇıÿÿÿÿ
-–
-java:S2159K"zRemove this call to "equals"; comparisons against null always return false; consider using '== null' to check for nullity.(ª¯Š+8úÓ†Ñ…0
-K
-java:S2209V"5Change this instance-reference to a static reference.( î¤
-P
-java:S2209Z"5Change this instance-reference to a static reference.(€¥–áùÿÿÿÿ
-K
-java:S2209^"5Change this instance-reference to a static reference.(Õ­Œà
-K
-java:S2209b"5Change this instance-reference to a static reference.(ÃÛØá
 p
 java:S3776ì"RRefactor this method to reduce its Cognitive Complexity from 22 to the 15 allowed.(©Ğª£8ªô•éŠ0
-Y
-java:S2696Ì"6Make the enclosing method "static" or remove this set.(–Ëğ©ÿÿÿÿÿ8´ô•éŠ0
-X
-java:S2209Ì"5Change this instance-reference to a static reference.(–Ëğ©ÿÿÿÿÿ8´ô•éŠ0
-T
-java:S2696Ñ"6Make the enclosing method "static" or remove this set.(È´Èœ8µô•éŠ0
-S
-java:S2209Ñ"5Change this instance-reference to a static reference.(È´Èœ8¶ô•éŠ0
-S
-java:S2696Ö"6Make the enclosing method "static" or remove this set.(Ù¸’8¶ô•éŠ0
-R
-java:S2209Ö"5Change this instance-reference to a static reference.(Ù¸’8¶ô•éŠ0
-Y
-java:S2696Û"6Make the enclosing method "static" or remove this set.(¹ÇÊåşÿÿÿÿ8·ô•éŠ0
-X
-java:S2209Û"5Change this instance-reference to a static reference.(¹ÇÊåşÿÿÿÿ8·ô•éŠ0
-Y
-java:S2696ä"6Make the enclosing method "static" or remove this set.(ş•»ûÿÿÿÿ8¸ô•éŠ0
-X
-java:S2209ä"5Change this instance-reference to a static reference.(ş•»ûÿÿÿÿ8¹ô•éŠ0
-T
-java:S2696ì"6Make the enclosing method "static" or remove this set.(¸É¸•8¹ô•éŠ0
-S
-java:S2209ì"5Change this instance-reference to a static reference.(¸É¸•8ºô•éŠ0
-T
-java:S2696ô"6Make the enclosing method "static" or remove this set.(ì÷‘8»ô•éŠ0
-S
-java:S2209ô"5Change this instance-reference to a static reference.(ì÷‘8»ô•éŠ0
-Y
-java:S2696ü"6Make the enclosing method "static" or remove this set.(–ÁÜùÿÿÿÿ8¼ô•éŠ0
-X
-java:S2209ü"5Change this instance-reference to a static reference.(–ÁÜùÿÿÿÿ8¼ô•éŠ0
 g
 java:S1192÷"IDefine a constant instead of duplicating this literal "#FFFFFF" 11 times.(¾Ó„ã8½ô•éŠ0
 g

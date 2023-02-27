@@ -1,5 +1,6 @@
 package com.android.mobile_project.ui.activity.main;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements InitLayout {
 
     }
 
+    @SuppressLint("NonConstantResourceId")
     public void initAdapter(){
 
         fm = getSupportFragmentManager();

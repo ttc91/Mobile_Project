@@ -1,79 +1,21 @@
 
-}	java:S116˜"[Rename this field "simpleCallback_1" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(–Ô°³ùÿÿÿÿ8––»„0
-}	java:S116á"[Rename this field "simpleCallback_2" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(™ƒøÆûÿÿÿÿ8––»„0
+v	java:S116˜"[Rename this field "simpleCallback_1" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(–Ô°³ùÿÿÿÿ
+v	java:S116á"[Rename this field "simpleCallback_2" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(™ƒøÆûÿÿÿÿ
 m
 java:S3776d"RRefactor this method to reduce its Cognitive Complexity from 64 to the 15 allowed.(Ì×áÇıÿÿÿÿ
 C
 java:S1125¦"'Remove the unnecessary boolean literal.(ëÃÊÉÿÿÿÿÿ
-J
-java:S1125®"'Remove the unnecessary boolean literal.(Ç¾Õëıÿÿÿÿ8â–»„0
-J
-java:S1125¶"'Remove the unnecessary boolean literal.(Ã‚Ñ÷úÿÿÿÿ8Æ—»„0
-D	java:S131Õ""Add a default case to this switch.(Æóõµıÿÿÿÿ8Ò—»„0
+C
+java:S1125®"'Remove the unnecessary boolean literal.(Ç¾Õëıÿÿÿÿ
+C
+java:S1125¶"'Remove the unnecessary boolean literal.(Ã‚Ñ÷úÿÿÿÿ
+=	java:S131Õ""Add a default case to this switch.(Æóõµıÿÿÿÿ
 D
 java:S1905ä"(Remove this unnecessary cast to "float".(‡ÕÉ€øÿÿÿÿ
-K
-java:S1905ü"(Remove this unnecessary cast to "float".(‡ÕÉ€øÿÿÿÿ8ã—»„0
-K
-java:S1905…"(Remove this unnecessary cast to "float".(‡ÕÉ€øÿÿÿÿ8ä—»„0
-K
-java:S1905Œ"(Remove this unnecessary cast to "float".(îµßĞıÿÿÿÿ8å—»„0
-D	java:S131¤""Add a default case to this switch.(Æóõµıÿÿÿÿ8è—»„0
-D	java:S131í""Add a default case to this switch.(Æóõµıÿÿÿÿ8ô—»„0
-F
-java:S1185¢"(Remove this method to simply inherit it.(Æ®’8ü—»„0
-]
-java:S1192ö"FDefine a constant instead of duplicating this literal "false" 3 times.(‚±ïÈ
-b
-java:S1192§"KDefine a constant instead of duplicating this literal "yyyy-MM-dd" 7 times.(¥Ò˜
-n	java:S117Œ"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(å¦ƒü8˜»„0
-C
-java:S1604l"(Make this anonymous inner class a lambda(ıãü¤úÿÿÿÿ
-?
-java:S1604÷"(Make this anonymous inner class a lambda(“§¡ş
-F
-java:S1604„"(Make this anonymous inner class a lambda(ÏË¢å8çÑÇ„0
-n
-java:S1301Õ"KReplace this "switch" statement by "if" statements to increase readability.(Æóõµıÿÿÿÿ8•˜»„0
-n
-java:S1301¤"KReplace this "switch" statement by "if" statements to increase readability.(Æóõµıÿÿÿÿ8–˜»„0
-n
-java:S1301í"KReplace this "switch" statement by "if" statements to increase readability.(Æóõµıÿÿÿÿ8–˜»„0
-U
-java:S1155À">Use isEmpty() to check whether the collection is empty or not.(ó¬«¤
-Z
-java:S1155Æ">Use isEmpty() to check whether the collection is empty or not.(ÄÊÔüÿÿÿÿ
-Z
-java:S1155Ì">Use isEmpty() to check whether the collection is empty or not.(Å¬µ¥ùÿÿÿÿ
-Z
-java:S1155">Use isEmpty() to check whether the collection is empty or not.(Å¬µ¥ùÿÿÿÿ
-Z
-java:S1155’">Use isEmpty() to check whether the collection is empty or not.(ÄÊÔüÿÿÿÿ
-U
-java:S1155£">Use isEmpty() to check whether the collection is empty or not.(ó¬«¤
-Z
-java:S1155Á">Use isEmpty() to check whether the collection is empty or not.(Œ‰üôıÿÿÿÿ
-a
-java:S1155ç">Use isEmpty() to check whether the collection is empty or not.(üŸ‚åùÿÿÿÿ8™˜»„0
-\
-java:S1155í">Use isEmpty() to check whether the collection is empty or not.(İ“¯ø8™˜»„0
-a
-java:S1155£">Use isEmpty() to check whether the collection is empty or not.(üŸ‚åùÿÿÿÿ8š˜»„0
-a
-java:S1155©">Use isEmpty() to check whether the collection is empty or not.(áğä£ùÿÿÿÿ8š˜»„0
-a
-java:S1155¶">Use isEmpty() to check whether the collection is empty or not.(üŸ‚åùÿÿÿÿ8š˜»„0
-a
-java:S1155Í">Use isEmpty() to check whether the collection is empty or not.(áğä£ùÿÿÿÿ8š˜»„0
-a
-java:S1155ÿ">Use isEmpty() to check whether the collection is empty or not.(üŸ‚åùÿÿÿÿ8š˜»„0
-\
-java:S1155–">Use isEmpty() to check whether the collection is empty or not.(İ“¯ø8›˜»„0
-S
-java:S4973ñ"<Strings and Boxed types should be compared using "equals()".(œà‡Ë
-S
-java:S4973ö"<Strings and Boxed types should be compared using "equals()".(‚±ïÈ
-X
-java:S4973û"<Strings and Boxed types should be compared using "equals()".(º€»®ûÿÿÿÿ
-Z
-java:S4973"<Strings and Boxed types should be compared using "equals()".(ëÑ£ 8 ˜»„0
+D
+java:S1905ü"(Remove this unnecessary cast to "float".(‡ÕÉ€øÿÿÿÿ
+D
+java:S1905…"(Remove this unnecessary cast to "float".(‡ÕÉ€øÿÿÿÿ
+=	java:S131¤""Add a default case to this switch.(Æóõµıÿÿÿÿ
+=	java:S131í""Add a default case to this switch.(Æóõµıÿÿÿÿ
+g	java:S117Œ"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(å¦ƒü
