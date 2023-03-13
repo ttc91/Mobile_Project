@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
     </data>
 
     <LinearLayout
@@ -48,9 +47,6 @@
                 android:textSize="@dimen/_15ssp"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
-
-
-
             </LinearLayout>
         </LinearLayout>
 

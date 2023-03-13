@@ -1,38 +1,58 @@
 package com.android.mobile_project.ui.activity.main.fragment.home.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.mobile_project.data.local.DataLocalManager;
-import com.android.mobile_project.data.local.model.db.HabitEntity;
-import com.android.mobile_project.data.local.model.db.HistoryEntity;
+import com.android.mobile_project.data.local.sqlite.entity.db.HabitEntity;
+import com.android.mobile_project.data.local.sqlite.entity.db.HistoryEntity;
 import com.android.mobile_project.data.local.sqlite.HabitTrackerDatabase;
+import com.android.mobile_project.data.remote.model.HabitModel;
+import com.android.mobile_project.data.remote.model.HistoryModel;
 import com.android.mobile_project.databinding.RcvItemHabitBinding;
 import com.android.mobile_project.databinding.RcvItemHabitDoneBinding;
 import com.android.mobile_project.databinding.RcvItemHabitFailedBinding;
+import com.android.mobile_project.ui.activity.main.fragment.home.HomeViewModel;
+import com.android.mobile_project.ui.activity.main.fragment.home.IHomeViewModel;
 
 import java.util.List;
+import java.util.Objects;
+
+import javax.inject.Inject;
 
 public class BeforeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-    private static int VIEW_TYPE_ITEM_DONE = 1;
-    private static int VIEW_TYPE_ITEM_FAILED = 2;
-    private static int VIEW_TYPE_ITEM_HABIT = 3;
+    private static final int VIEW_TYPE_ITEM_DONE = 1;
+    private static final int VIEW_TYPE_ITEM_FAILED = 2;
+    private static final int VIEW_TYPE_ITEM_HABIT = 3;
 
-    private List<HabitEntity> habitEntityList;
+    private final List<HabitModel> habitModelList;
     private Context context;
-    private String date;
+    private final String date;
 
-    public BeforeAdapter(Context context, List<HabitEntity> habitEntityList, String date) {
-        this.habitEntityList = habitEntityList;
+    private IHomeViewModel vm;
+
+    @SuppressLint("NotifyDataSetChanged")
+    public BeforeAdapter(Context context, List<HabitModel> habitModelList, String date) {
+        this.habitModelList = habitModelList;
         this.context = context;
         this.date = date;
+        notifyDataSetChanged();
+    }
+
+    public BeforeAdapter(Context context, List<HabitModel> habitModelList, String date, IHomeViewModel iHomeViewModel) {
+        this.habitModelList = habitModelList;
+        this.context = context;
+        this.date = date;
+        vm = iHomeViewModel;
         notifyDataSetChanged();
     }
 
@@ -60,44 +80,44 @@ public class BeforeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-        HabitEntity entity = habitEntityList.get(position);
+        HabitModel model = habitModelList.get(position);
 
-        if(entity == null){
+        if(model == null){
             return;
         }
 
         if(VIEW_TYPE_ITEM_DONE == holder.getItemViewType()){
             ViewHolder_1 viewHolder = (ViewHolder_1) holder;
-            viewHolder.binding.hname.setText(entity.habitName);
+            viewHolder.binding.hname.setText(model.getHabitName());
         }else if(VIEW_TYPE_ITEM_FAILED == holder.getItemViewType()){
             ViewHolder_2 viewHolder = (ViewHolder_2) holder;
-            viewHolder.binding.hname.setText(entity.habitName);
+            viewHolder.binding.hname.setText(model.getHabitName());
         }else if(VIEW_TYPE_ITEM_HABIT == holder.getItemViewType()){
             ViewHolder_3 viewHolder = (ViewHolder_3) holder;
-            viewHolder.binding.hname.setText(entity.habitName);
+            viewHolder.binding.hname.setText(model.getHabitName());
         }
 
     }
 
     @Override
     public int getItemCount() {
-        if(habitEntityList != null){
-            return habitEntityList.size();
+        if(habitModelList != null){
+            return habitModelList.size();
         }
         return 0;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public int getItemViewType(int position) {
 
-        HabitEntity habitEntity = habitEntityList.get(position);
-        Log.e("Size", String.valueOf(habitEntityList.size()));
-        HistoryEntity historyEntity = HabitTrackerDatabase.getInstance(context).historyDao().getHistoryByHabitIdAndDate(habitEntity.habitId, date);
-        if(historyEntity.historyHabitsState == "true" || historyEntity.historyHabitsState.equals("true")){
+        HabitModel habitModel = habitModelList.get(position);
+        HistoryModel historyModel = vm.getHistoryByHabitIdAndDate(habitModel.getHabitId(), date);
+        if(Objects.equals(historyModel.getHistoryHabitsState(), "true") || historyModel.getHistoryHabitsState().equals("true")){
             return VIEW_TYPE_ITEM_DONE;
-        }else if (historyEntity.historyHabitsState == "false"|| historyEntity.historyHabitsState.equals("false")){
+        }else if (Objects.equals(historyModel.getHistoryHabitsState(), "false") || historyModel.getHistoryHabitsState().equals("false")){
             return VIEW_TYPE_ITEM_FAILED;
-        }else if(historyEntity.historyHabitsState == "null"|| historyEntity.historyHabitsState.equals("null")){
+        }else if(Objects.equals(historyModel.getHistoryHabitsState(), "null") || historyModel.getHistoryHabitsState().equals("null")){
             return VIEW_TYPE_ITEM_HABIT;
         }
         else
@@ -105,9 +125,9 @@ public class BeforeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     }
 
-    public class ViewHolder_1 extends RecyclerView.ViewHolder{
+    public static class ViewHolder_1 extends RecyclerView.ViewHolder{
 
-        private RcvItemHabitDoneBinding binding;
+        private final RcvItemHabitDoneBinding binding;
 
         public ViewHolder_1(@NonNull RcvItemHabitDoneBinding binding) {
             super(binding.getRoot());
@@ -117,9 +137,9 @@ public class BeforeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    public class ViewHolder_2 extends RecyclerView.ViewHolder{
+    public static class ViewHolder_2 extends RecyclerView.ViewHolder{
 
-        private RcvItemHabitFailedBinding binding;
+        private final RcvItemHabitFailedBinding binding;
 
         public ViewHolder_2(@NonNull RcvItemHabitFailedBinding binding) {
             super(binding.getRoot());
@@ -129,9 +149,9 @@ public class BeforeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    public class ViewHolder_3 extends RecyclerView.ViewHolder{
+    public static class ViewHolder_3 extends RecyclerView.ViewHolder{
 
-        private RcvItemHabitBinding binding;
+        private final RcvItemHabitBinding binding;
 
         public ViewHolder_3(@NonNull RcvItemHabitBinding binding) {
             super(binding.getRoot());

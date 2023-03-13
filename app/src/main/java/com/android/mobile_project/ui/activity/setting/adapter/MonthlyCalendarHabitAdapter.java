@@ -12,32 +12,36 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.mobile_project.R;
-import com.android.mobile_project.data.local.DataLocalManager;
-import com.android.mobile_project.data.local.model.db.HistoryEntity;
-import com.android.mobile_project.data.local.sqlite.HabitTrackerDatabase;
+import com.android.mobile_project.data.remote.model.HistoryModel;
 import com.android.mobile_project.databinding.RcvVerticalCalendarTextDateBinding;
+import com.android.mobile_project.ui.activity.setting.IHabitSettingViewModel;
 
 import java.util.List;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MonthlyCalendarHabitAdapter extends RecyclerView.Adapter<MonthlyCalendarHabitAdapter.ViewHolder>{
 
+    private final static String STATE_VALUE_NULL = "null";
+    private final static String STATE_VALUE_TRUE = "true";
+    private final static String STATE_VALUE_FALSE = "false";
+
     private final String today;
-    private List<String> daysOfMonth;
-    private String presentMonthYear;
-    private Long habitId;
+    private final List<String> daysOfMonth;
+    private final String presentMonthYear;
+    private final Long habitId;
 
-    private Context context;
+    private final Context context;
 
+    private final IHabitSettingViewModel vm;
 
-    public MonthlyCalendarHabitAdapter(Context context, String today, List<String> daysOfMonth, String presentMonthYear, Long habitId){
-
+    public MonthlyCalendarHabitAdapter(Context context, String today, List<String> daysOfMonth, String presentMonthYear,
+                                       Long habitId, IHabitSettingViewModel vm){
         this.context = context;
         this.today = today;
         this.daysOfMonth = daysOfMonth;
         this.presentMonthYear = presentMonthYear;
         this.habitId = habitId;
-
+        this.vm = vm;
     }
 
 
@@ -55,34 +59,34 @@ public class MonthlyCalendarHabitAdapter extends RecyclerView.Adapter<MonthlyCal
     @Override
     public void onBindViewHolder(@NonNull MonthlyCalendarHabitAdapter.ViewHolder holder, int position) {
 
-        if(daysOfMonth.get(position) != ""){
+        if(!daysOfMonth.get(position).equals("")){
 
             if(Integer.parseInt(daysOfMonth.get(position)) == Integer.parseInt(today)){
 
                 holder.binding.date.setText(daysOfMonth.get(position));
-                holder.binding.date.setTextColor(Color.parseColor("#FFFFFF"));
+                holder.binding.date.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
                 holder.binding.date.setBackground(ContextCompat.getDrawable(context, R.drawable.bck_car_today));
 
             }else {
 
                 String getLocalDateString = presentMonthYear + "-" + daysOfMonth.get(position);
-                HistoryEntity entity = HabitTrackerDatabase.getInstance(context).historyDao().getHistoryByHabitIdAndDate(habitId, getLocalDateString);
-                if(entity != null){
+                HistoryModel model = vm.getHistoryByHabitIdAndDate(habitId, getLocalDateString);
+                if(model != null){
 
-                    switch (entity.historyHabitsState){
-                        case "null":
+                    switch (model.getHistoryHabitsState()){
+                        case STATE_VALUE_NULL:
                             holder.binding.date.setText(daysOfMonth.get(position));
-                            holder.binding.date.setTextColor(Color.parseColor("#FFFFFF"));
+                            holder.binding.date.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
                             holder.binding.date.setBackground(ContextCompat.getDrawable(context, R.drawable.bck_car_null_date));
                             break;
-                        case "false":
+                        case STATE_VALUE_FALSE:
                             holder.binding.date.setText(daysOfMonth.get(position));
-                            holder.binding.date.setTextColor(Color.parseColor("#FFFFFF"));
+                            holder.binding.date.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
                             holder.binding.date.setBackground(ContextCompat.getDrawable(context, R.drawable.bck_car_false_date));
                             break;
-                        case "true":
+                        case STATE_VALUE_TRUE:
                             holder.binding.date.setText(daysOfMonth.get(position));
-                            holder.binding.date.setTextColor(Color.parseColor("#FFFFFF"));
+                            holder.binding.date.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
                             holder.binding.date.setBackground(ContextCompat.getDrawable(context, R.drawable.bck_car_true_date));
                             break;
                         default:
@@ -91,7 +95,7 @@ public class MonthlyCalendarHabitAdapter extends RecyclerView.Adapter<MonthlyCal
 
                 }else {
                     holder.binding.date.setText(daysOfMonth.get(position));
-                    holder.binding.date.setTextColor(Color.parseColor("#FFFFFF"));
+                    holder.binding.date.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
                     holder.binding.date.setBackground(ContextCompat.getDrawable(context, R.drawable.bck_car_date));
                 }
 
@@ -111,9 +115,9 @@ public class MonthlyCalendarHabitAdapter extends RecyclerView.Adapter<MonthlyCal
         return 0;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder{
 
-        private RcvVerticalCalendarTextDateBinding binding;
+        private final RcvVerticalCalendarTextDateBinding binding;
 
         public ViewHolder(@NonNull RcvVerticalCalendarTextDateBinding binding) {
             super(binding.getRoot());

@@ -1,39 +1,44 @@
 package com.android.mobile_project.ui.activity.main.fragment.home.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.mobile_project.data.local.DataLocalManager;
-import com.android.mobile_project.data.local.model.db.HabitEntity;
-import com.android.mobile_project.data.local.model.db.HabitInWeekEntity;
-import com.android.mobile_project.data.local.sqlite.HabitTrackerDatabase;
-import com.android.mobile_project.databinding.RcvHorizontalCalendarTextDateBinding;
+import com.android.mobile_project.data.remote.model.HabitInWeekModel;
+import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.databinding.RcvItemHabitBinding;
-import com.android.mobile_project.time.adapter.DailyCalendarAdapter;
-import com.android.mobile_project.ui.activity.main.fragment.home.service.InitUIService;
-import com.android.mobile_project.ui.activity.main.fragment.home.service.RecyclerViewInterface;
-import com.android.mobile_project.ui.activity.setting.HabitSettingActivity;
-import com.daimajia.swipe.SwipeLayout;
+import com.android.mobile_project.ui.activity.main.fragment.home.HomeViewModel;
+import com.android.mobile_project.ui.activity.main.fragment.home.IHomeViewModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder>{
 
-    private Context context;
-    private List<HabitEntity> habitEntityList;
-    private RecyclerViewClickListener recyclerViewClickListener;
+    private final Context context;
+    private final List<HabitModel> habitModelList;
+    private final RecyclerViewClickListener recyclerViewClickListener;
 
-    public HabitAdapter(Context context, List<HabitEntity> habitEntityList, RecyclerViewClickListener recyclerViewClickListener){
+    private IHomeViewModel vm;
+
+    public HabitAdapter(Context context, List<HabitModel> habitModelList, RecyclerViewClickListener recyclerViewClickListener){
         this.context = context;
-        this.habitEntityList = habitEntityList;
+        this.habitModelList = habitModelList;
         this.recyclerViewClickListener = recyclerViewClickListener;
+    }
+
+    public HabitAdapter(Context context, List<HabitModel> habitModelList, RecyclerViewClickListener recyclerViewClickListener, IHomeViewModel iHomeViewModel){
+        this.context = context;
+        this.habitModelList = habitModelList;
+        this.recyclerViewClickListener = recyclerViewClickListener;
+        vm = iHomeViewModel;
     }
 
     @NonNull
@@ -45,23 +50,23 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder>{
         return new ViewHolder(binding);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        HabitEntity habit = habitEntityList.get(position);
+        HabitModel habit = habitModelList.get(position);
 
-        holder.binding.hname.setText(habit.habitName);
+        holder.binding.hname.setText(habit.getHabitName());
 
-        List<HabitInWeekEntity> habitInWeekEntities = HabitTrackerDatabase.getInstance(context).habitInWeekDao()
-                .getDayOfWeekHabitListByUserAndHabitId(DataLocalManager.getUserId(), habit.habitId);
+        List<HabitInWeekModel> habitInWeekModels = vm.getDayOfWeekHabitListByUserAndHabitId(habit.getHabitId());
 
-        HabitInWeekEntity entity = habitInWeekEntities.get(0);
+        HabitInWeekModel model = habitInWeekModels.get(0);
 
-        if(entity.timerHour != null && entity.timerMinute != null && entity.timerSecond != null){
+        if(model.getTimerHour() != null && model.getTimerMinute() != null && model.getTimerSecond() != null){
             holder.binding.timer.setVisibility(View.VISIBLE);
-            holder.binding.hTimer.setText(String.valueOf(habitInWeekEntities.get(0).timerHour));
-            holder.binding.mTimer.setText(String.valueOf(habitInWeekEntities.get(0).timerMinute));
-            holder.binding.sTimer.setText(String.valueOf(habitInWeekEntities.get(0).timerSecond));
+            holder.binding.hTimer.setText(String.valueOf(habitInWeekModels.get(0).getTimerHour()));
+            holder.binding.mTimer.setText(String.valueOf(habitInWeekModels.get(0).getTimerMinute()));
+            holder.binding.sTimer.setText(String.valueOf(habitInWeekModels.get(0).getTimerSecond()));
         }else {
             holder.binding.timer.setVisibility(View.GONE);
         }
@@ -72,14 +77,14 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder>{
     public int getItemCount() {
 
 
-        if(habitEntityList == null){
+        if(habitModelList == null){
             return 0;
         }
-        return habitEntityList.size();
+        return habitModelList.size();
     }
 
     public interface RecyclerViewClickListener{
-        public void onClick(View v, List<HabitEntity> habitEntityList, int position);
+        void onClick(View v, List<HabitModel> habitModelList, int position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -97,7 +102,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder>{
 
         @Override
         public void onClick(View view) {
-            recyclerViewClickListener.onClick(binding.getRoot(), habitEntityList, getAdapterPosition());
+            recyclerViewClickListener.onClick(binding.getRoot(), habitModelList, getAdapterPosition());
         }
     }
 

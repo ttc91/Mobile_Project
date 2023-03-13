@@ -1,54 +1,33 @@
 package com.android.mobile_project.ui.activity.setting.adapter;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.NumberPicker;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.mobile_project.R;
-import com.android.mobile_project.data.local.model.db.HabitEntity;
-import com.android.mobile_project.data.local.model.db.RemainderEntity;
-import com.android.mobile_project.data.local.sqlite.HabitTrackerDatabase;
-import com.android.mobile_project.databinding.LayoutRemainderDialogBinding;
+import com.android.mobile_project.data.remote.model.RemainderModel;
 import com.android.mobile_project.databinding.LayoutReminderItemBinding;
-import com.android.mobile_project.ui.activity.setting.HabitSettingActivity;
+import com.android.mobile_project.ui.activity.setting.IHabitSettingViewModel;
 import com.android.mobile_project.ui.dialog.RemainderDialog;
-import com.google.android.flexbox.AlignItems;
-import com.google.android.flexbox.FlexDirection;
-import com.google.android.flexbox.FlexboxLayoutManager;
-import com.google.android.flexbox.JustifyContent;
 
 import java.util.List;
 
 public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.ViewHolder>{
 
-    private Context context;
-    private List<RemainderEntity> remainderEntityList;
-    private FragmentManager manager;
-    private HabitEntity habitEntity;
-    private Boolean change;
+    private final Context context;
+    private final List<RemainderModel> remainderModelList;
+    private final FragmentManager manager;
+    private final IHabitSettingViewModel vm;
 
-    public RemainderAdapter(Context context, List<RemainderEntity> remainderEntityList, FragmentManager manager, HabitEntity habitEntity){
+    public RemainderAdapter(Context context, List<RemainderModel> remainderModelList, FragmentManager manager, IHabitSettingViewModel vm){
         this.context = context;
-        this.remainderEntityList = remainderEntityList;
+        this.remainderModelList = remainderModelList;
         this.manager = manager;
-        this.habitEntity = habitEntity;
+        this.vm = vm;
     }
 
     @NonNull
@@ -60,31 +39,26 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
         return new ViewHolder(binding);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        RemainderEntity entity = remainderEntityList.get(position);
-        holder.binding.tHour.setText(String.valueOf(entity.hourTime));
-        holder.binding.tMinute.setText(String.valueOf(entity.minutesTime));
+        RemainderModel model = remainderModelList.get(position);
+        holder.binding.tHour.setText(String.valueOf(model.getHourTime()));
+        holder.binding.tMinute.setText(String.valueOf(model.getMinutesTime()));
 
-        holder.binding.btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                HabitTrackerDatabase.getInstance(context).remainderDao().deleteRemainder(entity);
-                remainderEntityList.remove(entity);
-                notifyDataSetChanged();
+        holder.binding.btnClose.setOnClickListener(view -> {
+            vm.deleteRemainder(model);
+            remainderModelList.remove(model);
+            notifyDataSetChanged();
 
-            }
         });
 
-        holder.binding.rItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        holder.binding.rItem.setOnClickListener(view -> {
 
-                RemainderDialog dialog = new RemainderDialog(entity, context);
-                dialog.show(manager, "");
+            RemainderDialog dialog = new RemainderDialog(model, context, vm);
+            dialog.show(manager, "");
 
-            }
         });
 
     }
@@ -92,15 +66,15 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
     @Override
     public int getItemCount() {
 
-        if(remainderEntityList == null)
+        if(remainderModelList == null)
             return 0;
-        return remainderEntityList.size();
+        return remainderModelList.size();
 
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        private LayoutReminderItemBinding binding;
+        private final LayoutReminderItemBinding binding;
 
         public ViewHolder(@NonNull LayoutReminderItemBinding binding) {
             super(binding.getRoot());

@@ -14,7 +14,7 @@
 
         <variable
             name="habit"
-            type="com.android.mobile_project.data.local.model.db.HabitEntity" />
+            type="com.android.mobile_project.data.remote.model.HabitModel" />
 
         <variable
             name="sun"

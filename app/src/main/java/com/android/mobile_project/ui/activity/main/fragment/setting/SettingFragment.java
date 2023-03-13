@@ -1,5 +1,6 @@
 package com.android.mobile_project.ui.activity.main.fragment.setting;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +11,24 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.android.mobile_project.R;
+import com.android.mobile_project.ui.activity.main.MainActivity;
+import com.android.mobile_project.utils.dagger.component.sub.main.fragment.SettingComponent;
+
+import javax.inject.Inject;
 
 public class SettingFragment extends Fragment {
+
+    public SettingComponent component;
+
+    @Inject
+    SettingViewModel viewModel;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        component = ((MainActivity)getActivity()).component.mSettingComponent().create();
+        component.inject(this);
+        super.onAttach(context);
+    }
 
     @Nullable
     @Override

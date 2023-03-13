@@ -16,12 +16,20 @@ import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.main.fragment.home.HomeFragment;
 import com.android.mobile_project.ui.activity.main.fragment.planner.PlannerFragment;
 import com.android.mobile_project.ui.activity.main.fragment.setting.SettingFragment;
+import com.android.mobile_project.utils.dagger.component.provider.MainComponentProvider;
+import com.android.mobile_project.utils.dagger.component.sub.main.MainComponent;
+
+import javax.inject.Inject;
 
 
 public class MainActivity extends AppCompatActivity implements InitLayout {
 
     private ActivityMainBinding binding;
-    private MainViewModel viewModel;
+
+    public MainComponent component;
+
+    @Inject
+    MainViewModel viewModel;
 
     private FragmentManager fm;
 
@@ -37,9 +45,13 @@ public class MainActivity extends AppCompatActivity implements InitLayout {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
         setContentView(initContentView());
+
+        component = ((MainComponentProvider) getApplicationContext()).provideMainComponent();
+        component.inject(this);
+
+        super.onCreate(savedInstanceState);
 
         initAdapter();
         initViewModel();
@@ -89,14 +101,12 @@ public class MainActivity extends AppCompatActivity implements InitLayout {
     @Override
     public View initContentView() {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        View v = binding.getRoot();
-        return v;
+        return binding.getRoot();
     }
 
     @Override
     public void initViewModel() {
 
-        viewModel = new MainViewModel();
         binding.setVm(viewModel);
 
         binding.executePendingBindings();

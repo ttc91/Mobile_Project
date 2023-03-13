@@ -1,6 +1,0 @@
-
-t	java:S116"_Rename this field "START_TIME_IN_MILLIS" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(÷ëê
-m
-java:S1104"WMake habitEntity a static final constant or non-public and provide accessors if needed.(­™ò
-p
-java:S1104"SMake percent a static final constant or non-public and provide accessors if needed.(ÉÛç©8¾²¯‹0

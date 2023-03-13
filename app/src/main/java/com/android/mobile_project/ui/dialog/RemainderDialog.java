@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -19,15 +18,16 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 
 import com.android.mobile_project.R;
-import com.android.mobile_project.data.local.model.db.RemainderEntity;
-import com.android.mobile_project.data.local.sqlite.HabitTrackerDatabase;
+import com.android.mobile_project.data.remote.model.RemainderModel;
 import com.android.mobile_project.databinding.LayoutRemainderDialogBinding;
-import com.android.mobile_project.ui.activity.setting.HabitSettingActivity;
+import com.android.mobile_project.ui.activity.setting.IHabitSettingViewModel;
 
 public class RemainderDialog extends DialogFragment {
 
-    private LayoutRemainderDialogBinding binding;
-    private RemainderEntity entity;
+    private final LayoutRemainderDialogBinding binding;
+    private final RemainderModel model;
+    private final IHabitSettingViewModel vm;
+
     private Long hour;
     private Long minute;
 
@@ -39,15 +39,13 @@ public class RemainderDialog extends DialogFragment {
         return hour;
     }
 
-    private Context context;
-
-    public RemainderDialog(RemainderEntity entity, Context context){
-        this.entity = entity;
-        this.hour = entity.hourTime;
-        this.minute = entity.minutesTime;
-        this.context = context;
+    public RemainderDialog(RemainderModel model, Context context, IHabitSettingViewModel vm){
+        this.model = model;
+        this.hour = model.getHourTime();
+        this.minute = model.getMinutesTime();
         binding = DataBindingUtil.
-                inflate(LayoutInflater.from(this.context), R.layout.layout_remainder_dialog,null,false);
+                inflate(LayoutInflater.from(context), R.layout.layout_remainder_dialog,null,false);
+        this.vm = vm;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -63,33 +61,23 @@ public class RemainderDialog extends DialogFragment {
         binding.mNumPicker.setMaxValue(59);
         binding.mNumPicker.setMinValue(0);
 
-        binding.hNumPicker.setValue(Math.toIntExact(entity.hourTime));
-        binding.mNumPicker.setValue(Math.toIntExact(entity.minutesTime));
+        binding.hNumPicker.setValue(Math.toIntExact(model.getHourTime()));
+        binding.mNumPicker.setValue(Math.toIntExact(model.getMinutesTime()));
 
-        binding.btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismiss();
-            }
+        binding.btnCancel.setOnClickListener(view -> dismiss());
+
+        binding.btnSelect.setOnClickListener(view -> {
+
+            model.setHourTime((long) binding.hNumPicker.getValue());
+            model.setMinutesTime((long) binding.mNumPicker.getValue());
+
+            hour = model.getHourTime();
+            minute = model.getMinutesTime();
+
+            vm.updateRemainder(model);
+
+            dismiss();
         });
-
-        binding.btnSelect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                entity.hourTime = Long.valueOf(binding.hNumPicker.getValue());
-                entity.minutesTime = Long.valueOf(binding.mNumPicker.getValue());
-
-                hour = entity.hourTime;
-                minute = entity.minutesTime;
-
-                HabitTrackerDatabase.getInstance(context).remainderDao().updateRemainder(entity);
-
-                dismiss();
-            }
-        });
-
-
 
         builder.setView(binding.getRoot());
         Dialog dialog = builder.create();

@@ -42,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_2sdp"
-                android:text="@{vm.habitEntity.habitName}"
+                android:text="@{vm.habitModel.habitName}"
                 android:textSize="@dimen/_22sdp"
                 android:textStyle="bold"
                 android:gravity="center"/>

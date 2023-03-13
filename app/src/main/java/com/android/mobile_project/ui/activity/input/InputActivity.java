@@ -2,30 +2,38 @@ package com.android.mobile_project.ui.activity.input;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.mobile_project.MyApplication;
 import com.android.mobile_project.R;
 import com.android.mobile_project.data.local.DataLocalManager;
-import com.android.mobile_project.data.local.model.db.UserEntity;
-import com.android.mobile_project.data.local.sqlite.HabitTrackerDatabase;
+import com.android.mobile_project.data.remote.model.UserModel;
 import com.android.mobile_project.databinding.ActivityInputBinding;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.input.service.DbService;
-import com.android.mobile_project.ui.activity.input.service.ToastService;
 import com.android.mobile_project.ui.activity.main.MainActivity;
+import com.android.mobile_project.utils.dagger.component.sub.input.InputComponent;
+
+import javax.inject.Inject;
 
 public class InputActivity extends AppCompatActivity implements InitLayout, View.OnClickListener {
 
-    private InputViewModel viewModel;
+    @Inject
+    InputViewModel viewModel;
+
     private ActivityInputBinding binding;
+    private InputComponent component;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
+        component = ((MyApplication) getApplicationContext()).provideInputComponent();
+        component.inject(this);
+
         super.onCreate(savedInstanceState);
 
         DataLocalManager.init(getApplicationContext());
@@ -41,50 +49,36 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
     public View initContentView() {
 
         binding = ActivityInputBinding.inflate(getLayoutInflater());
-        View v = binding.getRoot();
-        return v;
+        return binding.getRoot();
     }
 
     @Override
     public void initViewModel() {
 
-        viewModel = new InputViewModel();
         binding.setVm(viewModel);
 
         viewModel.service = new DbService() {
             @Override
             public void setUser(String userName) {
 
-                UserEntity user = new UserEntity();
-                user.userName = userName;
+                UserModel user = new UserModel();
+                user.setUserName(userName);
 
-                HabitTrackerDatabase.getInstance(getApplicationContext()).userDao().insertUser(user);
+                viewModel.insertUser(user);
 
                 DataLocalManager.setUserName(userName);
-                Long userId = HabitTrackerDatabase.getInstance(getApplicationContext()).userDao().getUserIdByName(userName);
-                DataLocalManager.setUserId(userId);
+                DataLocalManager.setUserId(viewModel.getUserIdByName(userName));
 
             }
 
             @Override
             public boolean checkExistUser() {
-
                 String name = DataLocalManager.getUserName();
-
-                if(name.equals(null) || name.equals("")){
-                    return false;
-                }
-
-                return true;
+                return !name.equals(null) && !name.equals("");
             }
         };
 
-        viewModel.toastService = new ToastService() {
-            @Override
-            public void makeToast() {
-                Toast.makeText(getApplicationContext(),"Please input your name !", Toast.LENGTH_SHORT).show();
-            }
-        };
+        viewModel.toastService = () -> Toast.makeText(getApplicationContext(),"Please input your name !", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -113,10 +107,6 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
         boolean check = viewModel.service.checkExistUser();
 
         if(check){
-
-            Log.e("User name :", DataLocalManager.getUserName());
-            Log.e("User id :", String.valueOf(DataLocalManager.getUserId()));
-
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
         }

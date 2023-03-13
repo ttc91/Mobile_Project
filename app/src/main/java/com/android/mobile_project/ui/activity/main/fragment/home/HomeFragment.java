@@ -2,6 +2,8 @@ package com.android.mobile_project.ui.activity.main.fragment.home;
 
 import static com.google.android.material.color.MaterialColors.ALPHA_FULL;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,16 +13,13 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,14 +29,15 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import com.android.mobile_project.R;
 import com.android.mobile_project.data.local.DataLocalManager;
-import com.android.mobile_project.data.local.model.db.DayOfWeekEntity;
-import com.android.mobile_project.data.local.model.db.HabitEntity;
-import com.android.mobile_project.data.local.model.db.HabitInWeekEntity;
-import com.android.mobile_project.data.local.model.db.HistoryEntity;
-import com.android.mobile_project.data.local.sqlite.HabitTrackerDatabase;
+import com.android.mobile_project.data.remote.model.DayOfWeekModel;
+import com.android.mobile_project.data.remote.model.HabitInWeekModel;
+import com.android.mobile_project.data.remote.model.HabitModel;
+import com.android.mobile_project.data.remote.model.HistoryModel;
 import com.android.mobile_project.databinding.FragmentHomeBinding;
-import com.android.mobile_project.time.adapter.DailyCalendarAdapter;
-import com.android.mobile_project.time.utils.TimeUtils;
+import com.android.mobile_project.ui.activity.main.MainActivity;
+import com.android.mobile_project.utils.dagger.component.sub.main.fragment.HomeComponent;
+import com.android.mobile_project.utils.time.adapter.DailyCalendarAdapter;
+import com.android.mobile_project.utils.time.utils.TimeUtils;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.count.CountDownActivity;
 import com.android.mobile_project.ui.activity.create.CreateHabitActivity;
@@ -47,10 +47,8 @@ import com.android.mobile_project.ui.activity.main.fragment.home.adapter.DoneHab
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.FailedHabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.HabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.service.InitUIService;
-import com.android.mobile_project.ui.activity.main.fragment.home.service.UpdateService;
 import com.android.mobile_project.ui.activity.setting.HabitSettingActivity;
 
-import java.text.DateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -61,10 +59,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 public class HomeFragment extends Fragment implements InitLayout, View.OnClickListener{
 
     private FragmentHomeBinding binding;
-    private HomeViewModel viewModel;
+
+    public HomeComponent component;
+
+    @Inject
+    HomeViewModel viewModel;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        component = ((MainActivity)getActivity()).component.mHomeComponent().create();
+        component.inject(this);
+        super.onAttach(context);
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
@@ -88,145 +99,132 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
     @Override
     public View initContentView() {
-
         binding = FragmentHomeBinding.inflate(getLayoutInflater());
         binding.setA(this);
         return binding.getRoot();
-
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void initViewModel() {
 
-        viewModel = new HomeViewModel();
         binding.setVm(viewModel);
 
-        DayOfWeekEntity dayOfWeekEntity = HabitTrackerDatabase.getInstance(getContext()).dayOfWeekDao().searchDayOfWeekByName(viewModel.dayName);
-        viewModel.dayOfWeekId = dayOfWeekEntity.dayOfWeekId;
+        viewModel.getCurrentDayOfWeek();
 
-        viewModel.onClickItem = new DailyCalendarAdapter.OnClickItem() {
-            @Override
-            public void onClick(View view, List<LocalDate> dates, int position) {
+        viewModel.setOnClickItem((view, dates, position) -> {
 
-                LocalDate date = dates.get(position);
+            LocalDate date = dates.get(position);
 
-                TimeUtils utils = new TimeUtils();
-                if(date.isAfter(utils.getSelectedDate())){
+            TimeUtils utils = new TimeUtils();
+            if(date.isAfter(utils.getSelectedDate())){
 
-                    DayOfWeek day = date.getDayOfWeek();
-                    String dayName = day.getDisplayName(TextStyle.FULL, Locale.getDefault());
+                DayOfWeek day = date.getDayOfWeek();
+                String dayName = day.getDisplayName(TextStyle.FULL, Locale.getDefault());
 
-                    DayOfWeekEntity dayOfWeek = HabitTrackerDatabase.getInstance(getContext()).dayOfWeekDao().searchDayOfWeekByName(dayName);
-                    Long dayOfWeekId = dayOfWeek.dayOfWeekId;
+                DayOfWeekModel dayOfWeekModel = viewModel.getDayOfWeekModel(dayName);
+                dayOfWeekModel.getDayOfWeekId();
 
-                    binding.rcvBefore.setVisibility(View.GONE);
-                    binding.rcvHabitList.setVisibility(View.GONE);
-                    binding.rcvHabitFailedList.setVisibility(View.GONE);
-                    binding.rcvHabitDoneList.setVisibility(View.GONE);
-                    binding.tTodo.setVisibility(View.GONE);
-                    binding.tFailed.setVisibility(View.GONE);
-                    binding.tDone.setVisibility(View.GONE);
+                binding.rcvBefore.setVisibility(View.GONE);
+                binding.rcvHabitList.setVisibility(View.GONE);
+                binding.rcvHabitFailedList.setVisibility(View.GONE);
+                binding.rcvHabitDoneList.setVisibility(View.GONE);
+                binding.tTodo.setVisibility(View.GONE);
+                binding.tFailed.setVisibility(View.GONE);
+                binding.tDone.setVisibility(View.GONE);
 
-                    viewModel.hideDone = false;
-                    viewModel.hideFailed = false;
-                    viewModel.hideToDo = false;
+                viewModel.setHideDone(false);
+                viewModel.setHideFailed(false);
+                viewModel.setHideToDo(false);
 
-                    List<HabitInWeekEntity> habitInWeekEntityList = HabitTrackerDatabase.getInstance(getContext()).habitInWeekDao().getHabitInWeekEntityByDayOfWeekId(dayOfWeekId);
-                    List<HabitEntity> list = new ArrayList<>();
+                List<HabitModel> list = new ArrayList<>();
 
-                    for(HabitInWeekEntity entity : habitInWeekEntityList){
-                        HabitEntity habit = HabitTrackerDatabase.getInstance(getContext()).habitDao().getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), entity.habitId);
-                        list.add(habit);
-                    }
+                for(HabitInWeekModel model : viewModel.getHabitInWeekModels()){
+                    list.add(viewModel.getHabitByUserIdAndHabitId(model.getHabitId()));
+                }
 
-                    AfterAdapter adapter  = new AfterAdapter(getContext(), list);
-                    adapter.notifyDataSetChanged();
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                AfterAdapter adapter  = new AfterAdapter(getContext(), list);
+                adapter.notifyDataSetChanged();
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
-                    binding.rcvAfter.setLayoutManager(layoutManager);
-                    binding.rcvAfter.setAdapter(adapter);
+                binding.rcvAfter.setLayoutManager(layoutManager);
+                binding.rcvAfter.setAdapter(adapter);
 
-                    binding.rcvAfter.setVisibility(View.VISIBLE);
+                binding.rcvAfter.setVisibility(View.VISIBLE);
 
+            }else if(date.isBefore(utils.getSelectedDate())){
 
-                }else if(date.isBefore(utils.getSelectedDate())){
+                binding.rcvAfter.setVisibility(View.GONE);
+                binding.rcvHabitList.setVisibility(View.GONE);
+                binding.rcvHabitFailedList.setVisibility(View.GONE);
+                binding.rcvHabitDoneList.setVisibility(View.GONE);
+                binding.tTodo.setVisibility(View.GONE);
+                binding.tFailed.setVisibility(View.GONE);
+                binding.tDone.setVisibility(View.GONE);
 
-                    binding.rcvAfter.setVisibility(View.GONE);
-                    binding.rcvHabitList.setVisibility(View.GONE);
-                    binding.rcvHabitFailedList.setVisibility(View.GONE);
-                    binding.rcvHabitDoneList.setVisibility(View.GONE);
-                    binding.tTodo.setVisibility(View.GONE);
-                    binding.tFailed.setVisibility(View.GONE);
-                    binding.tDone.setVisibility(View.GONE);
+                viewModel.setHideDone(false);
+                viewModel.setHideFailed(false);
+                viewModel.setHideToDo(false);
 
-                    viewModel.hideDone = false;
-                    viewModel.hideFailed = false;
-                    viewModel.hideToDo = false;
+                List<HabitModel> list = new ArrayList<>();
 
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                    String historyTime = date.format(formatter);
+                for(HistoryModel model : viewModel.getHistoryByDate(date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))){
+                    list.add(viewModel.getHabitByUserIdAndHabitId(model.getHabitId()));
+                }
 
-                    List<HistoryEntity> history = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByDate(DataLocalManager.getUserId(), historyTime);
-                    List<HabitEntity> list = new ArrayList<>();
+                BeforeAdapter adapter  = new BeforeAdapter(getContext(), list, date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")), viewModel);
+                adapter.notifyDataSetChanged();
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
-                    for(HistoryEntity entity : history){
-                        HabitEntity habit = HabitTrackerDatabase.getInstance(getContext()).habitDao().getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), entity.habitId);
-                        list.add(habit);
-                    }
+                binding.rcvBefore.setLayoutManager(layoutManager);
+                binding.rcvBefore.setAdapter(adapter);
 
-                    BeforeAdapter adapter  = new BeforeAdapter(getContext(), list, historyTime);
-                    adapter.notifyDataSetChanged();
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+                binding.rcvBefore.setVisibility(View.VISIBLE);
 
-                    binding.rcvBefore.setLayoutManager(layoutManager);
-                    binding.rcvBefore.setAdapter(adapter);
+            }else {
 
-                    binding.rcvBefore.setVisibility(View.VISIBLE);
+                binding.rcvAfter.setVisibility(View.GONE);
+                binding.rcvBefore.setVisibility(View.GONE);
 
-                }else {
+                if(!viewModel.getHabitModelFailedList().isEmpty()){
+                    binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
+                    binding.tFailed.setVisibility(View.VISIBLE);
+                    viewModel.setHideFailed(true);
+                }
 
-                    binding.rcvAfter.setVisibility(View.GONE);
-                    binding.rcvBefore.setVisibility(View.GONE);
+                if(!viewModel.getHabitModelDoneList().isEmpty()){
+                    binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
+                    binding.tDone.setVisibility(View.VISIBLE);
+                    viewModel.setHideDone(true);
+                }
 
-                    if(viewModel.habitEntityFailedList.size() > 0){
-                        binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
-                        binding.tFailed.setVisibility(View.VISIBLE);
-                        viewModel.hideFailed = true;
-                    }
-
-                    if(viewModel.habitEntityDoneList.size() > 0){
-                        binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
-                        binding.tDone.setVisibility(View.VISIBLE);
-                        viewModel.hideDone = true;
-                    }
-
-                    if(viewModel.habitEntityList.size() > 0){
-                        binding.rcvHabitList.setVisibility(View.VISIBLE);
-                        binding.tTodo.setVisibility(View.VISIBLE);
-                        viewModel.hideToDo = true;
-                    }
-
+                if(!viewModel.getHabitModelList().isEmpty()){
+                    binding.rcvHabitList.setVisibility(View.VISIBLE);
+                    binding.tTodo.setVisibility(View.VISIBLE);
+                    viewModel.setHideToDo(true);
                 }
 
             }
-        };
+
+        });
 
         viewModel.initUIService = new InitUIService() {
+            @SuppressLint("NotifyDataSetChanged")
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void initDailyCalendar() {
 
-                com.android.mobile_project.time.utils.TimeUtils utils = new TimeUtils();
-                viewModel.days = utils.getSixtyDaysArray();
+                TimeUtils utils = new TimeUtils();
+                viewModel.setDays(utils.getSixtyDaysArray());
 
-                viewModel.dailyCalendarAdapter = new DailyCalendarAdapter(getContext(), viewModel.days, viewModel.onClickItem);
+                viewModel.dailyCalendarAdapter = new DailyCalendarAdapter(getContext(), viewModel.getDays(), viewModel.getOnClickItem());
                 viewModel.dailyCalendarAdapter.notifyDataSetChanged();
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
 
                 binding.rvHorCalendar.setLayoutManager(layoutManager);
                 binding.rvHorCalendar.setAdapter(viewModel.dailyCalendarAdapter);
-                binding.rvHorCalendar.smoothScrollToPosition(viewModel.days.size() / 2 + 1);
+                binding.rvHorCalendar.smoothScrollToPosition(viewModel.getDays().size() / 2 + 1);
 
                 SnapHelper helper = new LinearSnapHelper();
                 helper.attachToRecyclerView(binding.rvHorCalendar);
@@ -236,34 +234,31 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
             @Override
             public void initHabitListUI() {
 
-                for(HistoryEntity entity : viewModel.historyEntityList){
+                for(HistoryModel model : viewModel.getHistoryModelList()){
 
-                    if(entity.historyHabitsState == "true" || entity.historyHabitsState.equals("true")){
-                        HabitEntity habit = HabitTrackerDatabase.getInstance(getContext()).habitDao().getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), entity.habitId);
-                        viewModel.habitEntityDoneList.add(habit);
+                    if(model.getHistoryHabitsState().equals("true")){
+                        viewModel.getHabitModelDoneList().add(viewModel.getHabitByUserIdAndHabitId(model.getHabitId()));
                     }
 
-                    if(entity.historyHabitsState == "false" || entity.historyHabitsState.equals("false")){
-                        HabitEntity habit = HabitTrackerDatabase.getInstance(getContext()).habitDao().getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), entity.habitId);
-                        viewModel.habitEntityFailedList.add(habit);
+                    if(model.getHistoryHabitsState().equals("false")){
+                        viewModel.getHabitModelDoneList().add(viewModel.getHabitByUserIdAndHabitId(model.getHabitId()));
                     }
 
-                    if(entity.historyHabitsState == "null" || entity.historyHabitsState.equals("null")) {
-                        HabitEntity habit = HabitTrackerDatabase.getInstance(getContext()).habitDao().getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), entity.habitId);
-                        viewModel.habitEntityList.add(habit);
+                    if(model.getHistoryHabitsState().equals("null")) {
+                        viewModel.getHabitModelDoneList().add(viewModel.getHabitByUserIdAndHabitId(model.getHabitId()));
                     }
                 }
 
-                if(viewModel.habitEntityList.size() > 0){
+                if(viewModel.getHabitModelList().size() > 0){
 
                     binding.tTodo.setVisibility(View.VISIBLE);
                     binding.rcvHabitList.setVisibility(View.VISIBLE);
 
-                    viewModel.adapter = new HabitAdapter(getContext(), viewModel.habitEntityList, viewModel.recyclerViewClickListener);
-                    viewModel.adapter.notifyDataSetChanged();
+                    viewModel.setAdapter(new HabitAdapter(getContext(), viewModel.getHabitModelList(), viewModel.recyclerViewClickListener, viewModel));
+                    viewModel.getAdapter().notifyDataSetChanged();
                     RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
-                    binding.rcvHabitList.setAdapter(viewModel.adapter);
+                    binding.rcvHabitList.setAdapter(viewModel.getAdapter());
                     binding.rcvHabitList.setLayoutManager(manager);
 
                     ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
@@ -271,36 +266,36 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
                 }
 
-                if(viewModel.habitEntityDoneList.size() > 0){
+                if(viewModel.getHabitModelDoneList().size() > 0){
 
                     binding.tDone.setVisibility(View.VISIBLE);
                     binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
 
-                    viewModel.doneHabitAdapter = new DoneHabitAdapter(getContext(), viewModel.habitEntityDoneList);
-                    viewModel.doneHabitAdapter.notifyDataSetChanged();
+                    viewModel.setDoneHabitAdapter(new DoneHabitAdapter(getContext(), viewModel.getHabitModelDoneList()));
+                    viewModel.getDoneHabitAdapter().notifyDataSetChanged();
                     RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
-                    binding.rcvHabitDoneList.setAdapter(viewModel.doneHabitAdapter);
+                    binding.rcvHabitDoneList.setAdapter(viewModel.getDoneHabitAdapter());
                     binding.rcvHabitDoneList.setLayoutManager(manager);
 
-                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback_1);
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback1);
                     itemTouchHelper.attachToRecyclerView(binding.rcvHabitDoneList);
 
                 }
 
-                if(viewModel.habitEntityFailedList.size() > 0){
+                if(viewModel.getHabitModelFailedList().size() > 0){
 
                     binding.tFailed.setVisibility(View.VISIBLE);
                     binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
 
-                    viewModel.failedHabitAdapter = new FailedHabitAdapter(viewModel.habitEntityFailedList, getContext());
-                    viewModel.failedHabitAdapter.notifyDataSetChanged();
+                    viewModel.setFailedHabitAdapter(new FailedHabitAdapter(viewModel.getHabitModelFailedList(), getContext()));
+                    viewModel.getFailedHabitAdapter().notifyDataSetChanged();
                     RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
-                    binding.rcvHabitFailedList.setAdapter(viewModel.failedHabitAdapter);
+                    binding.rcvHabitFailedList.setAdapter(viewModel.getFailedHabitAdapter());
                     binding.rcvHabitFailedList.setLayoutManager(manager);
 
-                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback_2);
+                    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback2);
                     itemTouchHelper.attachToRecyclerView(binding.rcvHabitFailedList);
 
                 }
@@ -310,59 +305,54 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
             @Override
             public void initHistoryListOfDay() {
 
-                LocalDate local = LocalDate.now();
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                String historyTime = local.format(formatter);
+                String historyTime = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-                List<HabitInWeekEntity> habitInWeekEntityList = HabitTrackerDatabase.getInstance(getContext()).habitInWeekDao().getHabitInWeekEntityByDayOfWeekId(viewModel.dayOfWeekId);
+                viewModel.setHistoryModelList(viewModel.getHistoryByDate(historyTime));
+                List<HabitInWeekModel> habitInWeekModels = viewModel.getHabitInWeekModels();
 
-                viewModel.historyEntityList = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByDate(DataLocalManager.getUserId(), historyTime);
+                if(viewModel.getHistoryModelList().size() == 0){
 
-                if(viewModel.historyEntityList.size() == 0){
+                    List<HabitModel> list = new ArrayList<>();
 
-                    List<HabitEntity> list = new ArrayList<>();
-
-                    for(HabitInWeekEntity entity : habitInWeekEntityList){
-                        HabitEntity habit = HabitTrackerDatabase.getInstance(getContext()).habitDao().getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), entity.habitId);
-                        list.add(habit);
+                    for(HabitInWeekModel model : habitInWeekModels){
+                        list.add(viewModel.getHabitByUserIdAndHabitId(model.getHabitId()));
                     }
 
-                    for(HabitEntity entity : list){
+                    for(HabitModel model : list){
 
-                        HistoryEntity historyEntity = new HistoryEntity();
-                        historyEntity.historyDate = historyTime;
-                        historyEntity.userId = DataLocalManager.getUserId();
-                        historyEntity.historyHabitsState = "null";
-                        historyEntity.habitId = entity.habitId;
+                        HistoryModel historyModel = new HistoryModel();
+                        historyModel.setHistoryDate(historyTime);
+                        historyModel.setUserId(DataLocalManager.getUserId());
+                        historyModel.setHistoryHabitsState("null");
+                        historyModel.setHabitId(model.getHabitId());
 
-                        viewModel.historyEntityList.add(historyEntity);
-
-                        HabitTrackerDatabase.getInstance(getContext()).historyDao().insertHistory(historyEntity);
+                        viewModel.getHistoryModelList().add(historyModel);
+                        viewModel.insertHistory(historyModel);
 
                     }
 
                 }else {
 
-                    List<HabitEntity> list = new ArrayList<>();
+                    List<HabitModel> list = new ArrayList<>();
 
-                    for(HabitInWeekEntity entity : habitInWeekEntityList){
-                        HabitEntity habit = HabitTrackerDatabase.getInstance(getContext()).habitDao().getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), entity.habitId);
-                        list.add(habit);
+                    for(HabitInWeekModel model : habitInWeekModels){
+                        list.add(viewModel.getHabitByUserIdAndHabitId(model.getHabitId()));
                     }
 
-                    for(HabitEntity entity : list){
+                    for(HabitModel model : list){
 
-                        HistoryEntity historyEntity = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByHabitIdAndDate(entity.habitId, historyTime);
-                        if(historyEntity == null){
-                            historyEntity = new HistoryEntity();
-                            historyEntity.historyDate = historyTime;
-                            historyEntity.userId = DataLocalManager.getUserId();
-                            historyEntity.historyHabitsState = "null";
-                            historyEntity.habitId = entity.habitId;
+                        HistoryModel historyModel = viewModel.getHistoryByHabitIdAndDate(model.getHabitId(), historyTime);
 
-                            viewModel.historyEntityList.add(historyEntity);
+                        if(historyModel == null){
+                            historyModel = new HistoryModel();
+                            historyModel.setHistoryDate(historyTime);
+                            historyModel.setUserId(DataLocalManager.getUserId());
+                            historyModel.setHistoryHabitsState("null");
+                            historyModel.setHabitId(model.getHabitId());
 
-                            HabitTrackerDatabase.getInstance(getContext()).historyDao().insertHistory(historyEntity);
+                            viewModel.getHistoryModelList().add(historyModel);
+                            viewModel.insertHistory(historyModel);
+
                         }
 
                     }
@@ -372,40 +362,29 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         };
 
-        viewModel.recyclerViewClickListener = new HabitAdapter.RecyclerViewClickListener() {
-            @Override
-            public void onClick(View v, List<HabitEntity> habitEntityList, int position) {
+        viewModel.recyclerViewClickListener = (v, habitModelList, position) -> {
 
-                HabitEntity entity = habitEntityList.get(position);
+            HabitModel model = habitModelList.get(position);
 
-                Intent intent = new Intent(getContext(), HabitSettingActivity.class);
-                intent.putExtra("habitId", entity.habitId);
-                startActivity(intent);
+            Intent intent = new Intent(getContext(), HabitSettingActivity.class);
+            intent.putExtra("habitId", model.getHabitId());
+            startActivity(intent);
 
-            }
         };
 
-        viewModel.updateService = new UpdateService() {
-            @Override
-            public void updateHabitLongestSteak() {
+        viewModel.updateService = () -> {
 
-                TimeUtils utils = new TimeUtils();
-                LocalDate yesterday = utils.getSelectedDate().minus(1, ChronoUnit.DAYS);
+            TimeUtils utils = new TimeUtils();
+            LocalDate yesterday = utils.getSelectedDate().minus(1, ChronoUnit.DAYS);
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                String y_String = yesterday.format(formatter);
-                List<HistoryEntity> list = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByDate(DataLocalManager.getUserId(), y_String);
-
-                for(HistoryEntity entity : list){
-                    if (entity.historyHabitsState.equals("true") || entity.historyHabitsState == "true"){
-                        HabitEntity habitEntity = HabitTrackerDatabase.getInstance(getContext()).habitDao()
-                                .getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), entity.habitId);
-                        habitEntity.numOfLongestSteak += 1;
-                        HabitTrackerDatabase.getInstance(getContext()).habitDao().updateHabit(habitEntity);
-                    }
+            for(HistoryModel model : viewModel.getHistoryByDate(yesterday.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))){
+                if (model.getHistoryHabitsState().equals("true")){
+                    HabitModel habitModel = viewModel.getHabitByUserIdAndHabitId(model.getHabitId());
+                    habitModel.setNumOfLongestSteak(habitModel.getNumOfLongestSteak() + 1);
+                    viewModel.updateHabit(habitModel);
                 }
-
             }
+
         };
 
     }
@@ -419,27 +398,27 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         if(id == R.id.btn_ch){
             clickCreateHabit();
         }else if(id == R.id.t_todo){
-            if(viewModel.hideToDo == false){
-                viewModel.hideToDo = true;
+            if(!viewModel.isHideToDo()){
+                viewModel.setHideToDo(true);
                 binding.rcvHabitList.setVisibility(View.GONE);
             }else {
-                viewModel.hideToDo = false;
+                viewModel.setHideToDo(false);
                 binding.rcvHabitList.setVisibility(View.VISIBLE);
             }
         }else if(id == R.id.t_done){
-            if(viewModel.hideDone == false){
-                viewModel.hideDone = true;
+            if(!viewModel.isHideDone()){
+                viewModel.setHideDone(true);
                 binding.rcvHabitDoneList.setVisibility(View.GONE);
             }else {
-                viewModel.hideDone = false;
+                viewModel.setHideDone(false);
                 binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
             }
         }else if(id == R.id.t_failed){
-            if(viewModel.hideFailed == false){
-                viewModel.hideFailed = true;
+            if(!viewModel.isHideFailed()){
+                viewModel.setHideFailed(true);
                 binding.rcvHabitFailedList.setVisibility(View.GONE);
             }else {
-                viewModel.hideFailed = false;
+                viewModel.setHideFailed(false);
                 binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
             }
         }
@@ -460,6 +439,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
             return false;
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
@@ -469,53 +449,50 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
             switch (direction){
                 case ItemTouchHelper.LEFT:
 
-                    HabitEntity habit = viewModel.habitEntityList.get(viewHolder.getAdapterPosition());
+                    HabitModel habit = viewModel.getHabitModelList().get(viewHolder.getAdapterPosition());
 
-                    LocalDate local = LocalDate.now();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                    String historyTime = local.format(formatter);
+                    String historyTime = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-                    HistoryEntity historyEntity = HabitTrackerDatabase.getInstance(getContext()).historyDao()
-                            .getHistoryByHabitIdAndDate(viewModel.habitEntityList.get(position).habitId, historyTime);
+                    HistoryModel historyModel = viewModel.getHistoryByHabitIdAndDate(viewModel.getHabitModelList().get(position).getHabitId(), historyTime);
 
-                    historyEntity.historyHabitsState = "false";
-                    HabitTrackerDatabase.getInstance(getContext()).historyDao().updateHistory(historyEntity);
+                    historyModel.setHistoryHabitsState("false");
+                    viewModel.updateHistory(historyModel);
 
-                    viewModel.habitEntityList.remove(position);
-                    viewModel.adapter.notifyItemRemoved(position);
+                    viewModel.getHabitModelList().remove(position);
+                    viewModel.getAdapter().notifyItemRemoved(position);
 
-                    if(viewModel.habitEntityList.size() == 0){
+                    if(viewModel.getHabitModelList().size() == 0){
                         binding.tTodo.setVisibility(View.GONE);
                         binding.rcvHabitList.setVisibility(View.GONE);
-                        viewModel.hideToDo = true;
+                        viewModel.setHideToDo(true);
                     }
 
-                    if(viewModel.habitEntityFailedList.size() == 0){
+                    if(viewModel.getHabitModelFailedList().size() == 0){
 
-                        viewModel.habitEntityFailedList.add(habit);
+                        viewModel.getHabitModelFailedList().add(habit);
 
                         binding.tFailed.setVisibility(View.VISIBLE);
                         binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
-                        viewModel.hideFailed = false;
+                        viewModel.setHideFailed(false);
 
-                        viewModel.failedHabitAdapter = new FailedHabitAdapter(viewModel.habitEntityFailedList, getContext());
-                        viewModel.failedHabitAdapter.notifyDataSetChanged();
+                        viewModel.setFailedHabitAdapter(new FailedHabitAdapter(viewModel.getHabitModelFailedList(), getContext()));
+                        viewModel.getFailedHabitAdapter().notifyDataSetChanged();
                         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
-                        binding.rcvHabitFailedList.setAdapter(viewModel.failedHabitAdapter);
+                        binding.rcvHabitFailedList.setAdapter(viewModel.getFailedHabitAdapter());
                         binding.rcvHabitFailedList.setLayoutManager(manager);
 
-                        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback_2);
+                        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback2);
                         itemTouchHelper.attachToRecyclerView(binding.rcvHabitFailedList);
 
                     }else {
 
                         binding.tFailed.setVisibility(View.VISIBLE);
                         binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
-                        viewModel.hideFailed = false;
+                        viewModel.setHideFailed(false);
 
-                        viewModel.habitEntityFailedList.add(habit);
-                        viewModel.failedHabitAdapter.notifyItemInserted(viewModel.habitEntityFailedList.size());
+                        viewModel.getHabitModelFailedList().add(habit);
+                        viewModel.getFailedHabitAdapter().notifyItemInserted(viewModel.getHabitModelFailedList().size());
                     }
 
 
@@ -523,66 +500,62 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
                 case ItemTouchHelper.RIGHT:
 
-                    HabitEntity habitEntity = viewModel.habitEntityList.get(viewHolder.getAdapterPosition());
-                    List<HabitInWeekEntity> entities = HabitTrackerDatabase.getInstance(getContext()).habitInWeekDao().
-                            getDayOfWeekHabitListByUserAndHabitId(DataLocalManager.getUserId(), habitEntity.habitId);
+                    HabitModel habitModel = viewModel.getHabitModelList().get(viewHolder.getAdapterPosition());
+                    List<HabitInWeekModel> models = viewModel.getDayOfWeekHabitListByUserAndHabitId(habitModel.getHabitId());
 
-                    LocalDateTime time = LocalDateTime.now();
-                    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                    String history = time.format(timeFormatter);
+                    String history = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-                    HabitInWeekEntity entity = entities.get(0);
+                    HabitInWeekModel model = models.get(0);
 
-                    if(entity.timerSecond == null && entity.timerMinute == null && entity.timerHour == null){
+                    if(model.getTimerSecond() == null && model.getTimerMinute() == null && model.getTimerHour() == null){
 
-                        HistoryEntity h = HabitTrackerDatabase.getInstance(getContext()).historyDao()
-                                .getHistoryByHabitIdAndDate(viewModel.habitEntityList.get(position).habitId, history);
+                        HistoryModel h = viewModel.getHistoryByHabitIdAndDate(viewModel.getHabitModelList().get(position).getHabitId(), history);
 
-                        h.historyHabitsState = "true";
-                        HabitTrackerDatabase.getInstance(getContext()).historyDao().updateHistory(h);
+                        h.setHistoryHabitsState("true");
+                        viewModel.updateHistory(h);
 
-                        viewModel.habitEntityList.remove(position);
-                        viewModel.adapter.notifyItemRemoved(position);
+                        viewModel.getHabitModelList().remove(position);
+                        viewModel.getAdapter().notifyItemRemoved(position);
 
-                        if(viewModel.habitEntityList.size() == 0){
+                        if(viewModel.getHabitModelList().size() == 0){
                             binding.tTodo.setVisibility(View.GONE);
                             binding.rcvHabitList.setVisibility(View.GONE);
-                            viewModel.hideToDo = true;
+                            viewModel.setHideToDo(true);
                         }
 
-                        if(viewModel.habitEntityDoneList.size() == 0){
+                        if(viewModel.getHabitModelDoneList().size() == 0){
 
-                            viewModel.habitEntityDoneList.add(habitEntity);
+                            viewModel.getHabitModelDoneList().add(habitModel);
 
                             binding.tDone.setVisibility(View.VISIBLE);
                             binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
-                            viewModel.hideDone = false;
+                            viewModel.setHideDone(false);
 
-                            viewModel.doneHabitAdapter = new DoneHabitAdapter(getContext(), viewModel.habitEntityDoneList);
-                            viewModel.doneHabitAdapter.notifyDataSetChanged();
+                            viewModel.setDoneHabitAdapter(new DoneHabitAdapter(getContext(), viewModel.getHabitModelDoneList()));
+                            viewModel.getDoneHabitAdapter().notifyDataSetChanged();
                             RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
-                            binding.rcvHabitDoneList.setAdapter(viewModel.doneHabitAdapter);
+                            binding.rcvHabitDoneList.setAdapter(viewModel.getDoneHabitAdapter());
                             binding.rcvHabitDoneList.setLayoutManager(manager);
 
-                            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback_1);
+                            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback1);
                             itemTouchHelper.attachToRecyclerView(binding.rcvHabitDoneList);
 
                         }else {
 
                             binding.tDone.setVisibility(View.VISIBLE);
                             binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
-                            viewModel.hideFailed = false;
+                            viewModel.setHideFailed(false);
 
-                            viewModel.habitEntityDoneList.add(habitEntity);
-                            viewModel.doneHabitAdapter.notifyItemInserted(viewModel.habitEntityDoneList.size());
+                            viewModel.getHabitModelDoneList().add(habitModel);
+                            viewModel.getDoneHabitAdapter().notifyItemInserted(viewModel.getHabitModelDoneList().size());
                         }
 
                     }else {
 
-                        viewModel.adapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                        viewModel.getAdapter().notifyItemChanged(viewHolder.getAdapterPosition());
                         Intent intent = new Intent(getContext(), CountDownActivity.class);
-                        intent.putExtra("habitId", habitEntity.habitId);
+                        intent.putExtra("habitId", habitModel.getHabitId());
                         startActivity(intent);
                     }
                     break;
@@ -620,13 +593,12 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
                     if(position != -1){
 
-                        HabitEntity habitEntity = viewModel.habitEntityList.get(position);
-                        List<HabitInWeekEntity> entities = HabitTrackerDatabase.getInstance(getContext()).habitInWeekDao().
-                                getDayOfWeekHabitListByUserAndHabitId(DataLocalManager.getUserId(), habitEntity.habitId);
+                        HabitModel habitModel = viewModel.getHabitModelList().get(position);
+                        List<HabitInWeekModel> models = viewModel.getDayOfWeekHabitListByUserAndHabitId(habitModel.getHabitId());
 
-                        HabitInWeekEntity entity = entities.get(0);
+                        HabitInWeekModel model = models.get(0);
 
-                        if(entity.timerSecond == null && entity.timerMinute == null && entity.timerHour == null){
+                        if(model.getTimerSecond() == null && model.getTimerMinute() == null && model.getTimerHour() == null){
                             icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_green_check);
 
                             p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
@@ -661,12 +633,13 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         }
     };
 
-    ItemTouchHelper.SimpleCallback simpleCallback_1 = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+    ItemTouchHelper.SimpleCallback simpleCallback1 = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
@@ -678,28 +651,26 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                     break;
                 case ItemTouchHelper.RIGHT:
 
-                    LocalDateTime time = LocalDateTime.now();
-                    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                    String history = time.format(timeFormatter);
+                    String history = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-                    HabitEntity habitEntity = viewModel.habitEntityDoneList.get(viewHolder.getAdapterPosition());
+                    HabitModel habitModel = viewModel.getHabitModelDoneList().get(viewHolder.getAdapterPosition());
 
-                    viewModel.habitEntityDoneList.remove(habitEntity);
-                    viewModel.doneHabitAdapter.notifyItemRemoved(position);
+                    viewModel.getHabitModelDoneList().remove(habitModel);
+                    viewModel.getDoneHabitAdapter().notifyItemRemoved(position);
 
-                    HistoryEntity historyEntity = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByHabitIdAndDate(habitEntity.habitId, history);
-                    historyEntity.historyHabitsState = "null";
-                    HabitTrackerDatabase.getInstance(getContext()).historyDao().updateHistory(historyEntity);
+                    HistoryModel historyModel = viewModel.getHistoryByHabitIdAndDate(habitModel.getHabitId(), history);
+                    historyModel.setHistoryHabitsState("null");
+                    viewModel.updateHistory(historyModel);
 
-                    if(viewModel.habitEntityList.size() == 0){
+                    if(viewModel.getHabitModelList().size() == 0){
 
-                        viewModel.habitEntityList.add(habitEntity);
+                        viewModel.getHabitModelList().add(habitModel);
 
-                        viewModel.adapter = new HabitAdapter(getContext(), viewModel.habitEntityList, viewModel.recyclerViewClickListener);
-                        viewModel.adapter.notifyDataSetChanged();
+                        viewModel.setAdapter(new HabitAdapter(getContext(), viewModel.getHabitModelList(), viewModel.recyclerViewClickListener));
+                        viewModel.getAdapter().notifyDataSetChanged();
                         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
-                        binding.rcvHabitList.setAdapter(viewModel.adapter);
+                        binding.rcvHabitList.setAdapter(viewModel.getAdapter());
                         binding.rcvHabitList.setLayoutManager(manager);
 
                         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
@@ -707,17 +678,17 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
                         binding.tTodo.setVisibility(View.VISIBLE);
                         binding.rcvHabitList.setVisibility(View.VISIBLE);
-                        viewModel.hideToDo = false;
+                        viewModel.setHideToDo(false);
 
                     }else {
-                        viewModel.habitEntityList.add(habitEntity);
-                        viewModel.adapter.notifyItemInserted(viewModel.habitEntityList.size());
+                        viewModel.getHabitModelList().add(habitModel);
+                        viewModel.getAdapter().notifyItemInserted(viewModel.getHabitModelList().size());
                     }
 
-                    if(viewModel.habitEntityDoneList.size() == 0){
+                    if(viewModel.getHabitModelDoneList().size() == 0){
                         binding.tDone.setVisibility(View.GONE);
                         binding.rcvHabitDoneList.setVisibility(View.GONE);
-                        viewModel.hideDone = true;
+                        viewModel.setHideDone(true);
                     }
 
                     break;
@@ -734,12 +705,13 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         }
     };
 
-    ItemTouchHelper.SimpleCallback simpleCallback_2 = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+    ItemTouchHelper.SimpleCallback simpleCallback2 = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
         }
 
+        @SuppressLint("NotifyDataSetChanged")
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
@@ -751,28 +723,26 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                     break;
                 case ItemTouchHelper.RIGHT:
 
-                    LocalDateTime time = LocalDateTime.now();
-                    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                    String history = time.format(timeFormatter);
+                    String historyDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-                    HabitEntity habitEntity = viewModel.habitEntityFailedList.get(viewHolder.getAdapterPosition());
+                    HabitModel habitModel = viewModel.getHabitModelFailedList().get(viewHolder.getAdapterPosition());
 
-                    viewModel.habitEntityFailedList.remove(habitEntity);
-                    viewModel.failedHabitAdapter.notifyItemRemoved(position);
+                    viewModel.getHabitModelFailedList().remove(habitModel);
+                    viewModel.getFailedHabitAdapter().notifyItemRemoved(position);
 
-                    HistoryEntity historyEntity = HabitTrackerDatabase.getInstance(getContext()).historyDao().getHistoryByHabitIdAndDate(habitEntity.habitId, history);
-                    historyEntity.historyHabitsState = "null";
-                    HabitTrackerDatabase.getInstance(getContext()).historyDao().updateHistory(historyEntity);
+                    HistoryModel historyModel = viewModel.getHistoryByHabitIdAndDate(habitModel.getHabitId(), historyDate);
+                    historyModel.setHistoryHabitsState("null");
+                    viewModel.updateHistory(historyModel);
 
-                    if(viewModel.habitEntityList.size() == 0){
+                    if(viewModel.getHabitModelList().size() == 0){
 
-                        viewModel.habitEntityList.add(habitEntity);
+                        viewModel.getHabitModelList().add(habitModel);
 
-                        viewModel.adapter = new HabitAdapter(getContext(), viewModel.habitEntityList, viewModel.recyclerViewClickListener);
-                        viewModel.adapter.notifyDataSetChanged();
+                        viewModel.setAdapter(new HabitAdapter(getContext(), viewModel.getHabitModelList(), viewModel.recyclerViewClickListener));
+                        viewModel.getAdapter().notifyDataSetChanged();
                         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
-                        binding.rcvHabitList.setAdapter(viewModel.adapter);
+                        binding.rcvHabitList.setAdapter(viewModel.getAdapter());
                         binding.rcvHabitList.setLayoutManager(manager);
 
                         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
@@ -780,17 +750,17 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
                         binding.tTodo.setVisibility(View.VISIBLE);
                         binding.rcvHabitList.setVisibility(View.VISIBLE);
-                        viewModel.hideToDo = false;
+                        viewModel.setHideToDo(false);
 
                     }else {
-                        viewModel.habitEntityList.add(habitEntity);
-                        viewModel.adapter.notifyItemInserted(viewModel.habitEntityList.size());
+                        viewModel.getHabitModelList().add(habitModel);
+                        viewModel.getAdapter().notifyItemInserted(viewModel.getHabitModelList().size());
                     }
 
-                    if(viewModel.habitEntityFailedList.size() == 0){
+                    if(viewModel.getHabitModelFailedList().size() == 0){
                         binding.tFailed.setVisibility(View.GONE);
                         binding.rcvHabitFailedList.setVisibility(View.GONE);
-                        viewModel.hideFailed = true;
+                        viewModel.setHideFailed(true);
                     }
 
                     break;

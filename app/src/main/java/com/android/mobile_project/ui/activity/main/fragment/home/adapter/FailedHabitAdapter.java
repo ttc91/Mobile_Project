@@ -7,18 +7,18 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.mobile_project.data.local.model.db.HabitEntity;
+import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.databinding.RcvItemHabitFailedBinding;
 
 import java.util.List;
 
 public class FailedHabitAdapter extends RecyclerView.Adapter<FailedHabitAdapter.ViewHolder>{
 
-    private List<HabitEntity> habitEntityList;
-    private Context context;
+    private final List<HabitModel> habitModelList;
+    private final Context context;
 
-    public FailedHabitAdapter(List<HabitEntity> habitEntityList, Context context) {
-        this.habitEntityList = habitEntityList;
+    public FailedHabitAdapter(List<HabitModel> habitModelList, Context context) {
+        this.habitModelList = habitModelList;
         this.context = context;
     }
 
@@ -34,19 +34,19 @@ public class FailedHabitAdapter extends RecyclerView.Adapter<FailedHabitAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        HabitEntity entity = habitEntityList.get(position);
+        HabitModel model = habitModelList.get(position);
 
-        holder.binding.hname.setText(entity.habitName);
+        holder.binding.hname.setText(model.getHabitName());
     }
 
     @Override
     public int getItemCount() {
-        if (habitEntityList == null)
+        if (habitModelList == null)
             return 0;
-        return habitEntityList.size();
+        return habitModelList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder{
 
         RcvItemHabitFailedBinding binding;
 

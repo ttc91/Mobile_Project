@@ -4,26 +4,22 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.android.mobile_project.MyApplication;
 import com.android.mobile_project.R;
-import com.android.mobile_project.data.local.DataLocalManager;
-import com.android.mobile_project.data.local.model.db.HabitInWeekEntity;
-import com.android.mobile_project.data.local.model.db.HistoryEntity;
-import com.android.mobile_project.data.local.sqlite.HabitTrackerDatabase;
+import com.android.mobile_project.data.remote.model.HabitInWeekModel;
+import com.android.mobile_project.data.remote.model.HistoryModel;
 import com.android.mobile_project.databinding.ActivityProcessTimeBinding;
 import com.android.mobile_project.ui.InitLayout;
-import com.android.mobile_project.ui.activity.count.service.InitService;
 import com.android.mobile_project.ui.activity.count.service.TimerService;
 import com.android.mobile_project.ui.activity.main.MainActivity;
-import com.android.mobile_project.ui.activity.main.fragment.home.HomeFragment;
+import com.android.mobile_project.utils.dagger.component.sub.count.CountDownComponent;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -32,14 +28,25 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 public class CountDownActivity extends AppCompatActivity implements InitLayout, View.OnClickListener{
 
-    ActivityProcessTimeBinding binding;
+    private ActivityProcessTimeBinding binding;
+
+    private CountDownComponent component;
+
+    @Inject
     CountDownViewModel viewModel;
+
     long mTimeLeftInMillis;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+
+        component = ((MyApplication) getApplicationContext()).provideCountDownComponent();
+        component.inject(this);
+
         super.onCreate(savedInstanceState);
         setContentView(initContentView());
         initViewModel();
@@ -50,43 +57,38 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
 
     @Override
     public View initContentView() {
-
         binding = ActivityProcessTimeBinding.inflate(getLayoutInflater());
         binding.setA(this);
         binding.executePendingBindings();
-
         return binding.getRoot();
     }
 
     @Override
     public void initViewModel() {
 
-        viewModel = new CountDownViewModel();
         binding.setVm(viewModel);
 
-        viewModel.initService = new InitService() {
-            @Override
-            public void init() {
-                Bundle extras = getIntent().getExtras();
+        viewModel.initService = () -> {
+            Bundle extras = getIntent().getExtras();
 
-                Long habitId = extras.getLong("habitId");
-                viewModel.habitEntity = HabitTrackerDatabase.getInstance(getApplicationContext()).habitDao().getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), habitId);
+            Long habitId = extras.getLong("habitId");
 
-                List<HabitInWeekEntity> list = new ArrayList<>();
-                list = HabitTrackerDatabase.getInstance(getApplicationContext()).habitInWeekDao().getDayOfWeekHabitListByUserAndHabitId(DataLocalManager.getUserId(), habitId);
-                HabitInWeekEntity habitInWeekEntity = list.get(0);
+            viewModel.setHabitModel(viewModel.getHabitByUserIdAndHabitId(habitId));
 
-                viewModel.START_TIME_IN_MILLIS = TimeUnit.HOURS.toMillis(habitInWeekEntity.timerHour) + TimeUnit.MINUTES.toMillis(habitInWeekEntity.timerMinute) + TimeUnit.SECONDS.toMillis(habitInWeekEntity.timerSecond);
-                mTimeLeftInMillis = viewModel.START_TIME_IN_MILLIS;
+            List<HabitInWeekModel> list = new ArrayList<>();
+            list = viewModel.getDayOfWeekHabitListByUserAndHabitId(habitId);
+            HabitInWeekModel habitInWeekModel = list.get(0);
 
-            }
+            viewModel.setStartTimeInMillis(TimeUnit.HOURS.toMillis(habitInWeekModel.getTimerHour()) + TimeUnit.MINUTES.toMillis(habitInWeekModel.getTimerMinute()) + TimeUnit.SECONDS.toMillis(habitInWeekModel.getTimerSecond()));
+            mTimeLeftInMillis = viewModel.getStartTimeInMillis();
+
         };
 
         viewModel.timerService = new TimerService() {
             @Override
             public void startTimer() {
 
-                viewModel.mCountDownTimer = new CountDownTimer(mTimeLeftInMillis, 1000) {
+                viewModel.setMCountDownTimer(new CountDownTimer(mTimeLeftInMillis, 1000) {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onTick(long l) {
@@ -94,31 +96,31 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
                         updateCountDownText();
 
                         int value = (int) mTimeLeftInMillis;
-                        int total = Math.toIntExact(viewModel.START_TIME_IN_MILLIS);
+                        int total = Math.toIntExact(viewModel.getStartTimeInMillis());
 
-                        viewModel.percent = 100 - ((float)value/total) * 100;
+                        viewModel.setPercent(100 - ((float)value/total) * 100);
 
-                        binding.cirBar.setProgress(viewModel.percent);
+                        binding.cirBar.setProgress(viewModel.getPercent());
 
                     }
 
                     @Override
                     public void onFinish() {
-                        viewModel.mTimerRunning = false;
+                        viewModel.setMTimerRunning(false);
                         binding.btnPlay.setBackground(ContextCompat.getDrawable(getApplicationContext(),R.drawable.btn_process_play));
                         binding.cirBar.setProgress(100);
                     }
-                }.start();
+                }.start());
 
-                viewModel.mTimerRunning = true;
+                viewModel.setMTimerRunning(true);
 
             }
 
             @Override
             public void pauseTimer() {
 
-                viewModel.mCountDownTimer.cancel();
-                viewModel.mTimerRunning = false;
+                viewModel.getMCountDownTimer().cancel();
+                viewModel.setMTimerRunning(false);
                 binding.btnPlay.setBackground(ContextCompat.getDrawable(getApplicationContext(),R.drawable.btn_process_play));
 
             }
@@ -126,9 +128,9 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
             @Override
             public void resetTimer() {
 
-                viewModel.mCountDownTimer.cancel();
-                viewModel.mTimerRunning = false;
-                mTimeLeftInMillis = viewModel.START_TIME_IN_MILLIS;
+                viewModel.getMCountDownTimer().cancel();
+                viewModel.setMTimerRunning(false);
+                mTimeLeftInMillis = viewModel.getStartTimeInMillis();
                 updateCountDownText();
                 binding.btnPlay.setBackground(ContextCompat.getDrawable(getApplicationContext(),R.drawable.btn_process_play));
                 binding.cirBar.setProgress(0);
@@ -156,7 +158,7 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
     }
 
     public void onClickPlayTimer(){
-        if(viewModel.mTimerRunning){
+        if(viewModel.isMTimerRunning()){
             viewModel.timerService.pauseTimer();
             binding.btnPlay.setBackground(ContextCompat.getDrawable(getApplicationContext(),R.drawable.btn_process_play));
         }else {
@@ -168,13 +170,11 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void onClickFinish(){
 
-        LocalDate local = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String historyTime = local.format(formatter);
+        String historyTime = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-        HistoryEntity entity = HabitTrackerDatabase.getInstance(getApplicationContext()).historyDao().getHistoryByHabitIdAndDate(viewModel.habitEntity.habitId, historyTime);
-        entity.historyHabitsState = "true";
-        HabitTrackerDatabase.getInstance(getApplicationContext()).historyDao().updateHistory(entity);
+        HistoryModel model = viewModel.getHistoryByHabitIdAndDate(viewModel.getHabitModel().getHabitId(), historyTime);
+        model.setHistoryHabitsState("true");
+        viewModel.updateHistory(model);
 
         onClickBack();
 
