@@ -37,7 +37,6 @@ public class MyApplication extends Application
         graph.inject(this);
     }
 
-
     @Override
     public MainComponent provideMainComponent() {
         return graph.mMainComponent().create();
@@ -62,4 +61,5 @@ public class MyApplication extends Application
     public CountDownComponent provideCountDownComponent() {
         return graph.mCountDownComponent().create();
     }
+
 }

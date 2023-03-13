@@ -21,8 +21,6 @@ o
 ?app/src/main/java/com/android/mobile_project/ui/InitLayout.java,9\c\9c0a14b3d21d93046c1c269388c9d5cda965fe49
 ˆ
 Xapp/src/main/java/com/android/mobile_project/ui/activity/create/service/InitService.java,f\b\fb4ab54f26b49fbc12b1d4c6f1e4ab13248d3cb5
-P
- app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 ?
 settings.gradle,0\5\05efc8b1657769a27696d478ded1e95f38737233
 <

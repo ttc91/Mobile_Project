@@ -8,7 +8,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.mobile_project.MyApplication;
 import com.android.mobile_project.R;
 import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.data.remote.model.UserModel;
@@ -16,6 +15,7 @@ import com.android.mobile_project.databinding.ActivityInputBinding;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.input.service.DbService;
 import com.android.mobile_project.ui.activity.main.MainActivity;
+import com.android.mobile_project.utils.dagger.component.provider.InputComponentProvider;
 import com.android.mobile_project.utils.dagger.component.sub.input.InputComponent;
 
 import javax.inject.Inject;
@@ -26,19 +26,20 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
     InputViewModel viewModel;
 
     private ActivityInputBinding binding;
-    private InputComponent component;
+    public InputComponent component;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
-        component = ((MyApplication) getApplicationContext()).provideInputComponent();
+        setContentView(initContentView());
+
+        component = ((InputComponentProvider) getApplicationContext()).provideInputComponent();
         component.inject(this);
 
         super.onCreate(savedInstanceState);
 
         DataLocalManager.init(getApplicationContext());
 
-        setContentView(initContentView());
         initViewModel();
 
         checkUI();
