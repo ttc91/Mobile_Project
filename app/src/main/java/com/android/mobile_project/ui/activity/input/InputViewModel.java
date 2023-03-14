@@ -72,7 +72,7 @@ public class InputViewModel extends ViewModel {
                     callback.onGetIdSuccess();
                 }, throwable -> {
                     Log.e("getUserIdByName", "onError", throwable);
-                    callback.onFetIdFailure();
+                    callback.onGetIdFailure();
                 })
         );
 

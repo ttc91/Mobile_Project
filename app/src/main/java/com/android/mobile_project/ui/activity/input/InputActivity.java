@@ -36,6 +36,8 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
+        Log.i("InputActivity", "onCreate()");
+
         setContentView(initContentView());
 
         component = ((InputComponentProvider) getApplicationContext()).provideInputComponent();
@@ -76,7 +78,7 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
                 viewModel.insertUser(user, new InsertUserResult() {
                     @Override
                     public void onInsertUserSuccess() {
-                        Log.e("InputActivity", "insert user to RoomDB complete");
+                        Log.i("InputActivity", "insert user to RoomDB complete");
                         viewModel.getUserIdByName(userName, new GetUserIdFromLocalResult() {
                             @Override
                             public void onGetIdSuccess() {
@@ -86,8 +88,9 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
                             }
 
                             @Override
-                            public void onFetIdFailure() {
+                            public void onGetIdFailure() {
                                 Log.e("InputActivity", "cannot redirect To MainActivity");
+                                //TODO ChuTT must add more one dialog fragment to information user.
                             }
                         });
                     }
@@ -95,6 +98,7 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
                     @Override
                     public void onInsertUserFailure() {
                         Log.e("InputActivity", "cannot insert user to RoomDB");
+                        //TODO ChuTT must add more one dialog fragment to information user.
                     }
                 });
 
@@ -103,7 +107,7 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
             }
 
             @Override
-            public boolean checkExistUser() {
+            public boolean checkExistUser(GetUsernameFromLocalResult callback) {
                 String name = DataLocalManager.getUserName();
                 return !name.equals(null) && !name.equals("");
             }
@@ -116,9 +120,7 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
     @Override
     public void onClick(View view) {
 
-        int id = view.getId();
-
-        if(id == R.id.btn_next){
+        if(view.getId() == R.id.btn_next){
 
             if(binding.edtInputUser.getText().toString().trim().length() > 0){
                 viewModel.service.setUser(binding.edtInputUser.getText().toString().trim());
@@ -132,23 +134,40 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
 
     @Override
     protected void onStop() {
+        Log.i("InputActivity", "onStop()");
         super.onStop();
         viewModel.setDispose();
     }
 
     @Override
     protected void onDestroy() {
+        Log.i("InputActivity", "onDestroy()");
         super.onDestroy();
         viewModel.setDispose();
     }
 
-    public void checkUI(){
+    private void checkUI(){
 
-        boolean check = viewModel.service.checkExistUser();
+        boolean check = viewModel.service.checkExistUser(new DbService.GetUsernameFromLocalResult() {
+            @Override
+            public boolean onGetIdSuccess() {
+                Log.i("InputActivity", "onGetIdSuccess");
+                return true;
+            }
+
+            @Override
+            public boolean onGetIdFailure() {
+                Log.e("InputActivity", "onGetIdFailure");
+                return false;
+            }
+        });
 
         if(check){
+            Log.i("InputActivity", "can redirect to MainActivity");
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
+        }else{
+            viewModel.toastService.makeToast();
         }
     }
 

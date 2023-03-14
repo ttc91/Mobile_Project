@@ -4,19 +4,21 @@ public interface DbService {
 
     void setUser(String userName);
 
-    boolean checkExistUser();
+    boolean checkExistUser(GetUsernameFromLocalResult callback);
 
     interface InsertUserResult{
-
         void onInsertUserSuccess();
-
         void onInsertUserFailure();
-
     }
 
     interface GetUserIdFromLocalResult{
         void onGetIdSuccess();
-        void onFetIdFailure();
+        void onGetIdFailure();
+    }
+
+    interface GetUsernameFromLocalResult{
+        boolean onGetIdSuccess();
+        boolean onGetIdFailure();
     }
 
 }
