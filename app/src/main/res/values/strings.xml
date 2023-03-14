@@ -14,4 +14,14 @@
     <string name="str_friday">Friday</string>
     <string name="str_saturday">Saturday</string>
 
+    <!--Input Fragment-->
+    <string name="str_habit_name">Habit name</string>
+    <string name="str_habit_tracker">Habit Tracker</string>
+    <string name="str_next_to_main_activity">Go to MainActivity</string>
+    <string name="str_habit_tracker_icon">Habit Tracker Icon</string>
+
+
+    <!--Original-->
+    <string name="str_right_arrow">Right arrow</string>
+
 </resources>

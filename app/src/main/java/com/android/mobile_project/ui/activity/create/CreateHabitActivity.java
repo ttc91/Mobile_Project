@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.android.mobile_project.MyApplication;
 import com.android.mobile_project.R;
 import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.data.remote.model.DayOfTimeModel;
@@ -21,6 +20,7 @@ import com.android.mobile_project.databinding.ActivityCreateHabitBinding;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.create.service.InitService;
 import com.android.mobile_project.ui.activity.main.MainActivity;
+import com.android.mobile_project.utils.dagger.component.provider.CreateHabitComponentProvider;
 import com.android.mobile_project.utils.dagger.component.sub.create.CreateHabitComponent;
 import com.android.mobile_project.utils.time.DayOfTime;
 
@@ -30,7 +30,7 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
 
     private ActivityCreateHabitBinding binding;
 
-    private CreateHabitComponent component;
+    public CreateHabitComponent component;
 
     @Inject
     CreateHabitViewModel viewModel;
@@ -38,7 +38,7 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
-        component = ((MyApplication) getApplicationContext()).provideCreateHabitComponent();
+        component = ((CreateHabitComponentProvider) getApplicationContext()).provideCreateHabitComponent();
         component.inject(this);
 
         super.onCreate(savedInstanceState);

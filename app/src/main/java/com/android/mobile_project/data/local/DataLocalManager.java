@@ -1,5 +1,6 @@
 package com.android.mobile_project.data.local;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import com.android.mobile_project.data.local.pref.MySharedPreferences;
@@ -11,6 +12,7 @@ public class DataLocalManager {
 
     private static DataLocalManager instance;
 
+    @SuppressLint("StaticFieldLeak")
     private static MySharedPreferences mySharedPreferences;
 
     public static void init(Context context){
@@ -31,11 +33,11 @@ public class DataLocalManager {
     }
 
     public static void setUserName(String value){
-        DataLocalManager.getInstance().mySharedPreferences.putStringValue(USER_NAME, value);
+        mySharedPreferences.putStringValue(USER_NAME, value);
     }
 
     public static String getUserName(){
-        return DataLocalManager.getInstance().mySharedPreferences.getStringValue(USER_NAME);
+        return mySharedPreferences.getStringValue(USER_NAME);
     }
 
     public static void setUserId(Long value){

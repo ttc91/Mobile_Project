@@ -2,7 +2,21 @@ package com.android.mobile_project.ui.activity.input.service;
 
 public interface DbService {
 
-    public void setUser(String userName);
-    public boolean checkExistUser();
+    void setUser(String userName);
+
+    boolean checkExistUser();
+
+    interface InsertUserResult{
+
+        void onInsertUserSuccess();
+
+        void onInsertUserFailure();
+
+    }
+
+    interface GetUserIdFromLocalResult{
+        void onGetIdSuccess();
+        void onFetIdFailure();
+    }
 
 }
