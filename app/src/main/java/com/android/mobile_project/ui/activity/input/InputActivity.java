@@ -82,9 +82,7 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
                         viewModel.getUserIdByName(userName, new GetUserIdFromLocalResult() {
                             @Override
                             public void onGetIdSuccess() {
-                                Log.i("InputActivity", "can redirect to MainActivity");
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                startActivity(intent);
+                                redirectToNextActivity();
                             }
 
                             @Override
@@ -163,12 +161,17 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
         });
 
         if(check){
-            Log.i("InputActivity", "can redirect to MainActivity");
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
+           redirectToNextActivity();
         }else{
             viewModel.toastService.makeToast();
         }
+    }
+
+    private void redirectToNextActivity(){
+        Log.i("InputActivity", "can redirect to MainActivity");
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 }
