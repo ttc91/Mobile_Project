@@ -2,7 +2,6 @@ package com.android.mobile_project.ui.activity.create;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -10,19 +9,18 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 
 import com.android.mobile_project.R;
-import com.android.mobile_project.data.local.DataLocalManager;
-import com.android.mobile_project.data.remote.model.DayOfTimeModel;
-import com.android.mobile_project.data.remote.model.HabitInWeekModel;
 import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.databinding.ActivityCreateHabitBinding;
 import com.android.mobile_project.ui.InitLayout;
+import com.android.mobile_project.ui.activity.create.service.DbService;
 import com.android.mobile_project.ui.activity.create.service.InitService;
 import com.android.mobile_project.ui.activity.main.MainActivity;
 import com.android.mobile_project.utils.dagger.component.provider.CreateHabitComponentProvider;
 import com.android.mobile_project.utils.dagger.component.sub.create.CreateHabitComponent;
-import com.android.mobile_project.utils.time.DayOfTime;
+import com.android.mobile_project.utils.time.DayOfWeek;
 
 import javax.inject.Inject;
 
@@ -30,7 +28,23 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
 
     private ActivityCreateHabitBinding binding;
 
+    private Observer<HabitModel> habitModelObserver;
+
+    private Long habitId = 0L;
+
     public CreateHabitComponent component;
+
+    private final DbService.InsertHabitInWeek insertHabitInWeekCallBack = new DbService.InsertHabitInWeek() {
+        @Override
+        public void onInsertHabitInWeekSuccess() {
+
+        }
+
+        @Override
+        public void onInsertHabitInWeekFailure() {
+
+        }
+    };
 
     @Inject
     CreateHabitViewModel viewModel;
@@ -48,15 +62,17 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
 
         viewModel.initService.intiDayOfWeekLogo();
 
+        habitModelObserver = habitModel -> habitId = habitModel.getHabitId();
+
+        viewModel.getHabitModelMutableLiveData().observe(this, habitModelObserver);
+
     }
 
     @Override
     public View initContentView() {
-
         binding = ActivityCreateHabitBinding.inflate(getLayoutInflater());
         binding.setA(this);
         return binding.getRoot();
-
     }
 
     @Override
@@ -65,139 +81,81 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
         binding.setVm(viewModel);
 
         viewModel.initService = new InitService() {
+
             @Override
             public void intiDayOfWeekLogo() {
-
                 binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon);
                 binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night);
                 binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any);
                 binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning);
-
             }
 
             @Override
             public void initCreateHabitEvent() {
 
-                HabitModel habit = new HabitModel();
-
                 if(binding.edtHname.getText().toString().trim().equals("") || binding.edtHname.getText().toString().trim().equals(null)){
                     Toast.makeText(getApplicationContext(), "Please input your habit name !", Toast.LENGTH_SHORT).show();
                     return;
                 }else {
-                    habit.setHabitName(binding.edtHname.getText().toString().trim());
+                    viewModel.checkExistHabitByName(binding.edtHname.getText().toString().trim(),
+                            new DbService.GetHabitByName() {
+                                @Override
+                                public void onGetHabitByNameSuccess() {
+                                    viewModel.insertHabit(getApplicationContext(), binding.edtHname.getText().toString().trim(), new DbService.InsertHabit() {
+                                        @Override
+                                        public void onInsertHabitSuccess() {
+
+                                        }
+
+                                        @Override
+                                        public void onInsertHabitFailure() {
+                                            //TODO ChuTT must be add more a dialog for inform to user.
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onGetHabitByNameFailure() {
+                                    Toast.makeText(getApplicationContext(), "Your habit name is exist please input other name !", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                    );
                 }
 
-                habit.setHabitLogo(null);
-                habit.setUserId(DataLocalManager.getUserId());
-                habit.setNumOfLongestSteak(0L);
-
-                if(viewModel.isSelectAnytime()){
-                    DayOfTimeModel model = viewModel.searchDayOfTimeByName(DayOfTime.ANYTIME.getTimeName());
-                    habit.setDayOfTimeId(model.getDayOfTimeId());
-                }else if(viewModel.isSelectMorning()){
-                    DayOfTimeModel model = viewModel.searchDayOfTimeByName(DayOfTime.MORNING.getTimeName());
-                    habit.setDayOfTimeId(model.getDayOfTimeId());
-                }else if(viewModel.isSelectNight()){
-                    DayOfTimeModel model = viewModel.searchDayOfTimeByName(DayOfTime.NIGHT.getTimeName());
-                    habit.setDayOfTimeId(model.getDayOfTimeId());
-                }else if(viewModel.isSelectAfternoon()) {
-                    DayOfTimeModel model = viewModel.searchDayOfTimeByName(DayOfTime.AFTERNOON.getTimeName());
-                    habit.setDayOfTimeId(model.getDayOfTimeId());
-                }else {
-                    Toast.makeText(getApplicationContext(), "Please choose your day time !", Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
                 if(!viewModel.isSelectSunDate() && !viewModel.isSelectMonDate() && !viewModel.isSelectTueDate() && !viewModel.isSelectWedDate()
                     && !viewModel.isSelectThuDate() && !viewModel.isSelectFriDate() && !viewModel.isSelectSatDate()){
                     Toast.makeText(getApplicationContext(), "Please choose your days of week !", Toast.LENGTH_SHORT).show();
-                    return;
-                }else {
-
-                    if(viewModel.getHabitByName(habit.getHabitName()) != null){
-                        Toast.makeText(getApplicationContext(), "Your habit name is exist please input other name !", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    viewModel.insertHabit(habit);
-                }
-
-                habit = viewModel.getHabitByName(habit.getHabitName());
-                Long habitId = habit.getHabitId();
-
-                if(viewModel.isSelectWedDate()){
-
-                    HabitInWeekModel habitInWeekModel = new HabitInWeekModel();
-                    habitInWeekModel.setHabitId(habitId);
-                    habitInWeekModel.setDayOfWeekId(4L);
-                    habitInWeekModel.setUserId(Long.parseLong(String.valueOf(DataLocalManager.getUserId())));
-
-                    viewModel.insertHabitInWeek(habitInWeekModel);
-
                 }
 
                 if(viewModel.isSelectSunDate()){
-
-                    HabitInWeekModel habitInWeekModel = new HabitInWeekModel();
-                    habitInWeekModel.setHabitId(habitId);
-                    habitInWeekModel.setDayOfWeekId(1L);
-                    habitInWeekModel.setUserId(Long.parseLong(String.valueOf(DataLocalManager.getUserId())));
-
-                    viewModel.insertHabitInWeek(habitInWeekModel);
+                    viewModel.insertHabitInWeek(habitId, DayOfWeek.SUN.getId(), insertHabitInWeekCallBack);
                 }
 
                 if(viewModel.isSelectMonDate()){
-
-                    HabitInWeekModel habitInWeekModel = new HabitInWeekModel();
-                    habitInWeekModel.setHabitId(habitId);
-                    habitInWeekModel.setDayOfWeekId(2L);
-                    habitInWeekModel.setUserId(Long.parseLong(String.valueOf(DataLocalManager.getUserId())));
-
-                    viewModel.insertHabitInWeek(habitInWeekModel);
+                    viewModel.insertHabitInWeek(habitId, DayOfWeek.MON.getId(), insertHabitInWeekCallBack);
                 }
 
                 if(viewModel.isSelectTueDate()){
+                    viewModel.insertHabitInWeek(habitId, DayOfWeek.TUE.getId(), insertHabitInWeekCallBack);
+                }
 
-                    HabitInWeekModel habitInWeekModel = new HabitInWeekModel();
-                    habitInWeekModel.setHabitId(habitId);
-                    habitInWeekModel.setDayOfWeekId(3L);
-                    habitInWeekModel.setUserId(Long.parseLong(String.valueOf(DataLocalManager.getUserId())));
-
-                    viewModel.insertHabitInWeek(habitInWeekModel);
+                if(viewModel.isSelectWedDate()){
+                    viewModel.insertHabitInWeek(habitId, DayOfWeek.WED.getId(), insertHabitInWeekCallBack);
                 }
 
                 if(viewModel.isSelectThuDate()){
-
-                    HabitInWeekModel habitInWeekModel = new HabitInWeekModel();
-                    habitInWeekModel.setHabitId(habitId);
-                    habitInWeekModel.setDayOfWeekId(5L);
-                    habitInWeekModel.setUserId(Long.parseLong(String.valueOf(DataLocalManager.getUserId())));
-
-                    viewModel.insertHabitInWeek(habitInWeekModel);
+                    viewModel.insertHabitInWeek(habitId, DayOfWeek.THU.getId(), insertHabitInWeekCallBack);
                 }
 
                 if(viewModel.isSelectFriDate()){
-
-                    HabitInWeekModel habitInWeekModel = new HabitInWeekModel();
-                    habitInWeekModel.setHabitId(habitId);
-                    habitInWeekModel.setDayOfWeekId(6L);
-                    habitInWeekModel.setUserId(Long.parseLong(String.valueOf(DataLocalManager.getUserId())));
-
-                    viewModel.insertHabitInWeek(habitInWeekModel);
-                }
+                    viewModel.insertHabitInWeek(habitId, DayOfWeek.FRI.getId(), insertHabitInWeekCallBack);                }
 
                 if(viewModel.isSelectSatDate()){
-
-                    HabitInWeekModel habitInWeekModel = new HabitInWeekModel();
-                    habitInWeekModel.setHabitId(habitId);
-                    habitInWeekModel.setDayOfWeekId(7L);
-                    habitInWeekModel.setUserId(Long.parseLong(String.valueOf(DataLocalManager.getUserId())));
-
-                    viewModel.insertHabitInWeek(habitInWeekModel);
+                    viewModel.insertHabitInWeek(habitId, DayOfWeek.SAT.getId(), insertHabitInWeekCallBack);
                 }
 
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+                finish();
             }
         };
 
@@ -237,77 +195,77 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
             case R.id.sun_date :
                 if (viewModel.isSelectSunDate()){
                     binding.sunDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date));
-                    binding.sunDate.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+                    binding.sunDate.setTextColor(getResources().getColor(R.color.black));
                     viewModel.setSelectSunDate(false);
                 }else {
                     binding.sunDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date_select));
-                    binding.sunDate.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                    binding.sunDate.setTextColor(getResources().getColor(R.color.white));
                     viewModel.setSelectSunDate(true);
                 }
                 break;
             case R.id.mon_date :
                 if (viewModel.isSelectMonDate()){
                     binding.monDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date));
-                    binding.monDate.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+                    binding.monDate.setTextColor(getResources().getColor(R.color.black));
                     viewModel.setSelectMonDate(false);
                 }else {
                     binding.monDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date_select));
-                    binding.monDate.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                    binding.monDate.setTextColor(getResources().getColor(R.color.white));
                     viewModel.setSelectMonDate(true);
                 }
                 break;
             case R.id.tue_date :
                 if (viewModel.isSelectTueDate()){
                     binding.tueDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date));
-                    binding.tueDate.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+                    binding.tueDate.setTextColor(getResources().getColor(R.color.black));
                     viewModel.setSelectTueDate(false);
                 }else {
                     binding.tueDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date_select));
-                    binding.tueDate.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                    binding.tueDate.setTextColor(getResources().getColor(R.color.white));
                     viewModel.setSelectTueDate(true);
                 }
                 break;
             case R.id.wed_date :
                 if (viewModel.isSelectWedDate()){
                     binding.wedDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date));
-                    binding.wedDate.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+                    binding.wedDate.setTextColor(getResources().getColor(R.color.black));
                     viewModel.setSelectWedDate(false);
                 }else {
                     binding.wedDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date_select));
-                    binding.wedDate.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                    binding.wedDate.setTextColor(getResources().getColor(R.color.white));
                     viewModel.setSelectWedDate(true);
                 }
                 break;
             case R.id.thu_date :
                 if (viewModel.isSelectThuDate()){
                     binding.thuDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date));
-                    binding.thuDate.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+                    binding.thuDate.setTextColor(getResources().getColor(R.color.black));
                     viewModel.setSelectThuDate(false);
                 }else {
                     binding.thuDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date_select));
-                    binding.thuDate.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                    binding.thuDate.setTextColor(getResources().getColor(R.color.white));
                     viewModel.setSelectThuDate(true);
                 }
                 break;
             case R.id.fri_date :
                 if (viewModel.isSelectFriDate()){
                     binding.friDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date));
-                    binding.friDate.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+                    binding.friDate.setTextColor(getResources().getColor(R.color.black));
                     viewModel.setSelectFriDate(false);
                 }else {
                     binding.friDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date_select));
-                    binding.friDate.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                    binding.friDate.setTextColor(getResources().getColor(R.color.white));
                     viewModel.setSelectFriDate(true);
                 }
                 break;
             case R.id.sat_date :
                 if (viewModel.isSelectSatDate()){
                     binding.satDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date));
-                    binding.satDate.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+                    binding.satDate.setTextColor(getResources().getColor(R.color.black));
                     viewModel.setSelectSatDate(false);
                 }else {
                     binding.satDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date_select));
-                    binding.satDate.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                    binding.satDate.setTextColor(getResources().getColor(R.color.white));
                     viewModel.setSelectSatDate(true);
                 }
                 break;
@@ -325,22 +283,22 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
     public void clickBtnDateOfTime(int id){
 
         binding.timeAfternoon.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_habit_name));
-        binding.tAfternoon.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+        binding.tAfternoon.setTextColor(getResources().getColor(R.color.black));
         binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon);
         viewModel.setSelectAfternoon(false);
 
         binding.timeAny.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_habit_name));
-        binding.tAnytime.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+        binding.tAnytime.setTextColor(getResources().getColor(R.color.black));
         binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any);
         viewModel.setSelectAnytime(false);
 
         binding.timeMorning.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_habit_name));
-        binding.tMorning.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+        binding.tMorning.setTextColor(getResources().getColor(R.color.black));
         binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning);
         viewModel.setSelectMorning(false);
 
         binding.timeNight.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_habit_name));
-        binding.tNight.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+        binding.tNight.setTextColor(getResources().getColor(R.color.black));
         binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night);
         viewModel.setSelectNight(false);
 
@@ -349,7 +307,7 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
             case R.id.time_afternoon :
 
                 binding.timeAfternoon.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_habit_name_select));
-                binding.tAfternoon.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                binding.tAfternoon.setTextColor(getResources().getColor(R.color.white));
                 binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon_white);
                 viewModel.setSelectAfternoon(true);
                 break;
@@ -357,7 +315,7 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
             case R.id.time_any :
 
                 binding.timeAny.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_habit_name_select));
-                binding.tAnytime.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                binding.tAnytime.setTextColor(getResources().getColor(R.color.white));
                 binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any_white);
                 viewModel.setSelectAnytime(true);
                 break;
@@ -365,7 +323,7 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
             case R.id.time_morning :
 
                 binding.timeMorning.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_habit_name_select));
-                binding.tMorning.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                binding.tMorning.setTextColor(getResources().getColor(R.color.white));
                 binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning_white);
                 viewModel.setSelectMorning(true);
                 break;
@@ -373,7 +331,7 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
             case R.id.time_night :
 
                 binding.timeNight.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_habit_name_select));
-                binding.tNight.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                binding.tNight.setTextColor(getResources().getColor(R.color.white));
                 binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night_white);
                 viewModel.setSelectNight(true);
                 break;
@@ -385,4 +343,9 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        viewModel.disposeCompositeDisposable();
+    }
 }

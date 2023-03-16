@@ -35,6 +35,8 @@ import com.android.mobile_project.data.local.sqlite.persistence.behavior.History
 import com.android.mobile_project.data.local.sqlite.persistence.behavior.RemainderDataSource;
 import com.android.mobile_project.data.local.sqlite.persistence.behavior.UserDataSource;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
+import com.android.mobile_project.utils.time.DayOfTime;
+import com.android.mobile_project.utils.time.DayOfWeek;
 
 import javax.inject.Singleton;
 
@@ -83,15 +85,10 @@ public final class DatabaseModule {
         @Override
         protected Void doInBackground(Void... voids) {
 
-            DayOfTimeEntity afternoonEntity = new DayOfTimeEntity();
-            DayOfTimeEntity morningEntity = new DayOfTimeEntity();
-            DayOfTimeEntity nightEntity = new DayOfTimeEntity();
-            DayOfTimeEntity anyTimeEntity = new DayOfTimeEntity();
-
-            afternoonEntity.setDayOfTimeName(String.valueOf(R.string.str_afternoon));
-            morningEntity.setDayOfTimeName(String.valueOf(R.string.str_morning));
-            nightEntity.setDayOfTimeName(String.valueOf(R.string.str_night));
-            anyTimeEntity.setDayOfTimeName(String.valueOf(R.string.str_anytime));
+            DayOfTimeEntity afternoonEntity = new DayOfTimeEntity(DayOfTime.AFTERNOON.getId(), DayOfTime.AFTERNOON.getTimeName());
+            DayOfTimeEntity morningEntity = new DayOfTimeEntity(DayOfTime.MORNING.getId(), DayOfTime.MORNING.getTimeName());
+            DayOfTimeEntity nightEntity = new DayOfTimeEntity(DayOfTime.NIGHT.getId(), DayOfTime.NIGHT.getTimeName());
+            DayOfTimeEntity anyTimeEntity = new DayOfTimeEntity(DayOfTime.ANYTIME.getId(), DayOfTime.ANYTIME.getTimeName());
 
             mCompositeDisposable.add(this.dayOfTimeDao.insert(afternoonEntity)
                     .observeOn(Schedulers.io())
@@ -123,21 +120,13 @@ public final class DatabaseModule {
                             throwable -> Log.e("insertDayOfTime", "fail", throwable)
                     ));
 
-            DayOfWeekEntity sunday = new DayOfWeekEntity();
-            DayOfWeekEntity monday = new DayOfWeekEntity();
-            DayOfWeekEntity tuesday = new DayOfWeekEntity();
-            DayOfWeekEntity wednesday = new DayOfWeekEntity();
-            DayOfWeekEntity thursday = new DayOfWeekEntity();
-            DayOfWeekEntity friday = new DayOfWeekEntity();
-            DayOfWeekEntity saturday = new DayOfWeekEntity();
-
-            sunday.setDayOfWeekName(String.valueOf(R.string.str_sunday));
-            monday.setDayOfWeekName(String.valueOf(R.string.str_monday));
-            tuesday.setDayOfWeekName(String.valueOf(R.string.str_tuesday));
-            wednesday.setDayOfWeekName(String.valueOf(R.string.str_wednesday));
-            thursday.setDayOfWeekName(String.valueOf(R.string.str_thursday));
-            friday.setDayOfWeekName(String.valueOf(R.string.str_friday));
-            saturday.setDayOfWeekName(String.valueOf(R.string.str_saturday));
+            DayOfWeekEntity sunday = new DayOfWeekEntity(DayOfWeek.SUN.getId(), DayOfWeek.SUN.getDayName());
+            DayOfWeekEntity monday = new DayOfWeekEntity(DayOfWeek.MON.getId(), DayOfWeek.MON.getDayName());
+            DayOfWeekEntity tuesday = new DayOfWeekEntity(DayOfWeek.TUE.getId(), DayOfWeek.TUE.getDayName());
+            DayOfWeekEntity wednesday = new DayOfWeekEntity(DayOfWeek.WED.getId(), DayOfWeek.WED.getDayName());
+            DayOfWeekEntity thursday = new DayOfWeekEntity(DayOfWeek.THU.getId(), DayOfWeek.THU.getDayName());
+            DayOfWeekEntity friday = new DayOfWeekEntity(DayOfWeek.FRI.getId(), DayOfWeek.FRI.getDayName());
+            DayOfWeekEntity saturday = new DayOfWeekEntity(DayOfWeek.SAT.getId(), DayOfWeek.SAT.getDayName());
 
             mCompositeDisposable.add(this.dayOfWeekDao.insert(sunday)
                     .observeOn(Schedulers.io())

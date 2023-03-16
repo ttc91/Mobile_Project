@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity(tableName = "tbl_day_of_time")
 public class DayOfTimeEntity extends BaseEntity implements Serializable {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey()
     @ColumnInfo(name = "id")
     public Long dayOfTimeId;
 
