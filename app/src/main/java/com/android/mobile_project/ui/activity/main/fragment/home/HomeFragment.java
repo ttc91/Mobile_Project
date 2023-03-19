@@ -34,13 +34,13 @@ import com.android.mobile_project.data.remote.model.HabitInWeekModel;
 import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.data.remote.model.HistoryModel;
 import com.android.mobile_project.databinding.FragmentHomeBinding;
+import com.android.mobile_project.ui.activity.create.CreateHabitActivity;
 import com.android.mobile_project.ui.activity.main.MainActivity;
 import com.android.mobile_project.utils.dagger.component.sub.main.fragment.HomeComponent;
 import com.android.mobile_project.utils.time.adapter.DailyCalendarAdapter;
 import com.android.mobile_project.utils.time.utils.TimeUtils;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.count.CountDownActivity;
-import com.android.mobile_project.ui.activity.create.CreateHabitActivity;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.AfterAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.BeforeAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.DoneHabitAdapter;
@@ -66,6 +66,15 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     private FragmentHomeBinding binding;
 
     public HomeComponent component;
+
+    private static HomeFragment INSTANCE;
+
+    public static HomeFragment newInstance(){
+        if(INSTANCE == null){
+            INSTANCE = new HomeFragment();
+        }
+        return INSTANCE;
+    }
 
     @Inject
     HomeViewModel viewModel;
@@ -322,7 +331,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
                         HistoryModel historyModel = new HistoryModel();
                         historyModel.setHistoryDate(historyTime);
-                        historyModel.setUserId(DataLocalManager.getUserId());
+                        historyModel.setUserId(DataLocalManager.getInstance().getUserId());
                         historyModel.setHistoryHabitsState("null");
                         historyModel.setHabitId(model.getHabitId());
 
@@ -346,7 +355,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                         if(historyModel == null){
                             historyModel = new HistoryModel();
                             historyModel.setHistoryDate(historyTime);
-                            historyModel.setUserId(DataLocalManager.getUserId());
+                            historyModel.setUserId(DataLocalManager.getInstance().getUserId());
                             historyModel.setHistoryHabitsState("null");
                             historyModel.setHabitId(model.getHabitId());
 
@@ -426,10 +435,8 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     }
 
     public void clickCreateHabit(){
-
         Intent intent = new Intent(getContext(), CreateHabitActivity.class);
         startActivity(intent);
-
     }
 
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {

@@ -11,8 +11,8 @@ import dagger.Module;
 @Module(subcomponents = {
         MainComponent.class,
         HabitSettingComponent.class,
-        CreateHabitComponent.class,
         CountDownComponent.class,
-        InputComponent.class
+        InputComponent.class,
+        CreateHabitComponent.class
 })
 public class SubComponentModule { }

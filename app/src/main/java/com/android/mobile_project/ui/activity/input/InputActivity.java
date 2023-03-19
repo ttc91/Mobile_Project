@@ -16,6 +16,7 @@ import com.android.mobile_project.data.remote.model.UserModel;
 import com.android.mobile_project.databinding.ActivityInputBinding;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.input.service.DbService;
+import com.android.mobile_project.ui.activity.input.service.ToastService;
 import com.android.mobile_project.ui.activity.main.MainActivity;
 import com.android.mobile_project.utils.dagger.component.provider.InputComponentProvider;
 import com.android.mobile_project.utils.dagger.component.sub.input.InputComponent;
@@ -49,7 +50,7 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
 
         initViewModel();
 
-        mUserIdObserver = DataLocalManager::setUserId;
+        mUserIdObserver = aLong -> DataLocalManager.getInstance().setUserId(aLong) ;
         viewModel.getUserIdMutableLiveData().observe(this, mUserIdObserver);
 
         checkUI();
@@ -88,7 +89,7 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
                             @Override
                             public void onGetIdFailure() {
                                 Log.e("InputActivity", "cannot redirect To MainActivity");
-                                //TODO ChuTT must add more one dialog fragment to information user.
+                                viewModel.toastService.makeErrorToast();
                             }
                         });
                     }
@@ -96,22 +97,32 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
                     @Override
                     public void onInsertUserFailure() {
                         Log.e("InputActivity", "cannot insert user to RoomDB");
-                        //TODO ChuTT must add more one dialog fragment to information user.
+                        viewModel.toastService.makeErrorToast();
                     }
                 });
 
-                DataLocalManager.setUserName(userName);
+                DataLocalManager.getInstance().setUserName(userName);
 
             }
 
             @Override
             public boolean checkExistUser(GetUsernameFromLocalResult callback) {
-                String name = DataLocalManager.getUserName();
+                String name = DataLocalManager.getInstance().getUserName();
                 return !name.equals(null) && !name.equals("");
             }
         };
 
-        viewModel.toastService = () -> Toast.makeText(getApplicationContext(),"Please input your name !", Toast.LENGTH_SHORT).show();
+        viewModel.toastService = new ToastService() {
+            @Override
+            public void makeUsernameEmptyToast() {
+                Toast.makeText(getApplicationContext(), ToastService.InputToastConstant.CONTENT_USERNAME_IS_EMPTY, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void makeErrorToast() {
+                Toast.makeText(getApplicationContext(), ToastService.InputToastConstant.CONTENT_ERROR, Toast.LENGTH_SHORT).show();
+            }
+        };
 
     }
 
@@ -124,7 +135,7 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
                 viewModel.service.setUser(binding.edtInputUser.getText().toString().trim());
             }
             else {
-                viewModel.toastService.makeToast();
+                viewModel.toastService.makeUsernameEmptyToast();
             }
         }
 
@@ -142,6 +153,8 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
         Log.i("InputActivity", "onDestroy()");
         super.onDestroy();
         viewModel.setDispose();
+        mUserIdObserver = null;
+        viewModel = null;
     }
 
     private void checkUI(){
@@ -163,7 +176,7 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
         if(check){
            redirectToNextActivity();
         }else{
-            viewModel.toastService.makeToast();
+            viewModel.toastService.makeUsernameEmptyToast();
         }
     }
 

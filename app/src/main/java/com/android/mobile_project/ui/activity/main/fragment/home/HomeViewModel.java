@@ -311,7 +311,7 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
 
         final HabitModel[] habitModels = {new HabitModel()};
 
-        mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), habitId)
+        mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getInstance().getUserId(), habitId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new SingleObserver<HabitEntity>() {
@@ -341,7 +341,7 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
 
         final List<HistoryModel>[] historyModels = new List[]{new ArrayList<>()};
 
-        mHistoryRepository.getMHistoryDataSource().getHistoryByDate(DataLocalManager.getUserId(), historyTime)
+        mHistoryRepository.getMHistoryDataSource().getHistoryByDate(DataLocalManager.getInstance().getUserId(), historyTime)
                 .observeOn(Schedulers.io())
                 .subscribeWith(new DisposableSubscriber<List<HistoryEntity>>() {
                     @Override
@@ -466,7 +466,7 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
 
         final List<HabitInWeekModel>[] habitInWeekModels = new List[]{new ArrayList<>()};
 
-        mHabitInWeekRepository.getMHabitInWeekDataSource().getDayOfWeekHabitListByUserAndHabitId(DataLocalManager.getUserId(), habitId)
+        mHabitInWeekRepository.getMHabitInWeekDataSource().getDayOfWeekHabitListByUserAndHabitId(DataLocalManager.getInstance().getUserId(), habitId)
                 .observeOn(Schedulers.single())
                 .subscribeWith(new DisposableSubscriber<List<HabitInWeekEntity>>() {
                     @Override

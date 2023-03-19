@@ -204,7 +204,7 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
 
         final HabitModel[] habitModels = {new HabitModel()};
 
-        mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), habitId)
+        mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getInstance().getUserId(), habitId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new SingleObserver<HabitEntity>() {
@@ -343,7 +343,7 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
         final List<HabitInWeekModel>[] habitInWeekModels = new List[]{new ArrayList<>()};
 
         mHabitInWeekRepository.getMHabitInWeekDataSource().getDayOfWeekHabitListByUserAndHabitId(
-                DataLocalManager.getUserId(), habitModel.getHabitId())
+                DataLocalManager.getInstance().getUserId(), habitModel.getHabitId())
                 .observeOn(Schedulers.single())
                 .subscribeWith(new DisposableSubscriber<List<HabitInWeekEntity>>() {
                     @RequiresApi(api = Build.VERSION_CODES.N)

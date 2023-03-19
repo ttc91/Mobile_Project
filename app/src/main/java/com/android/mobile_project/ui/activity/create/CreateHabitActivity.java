@@ -1,8 +1,8 @@
 package com.android.mobile_project.ui.activity.create;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -17,7 +17,7 @@ import com.android.mobile_project.databinding.ActivityCreateHabitBinding;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.create.service.DbService;
 import com.android.mobile_project.ui.activity.create.service.InitService;
-import com.android.mobile_project.ui.activity.main.MainActivity;
+import com.android.mobile_project.ui.activity.create.service.ToastService;
 import com.android.mobile_project.utils.dagger.component.provider.CreateHabitComponentProvider;
 import com.android.mobile_project.utils.dagger.component.sub.create.CreateHabitComponent;
 import com.android.mobile_project.utils.time.DayOfWeek;
@@ -34,15 +34,26 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
 
     public CreateHabitComponent component;
 
+    private static CreateHabitActivity INSTANCE;
+
+    public static CreateHabitActivity newInstance(){
+        if(INSTANCE == null){
+            INSTANCE = new CreateHabitActivity();
+        }
+        return INSTANCE;
+    }
+
     private final DbService.InsertHabitInWeek insertHabitInWeekCallBack = new DbService.InsertHabitInWeek() {
+        @SuppressLint("LongLogTag")
         @Override
         public void onInsertHabitInWeekSuccess() {
-
+            Log.i("insertHabitInWeekSuccess", "isSuccess");
         }
 
+        @SuppressLint("LongLogTag")
         @Override
         public void onInsertHabitInWeekFailure() {
-
+            Log.e("insertHabitInWeekSuccess", "isFailure");
         }
     };
 
@@ -52,18 +63,18 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
-        component = ((CreateHabitComponentProvider) getApplicationContext()).provideCreateHabitComponent();
-        component.inject(this);
-
-        super.onCreate(savedInstanceState);
+        Log.i("CreateHabitActivity", "onCreate");
 
         setContentView(initContentView());
+
+        component = ((CreateHabitComponentProvider) getApplicationContext()).provideCreateHabitComponent();
+        component.inject(this);
+        super.onCreate(savedInstanceState);
+
+
         initViewModel();
-
         viewModel.initService.intiDayOfWeekLogo();
-
         habitModelObserver = habitModel -> habitId = habitModel.getHabitId();
-
         viewModel.getHabitModelMutableLiveData().observe(this, habitModelObserver);
 
     }
@@ -80,6 +91,33 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
 
         binding.setVm(viewModel);
 
+        viewModel.toastService = new ToastService() {
+            @Override
+            public void makeInsertHabitSuccessToast() {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), CreateHabitToastConstant.CONTENT_CREATE_HABIT_SUCCESS, Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void makeHabitNameIsExistedToast() {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), CreateHabitToastConstant.CONTENT_HABIT_NAME_IS_EXISTED, Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void makeHabitNameInputtedIsEmptyToast() {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), CreateHabitToastConstant.CONTENT_HABIT_NAME_IS_EMPTY, Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void makeDaysOfWeekInputtedIsEmptyToast() {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), CreateHabitToastConstant.CONTENT_DAY_OF_WEEK_IS_EMPTY, Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void makeErrorToast() {
+                runOnUiThread(()->Toast.makeText(getApplicationContext(), CreateHabitToastConstant.CONTENT_ERROR, Toast.LENGTH_SHORT).show());
+            }
+        };
+
         viewModel.initService = new InitService() {
 
             @Override
@@ -94,68 +132,77 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
             public void initCreateHabitEvent() {
 
                 if(binding.edtHname.getText().toString().trim().equals("") || binding.edtHname.getText().toString().trim().equals(null)){
-                    Toast.makeText(getApplicationContext(), "Please input your habit name !", Toast.LENGTH_SHORT).show();
+                    viewModel.toastService.makeHabitNameInputtedIsEmptyToast();
                     return;
                 }else {
                     viewModel.checkExistHabitByName(binding.edtHname.getText().toString().trim(),
                             new DbService.GetHabitByName() {
                                 @Override
                                 public void onGetHabitByNameSuccess() {
-                                    viewModel.insertHabit(getApplicationContext(), binding.edtHname.getText().toString().trim(), new DbService.InsertHabit() {
-                                        @Override
-                                        public void onInsertHabitSuccess() {
-
-                                        }
-
-                                        @Override
-                                        public void onInsertHabitFailure() {
-                                            //TODO ChuTT must be add more a dialog for inform to user.
-                                        }
-                                    });
+                                    Log.i("checkExistHabitByName", "already existed");
+                                   viewModel.toastService.makeHabitNameIsExistedToast();
+                                   habitId = 0L;
                                 }
 
                                 @Override
                                 public void onGetHabitByNameFailure() {
-                                    Toast.makeText(getApplicationContext(), "Your habit name is exist please input other name !", Toast.LENGTH_SHORT).show();
+                                    Log.i("checkExistHabitByName", "has not existed");
+                                    viewModel.insertHabit(getApplicationContext(), binding.edtHname.getText().toString().trim(), new DbService.InsertHabit() {
+                                        @Override
+                                        public void onInsertHabitSuccess() {
+                                            Log.i("insertHabit", "isSuccess");
+                                            viewModel.toastService.makeInsertHabitSuccessToast();
+                                        }
+
+                                        @Override
+                                        public void onInsertHabitFailure() {
+                                            Log.e("insertHabit", "isFailure");
+                                            viewModel.toastService.makeErrorToast();
+                                        }
+                                    });
                                 }
                             }
                     );
                 }
 
+                if(habitId != 0L){
 
-                if(!viewModel.isSelectSunDate() && !viewModel.isSelectMonDate() && !viewModel.isSelectTueDate() && !viewModel.isSelectWedDate()
-                    && !viewModel.isSelectThuDate() && !viewModel.isSelectFriDate() && !viewModel.isSelectSatDate()){
-                    Toast.makeText(getApplicationContext(), "Please choose your days of week !", Toast.LENGTH_SHORT).show();
+                    if(!viewModel.isSelectSunDate() && !viewModel.isSelectMonDate() && !viewModel.isSelectTueDate() && !viewModel.isSelectWedDate()
+                            && !viewModel.isSelectThuDate() && !viewModel.isSelectFriDate() && !viewModel.isSelectSatDate()){
+                        viewModel.toastService.makeDaysOfWeekInputtedIsEmptyToast();
+                    }else {
+                        if(viewModel.isSelectSunDate()){
+                            viewModel.insertHabitInWeek(habitId, DayOfWeek.SUN.getId(), insertHabitInWeekCallBack);
+                        }
+
+                        if(viewModel.isSelectMonDate()){
+                            viewModel.insertHabitInWeek(habitId, DayOfWeek.MON.getId(), insertHabitInWeekCallBack);
+                        }
+
+                        if(viewModel.isSelectTueDate()){
+                            viewModel.insertHabitInWeek(habitId, DayOfWeek.TUE.getId(), insertHabitInWeekCallBack);
+                        }
+
+                        if(viewModel.isSelectWedDate()){
+                            viewModel.insertHabitInWeek(habitId, DayOfWeek.WED.getId(), insertHabitInWeekCallBack);
+                        }
+
+                        if(viewModel.isSelectThuDate()){
+                            viewModel.insertHabitInWeek(habitId, DayOfWeek.THU.getId(), insertHabitInWeekCallBack);
+                        }
+
+                        if(viewModel.isSelectFriDate()){
+                            viewModel.insertHabitInWeek(habitId, DayOfWeek.FRI.getId(), insertHabitInWeekCallBack);                }
+
+                        if(viewModel.isSelectSatDate()){
+                            viewModel.insertHabitInWeek(habitId, DayOfWeek.SAT.getId(), insertHabitInWeekCallBack);
+                        }
+
+                        finish();
+                    }
+
                 }
 
-                if(viewModel.isSelectSunDate()){
-                    viewModel.insertHabitInWeek(habitId, DayOfWeek.SUN.getId(), insertHabitInWeekCallBack);
-                }
-
-                if(viewModel.isSelectMonDate()){
-                    viewModel.insertHabitInWeek(habitId, DayOfWeek.MON.getId(), insertHabitInWeekCallBack);
-                }
-
-                if(viewModel.isSelectTueDate()){
-                    viewModel.insertHabitInWeek(habitId, DayOfWeek.TUE.getId(), insertHabitInWeekCallBack);
-                }
-
-                if(viewModel.isSelectWedDate()){
-                    viewModel.insertHabitInWeek(habitId, DayOfWeek.WED.getId(), insertHabitInWeekCallBack);
-                }
-
-                if(viewModel.isSelectThuDate()){
-                    viewModel.insertHabitInWeek(habitId, DayOfWeek.THU.getId(), insertHabitInWeekCallBack);
-                }
-
-                if(viewModel.isSelectFriDate()){
-                    viewModel.insertHabitInWeek(habitId, DayOfWeek.FRI.getId(), insertHabitInWeekCallBack);                }
-
-                if(viewModel.isSelectSatDate()){
-                    viewModel.insertHabitInWeek(habitId, DayOfWeek.SAT.getId(), insertHabitInWeekCallBack);
-                }
-
-                finish();
             }
         };
 
@@ -179,8 +226,8 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
     }
 
     public void clickBackToHome(){
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
+        viewModel.disposeCompositeDisposable();
+        finish();
     }
 
     /**
@@ -344,8 +391,18 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
+        Log.i("CreateHabitActivity", "onDestroy");
         super.onDestroy();
         viewModel.disposeCompositeDisposable();
     }
+
+    @Override
+    public void onBackPressed() {
+        Log.i("CreateHabitActivity", "onBackPressed");
+        super.onBackPressed();
+        viewModel.disposeCompositeDisposable();
+        finish();
+    }
+
 }

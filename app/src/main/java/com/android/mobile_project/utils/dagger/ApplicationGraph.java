@@ -29,8 +29,8 @@ public interface ApplicationGraph {
      */
     MainComponent.Factory mMainComponent();
     HabitSettingComponent.Factory mHabitSettingComponent();
-    CreateHabitComponent.Factory mCreateHabitComponent();
     InputComponent.Factory mInputComponent();
     CountDownComponent.Factory mCountDownComponent();
+    CreateHabitComponent.Factory mCreateHabitComponent();
 
 }

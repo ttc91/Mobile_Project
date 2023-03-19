@@ -19,7 +19,7 @@ import com.android.mobile_project.utils.dagger.module.DatabaseModule;
 
 public class MyApplication extends Application
         implements MainComponentProvider, HabitSettingComponentProvider,
-        CreateHabitComponentProvider, InputComponentProvider, CountDownComponentProvider {
+        InputComponentProvider, CountDownComponentProvider, CreateHabitComponentProvider {
 
     private ApplicationGraph graph;
 
@@ -48,11 +48,6 @@ public class MyApplication extends Application
     }
 
     @Override
-    public CreateHabitComponent provideCreateHabitComponent() {
-        return graph.mCreateHabitComponent().create();
-    }
-
-    @Override
     public InputComponent provideInputComponent() {
         return graph.mInputComponent().create();
     }
@@ -62,4 +57,8 @@ public class MyApplication extends Application
         return graph.mCountDownComponent().create();
     }
 
+    @Override
+    public CreateHabitComponent provideCreateHabitComponent() {
+        return graph.mCreateHabitComponent().create();
+    }
 }

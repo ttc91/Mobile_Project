@@ -47,7 +47,7 @@ public class PlannerViewModel extends ViewModel {
 
         final List<HistoryModel>[] historyModels = new List[]{new ArrayList<>()};
 
-        mHistoryRepository.getMHistoryDataSource().getHistoryByDate(DataLocalManager.getUserId(), historyDate)
+        mHistoryRepository.getMHistoryDataSource().getHistoryByDate(DataLocalManager.getInstance().getUserId(), historyDate)
                 .observeOn(Schedulers.io())
                 .subscribeWith(new DisposableSubscriber<List<HistoryEntity>>() {
                     @SuppressLint("NewApi")

@@ -14,12 +14,32 @@
     <string name="str_friday">Friday</string>
     <string name="str_saturday">Saturday</string>
 
-    <!--Input Fragment-->
+    <!--Input Activity-->
     <string name="str_habit_name">Habit name</string>
     <string name="str_habit_tracker">Habit Tracker</string>
     <string name="str_next_to_main_activity">Go to MainActivity</string>
     <string name="str_habit_tracker_icon">Habit Tracker Icon</string>
 
+    <!--Create Habit Activity-->
+    <string name="title_name_create_habit_activity">NAME</string>
+    <string name="title_day_of_week_create_habit_activity">DAY OF WEEK</string>
+    <string name="title_time_of_day_create_habit_activity">TIME OF DAY</string>
+    <string name="str_input_habit_name">Habit name</string>
+    <string name="str_acronym_sunday">S</string>
+    <string name="str_acronym_monday">M</string>
+    <string name="str_acronym_tuesday">T</string>
+    <string name="str_acronym_wednesday">W</string>
+    <string name="str_acronym_thursday">T</string>
+    <string name="str_acronym_friday">F</string>
+    <string name="str_acronym_saturday">S</string>
+    <string name="str_icon">ICON</string>
+    <string name="description_anytime">Anytime icon</string>
+    <string name="description_morning">Morning icon</string>
+    <string name="description_afternoon">Afternoon icon</string>
+    <string name="description_night">Night icon</string>
+    <string name="description_left_arrow_icon">Back arrow icon</string>
+    <string name="description_left_arrow_background">Back arrow background</string>
+    <string name="text_create_button">CREATE</string>
 
     <!--Original-->
     <string name="str_right_arrow">Right arrow</string>

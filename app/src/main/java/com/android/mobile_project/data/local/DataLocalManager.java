@@ -32,19 +32,19 @@ public class DataLocalManager {
         return instance;
     }
 
-    public static void setUserName(String value){
+    public void setUserName(String value){
         mySharedPreferences.putStringValue(USER_NAME, value);
     }
 
-    public static String getUserName(){
+    public String getUserName(){
         return mySharedPreferences.getStringValue(USER_NAME);
     }
 
-    public static void setUserId(Long value){
+    public void setUserId(Long value){
         DataLocalManager.mySharedPreferences.putLongValue(USER_ID, value);
     }
 
-    public static Long getUserId(){
+    public Long getUserId(){
         return DataLocalManager.mySharedPreferences.getLongValue(USER_ID);
     }
 

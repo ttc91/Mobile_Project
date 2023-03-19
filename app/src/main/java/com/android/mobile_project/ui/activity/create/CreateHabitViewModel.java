@@ -17,6 +17,7 @@ import com.android.mobile_project.data.utils.mapper.HabitInWeekMapper;
 import com.android.mobile_project.data.utils.mapper.HabitMapper;
 import com.android.mobile_project.ui.activity.create.service.DbService;
 import com.android.mobile_project.ui.activity.create.service.InitService;
+import com.android.mobile_project.ui.activity.create.service.ToastService;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
 import com.android.mobile_project.utils.time.DayOfTime;
 
@@ -39,7 +40,9 @@ public class CreateHabitViewModel extends ViewModel {
 
     InitService initService;
 
-    private final Long userId = DataLocalManager.getUserId();
+    ToastService toastService;
+
+    private final Long userId = DataLocalManager.getInstance().getUserId();
 
     private boolean selectSunDate = false;
     private boolean selectMonDate = false;
@@ -55,9 +58,8 @@ public class CreateHabitViewModel extends ViewModel {
     private boolean selectAfternoon = false;
 
     private final MutableLiveData<HabitModel> habitModelMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<Boolean> isHabitExistMutableLiveData = new MutableLiveData<>();
 
-    private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+    private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
     protected void disposeCompositeDisposable() {
         mCompositeDisposable.dispose();
@@ -65,10 +67,6 @@ public class CreateHabitViewModel extends ViewModel {
 
     protected LiveData<HabitModel> getHabitModelMutableLiveData(){
         return habitModelMutableLiveData;
-    }
-
-    protected LiveData<Boolean> getResultOfHabitIsExistMutableLiveData(){
-        return isHabitExistMutableLiveData;
     }
 
     public boolean isSelectSunDate() {
@@ -204,11 +202,10 @@ public class CreateHabitViewModel extends ViewModel {
                 .observeOn(Schedulers.single())
                 .subscribe(habitEntity -> {
                     Log.i("getHabitByName", "onSuccess");
-                    isHabitExistMutableLiveData.postValue(true);
                     callback.onGetHabitByNameSuccess();
+                    habitModelMutableLiveData.postValue(HabitMapper.getInstance().mapToModel(habitEntity));
                 }, throwable -> {
                     Log.e("getHabitByName", "onError", throwable);
-                    isHabitExistMutableLiveData.postValue(false);
                     callback.onGetHabitByNameFailure();
                 })
         );

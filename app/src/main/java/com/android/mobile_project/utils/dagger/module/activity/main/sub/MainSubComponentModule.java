@@ -10,7 +10,7 @@ import dagger.Module;
         subcomponents = {
                 HomeComponent.class,
                 PlannerComponent.class,
-                SettingComponent.class
+                SettingComponent.class,
         }
 )
 public class MainSubComponentModule {

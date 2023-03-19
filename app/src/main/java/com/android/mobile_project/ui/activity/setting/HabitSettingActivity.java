@@ -569,7 +569,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             if(viewModel.isSelectSunDate()){
                 HabitInWeekModel model = new HabitInWeekModel();
                 model.setHabitId(viewModel.getHabitModel().getHabitId());
-                model.setUserId(DataLocalManager.getUserId());
+                model.setUserId(DataLocalManager.getInstance().getUserId());
                 model.setDayOfWeekId(1L);
                 model.setTimerHour(Long.valueOf(binding.tHour.getText().toString().trim()));
                 model.setTimerMinute(Long.valueOf(binding.tMinutes.getText().toString().trim()));
@@ -580,7 +580,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             if(viewModel.isSelectMonDate()){
                 HabitInWeekModel model = new HabitInWeekModel();
                 model.setHabitId(viewModel.getHabitModel().getHabitId());
-                model.setUserId(DataLocalManager.getUserId());
+                model.setUserId(DataLocalManager.getInstance().getUserId());
                 model.setDayOfWeekId(2L);
                 model.setTimerHour(Long.valueOf(binding.tHour.getText().toString().trim()));
                 model.setTimerMinute(Long.valueOf(binding.tMinutes.getText().toString().trim()));
@@ -591,7 +591,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             if(viewModel.isSelectTueDate()){
                 HabitInWeekModel model = new HabitInWeekModel();
                 model.setHabitId(viewModel.getHabitModel().getHabitId());
-                model.setUserId(DataLocalManager.getUserId());
+                model.setUserId(DataLocalManager.getInstance().getUserId());
                 model.setDayOfWeekId(3L);
                 model.setTimerHour(Long.valueOf(binding.tHour.getText().toString().trim()));
                 model.setTimerMinute(Long.valueOf(binding.tMinutes.getText().toString().trim()));
@@ -602,7 +602,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             if(viewModel.isSelectWedDate()){
                 HabitInWeekModel model = new HabitInWeekModel();
                 model.setHabitId(viewModel.getHabitModel().getHabitId());
-                model.setUserId(DataLocalManager.getUserId());
+                model.setUserId(DataLocalManager.getInstance().getUserId());
                 model.setDayOfWeekId(4L);
                 model.setTimerHour(Long.valueOf(binding.tHour.getText().toString().trim()));
                 model.setTimerMinute(Long.valueOf(binding.tMinutes.getText().toString().trim()));
@@ -613,7 +613,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             if(viewModel.isSelectThuDate()){
                 HabitInWeekModel model = new HabitInWeekModel();
                 model.setHabitId(viewModel.getHabitModel().getHabitId());
-                model.setUserId(DataLocalManager.getUserId());
+                model.setUserId(DataLocalManager.getInstance().getUserId());
                 model.setDayOfWeekId(5L);
                 model.setTimerHour(Long.valueOf(binding.tHour.getText().toString().trim()));
                 model.setTimerMinute(Long.valueOf(binding.tMinutes.getText().toString().trim()));
@@ -624,7 +624,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             if(viewModel.isSelectFriDate()){
                 HabitInWeekModel model = new HabitInWeekModel();
                 model.setHabitId(viewModel.getHabitModel().getHabitId());
-                model.setUserId(DataLocalManager.getUserId());
+                model.setUserId(DataLocalManager.getInstance().getUserId());
                 model.setDayOfWeekId(6L);
                 model.setTimerHour(Long.valueOf(binding.tHour.getText().toString().trim()));
                 model.setTimerMinute(Long.valueOf(binding.tMinutes.getText().toString().trim()));
@@ -635,7 +635,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             if(viewModel.isSelectSatDate()){
                 HabitInWeekModel model = new HabitInWeekModel();
                 model.setHabitId(viewModel.getHabitModel().getHabitId());
-                model.setUserId(DataLocalManager.getUserId());
+                model.setUserId(DataLocalManager.getInstance().getUserId());
                 model.setDayOfWeekId(7L);
                 model.setTimerHour(Long.valueOf(binding.tHour.getText().toString().trim()));
                 model.setTimerMinute(Long.valueOf(binding.tMinutes.getText().toString().trim()));

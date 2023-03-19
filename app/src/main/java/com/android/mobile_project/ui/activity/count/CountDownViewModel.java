@@ -110,7 +110,7 @@ public class CountDownViewModel extends ViewModel {
 
         final HabitModel[] habitModels = {new HabitModel()};
 
-        mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getUserId(), habitId)
+        mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getInstance().getUserId(), habitId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(new SingleObserver<HabitEntity>() {
@@ -140,7 +140,7 @@ public class CountDownViewModel extends ViewModel {
 
         final List<HabitInWeekModel>[] habitInWeekModels = new List[]{new ArrayList<>()};
 
-        mHabitInWeekRepository.getMHabitInWeekDataSource().getDayOfWeekHabitListByUserAndHabitId(DataLocalManager.getUserId(), habitId)
+        mHabitInWeekRepository.getMHabitInWeekDataSource().getDayOfWeekHabitListByUserAndHabitId(DataLocalManager.getInstance().getUserId(), habitId)
                 .observeOn(Schedulers.single())
                 .subscribeWith(new DisposableSubscriber<List<HabitInWeekEntity>>() {
                     @RequiresApi(api = Build.VERSION_CODES.N)

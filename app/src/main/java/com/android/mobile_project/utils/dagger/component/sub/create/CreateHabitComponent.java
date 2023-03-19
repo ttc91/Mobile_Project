@@ -15,6 +15,6 @@ public interface CreateHabitComponent {
         CreateHabitComponent create();
     }
 
-    void inject(CreateHabitActivity activity);
+    void inject(CreateHabitActivity fragment);
 
 }
