@@ -1,9 +1,7 @@
 package com.android.mobile_project.ui.activity.create;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.util.Log;
-import android.widget.Toast;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -20,11 +18,13 @@ import com.android.mobile_project.ui.activity.create.service.InitService;
 import com.android.mobile_project.ui.activity.create.service.ToastService;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
 import com.android.mobile_project.utils.time.DayOfTime;
+import com.android.mobile_project.utils.time.DayOfWeek;
 
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import lombok.SneakyThrows;
 
 @MyCustomAnnotation.MyScope.ActivityScope
 public class CreateHabitViewModel extends ViewModel {
@@ -157,7 +157,27 @@ public class CreateHabitViewModel extends ViewModel {
         this.selectAfternoon = selectAfternoon;
     }
 
-    protected void insertHabit(Context context, final String habitName, DbService.InsertHabit callback) {
+    private final DbService.InsertHabitInWeek insertHabitInWeekCallBack = new DbService.InsertHabitInWeek() {
+        @SuppressLint("LongLogTag")
+        @Override
+        public void onInsertHabitInWeekSuccess() {
+            Log.i("insertHabitInWeekSuccess", "isSuccess");
+        }
+
+        @SuppressLint("LongLogTag")
+        @Override
+        public void onInsertHabitInWeekFailure() {
+            Log.e("insertHabitInWeekSuccess", "isFailure");
+        }
+    };
+
+    @SneakyThrows
+    protected void insertHabit(final String habitName, DbService.InsertHabit callback) {
+
+        if(!isDayOfWeekSelected()){
+            toastService.makeDaysOfWeekInputtedIsEmptyToast();
+            return;
+        }
 
         final HabitModel model = new HabitModel();
         model.setHabitName(habitName);
@@ -174,22 +194,61 @@ public class CreateHabitViewModel extends ViewModel {
         }else if(selectAfternoon) {
             model.setDayOfTimeId(DayOfTime.AFTERNOON.getId());
         }else {
-            Toast.makeText(context, "Please choose your day time !", Toast.LENGTH_SHORT).show();
+            toastService.makeDayOfTimeInputtedIsEmptyToast();
             return;
         }
 
         mCompositeDisposable.add(
                 mHabitRepository.getMHabitDataSource().insert(HabitMapper.getInstance().mapToEntity(model))
-                .observeOn(Schedulers.single())
-                .subscribeOn(Schedulers.io())
-                .subscribe(() -> {
-                        Log.i("insertHabit", "onComplete");
-                        callback.onInsertHabitSuccess();
-                    }, throwable -> {
-                        Log.e("insertHabit", "onError", throwable);
-                        callback.onInsertHabitFailure();
-                    }
-                )
+                        .observeOn(Schedulers.single())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(() -> {
+                                    Log.i("insertHabit", "onComplete");
+                                    callback.onInsertHabitSuccess();
+                                    checkExistHabitByName(habitName, new DbService.GetHabitByName() {
+                                        @Override
+                                        public void onGetHabitByNameSuccess(Long id) {
+                                            Log.i("CreateHabitViewModel", "onGetHabitByNameSuccess");
+                                            if (selectSunDate) {
+                                                insertHabitInWeek(id, DayOfWeek.SUN.getId(), insertHabitInWeekCallBack);
+                                            }
+
+                                            if (selectMonDate) {
+                                                insertHabitInWeek(id, DayOfWeek.MON.getId(), insertHabitInWeekCallBack);
+                                            }
+
+                                            if (selectTueDate) {
+                                                insertHabitInWeek(id, DayOfWeek.TUE.getId(), insertHabitInWeekCallBack);
+                                            }
+
+                                            if (selectWedDate) {
+                                                insertHabitInWeek(id, DayOfWeek.WED.getId(), insertHabitInWeekCallBack);
+                                            }
+
+                                            if (selectThuDate) {
+                                                insertHabitInWeek(id, DayOfWeek.THU.getId(), insertHabitInWeekCallBack);
+                                            }
+
+                                            if (selectFriDate) {
+                                                insertHabitInWeek(id, DayOfWeek.FRI.getId(), insertHabitInWeekCallBack);
+                                            }
+
+                                            if (selectSatDate) {
+                                                insertHabitInWeek(id, DayOfWeek.SAT.getId(), insertHabitInWeekCallBack);
+                                            }
+
+                                        }
+
+                                        @Override
+                                        public void onGetHabitByNameFailure() {
+                                            Log.e("CreateHabitViewModel", "onGetHabitByNameFailure");
+                                        }
+                                    });
+                                }, throwable -> {
+                                    Log.e("insertHabit", "onError", throwable);
+                                    callback.onInsertHabitFailure();
+                                }
+                        )
         );
 
     }
@@ -202,8 +261,7 @@ public class CreateHabitViewModel extends ViewModel {
                 .observeOn(Schedulers.single())
                 .subscribe(habitEntity -> {
                     Log.i("getHabitByName", "onSuccess");
-                    callback.onGetHabitByNameSuccess();
-                    habitModelMutableLiveData.postValue(HabitMapper.getInstance().mapToModel(habitEntity));
+                    callback.onGetHabitByNameSuccess(habitEntity.getHabitId());
                 }, throwable -> {
                     Log.e("getHabitByName", "onError", throwable);
                     callback.onGetHabitByNameFailure();
@@ -228,6 +286,11 @@ public class CreateHabitViewModel extends ViewModel {
                         })
         );
 
+    }
+
+    private boolean isDayOfWeekSelected(){
+        return isSelectSunDate() || isSelectMonDate() || isSelectTueDate() || isSelectWedDate()
+                || isSelectThuDate() || isSelectFriDate() || isSelectSatDate();
     }
 
 }

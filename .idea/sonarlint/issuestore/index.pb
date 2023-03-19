@@ -68,8 +68,6 @@ Sapp/src/main/java/com/android/mobile_project/data/utils/mapper/RemainderMapper.
 ç
 ]app/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/RemainderEntity.java,3\e\3e3b5f52cf03b69a83c36582d7e2bf130787f6e3
 Ö
-Uapp/src/main/java/com/android/mobile_project/data/utils/mapper/HabitInWeekMapper.java,3\7\375a3b07d07214ac51d70681256f2037518aef0c
-Ö
 Uapp/src/main/java/com/android/mobile_project/ui/activity/count/CountDownActivity.java,e\7\e7c37a6b250a8874814b499f863b4fe4fade6ee9
 û
 napp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/behavior/HabitInWeekDataSource.java,3\8\3869d8942ff2080622b2cdbc83d74e338c1b3163
@@ -149,8 +147,6 @@ Xapp/src/main/java/com/android/mobile_project/data/local/sqlite/HabitTrackerData
 dapp/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/relation/UserWithHabit.java,b\3\b39ef578ebe7c317a263d05b60e8c88a45edf3d9
 ô
 iapp/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/relation/DayOfTimeWithHabit.java,9\9\99950575182211e4dc34406a7000cc658883e0d4
-è
-_app/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/HabitInWeekEntity.java,8\0\80892f10b044d1ca83457a3e57b863814e527725
 ã
 [app/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/HistoryEntity.java,d\5\d52327fbee0e09f2c40a59cef42a91ddba4b6ff1
 Å
@@ -223,8 +219,6 @@ Oapp/src/main/java/com/android/mobile_project/ui/activity/main/MainActivity.java
 lapp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/behavior/DayOfWeekDataSource.java,0\7\070253786b71b82eecaf180afbddc5778f309be4
 Ö
 Uapp/src/main/java/com/android/mobile_project/data/repository/DayOfWeekRepository.java,0\5\0576b0019d69ef23ab4c3cf4956795335bb94f60
-â
-Yapp/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/HabitEntity.java,c\4\c47f8c436d930a33e5825a0029a69039a296f31d
 Ç
 Rapp/src/main/java/com/android/mobile_project/data/remote/model/DayOfTimeModel.java,9\0\90aecd7abad2c791d734bbd189c0871ceb906383
 Ö

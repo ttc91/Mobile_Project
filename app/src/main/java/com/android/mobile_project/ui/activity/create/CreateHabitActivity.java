@@ -9,10 +9,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.Observer;
 
 import com.android.mobile_project.R;
-import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.databinding.ActivityCreateHabitBinding;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.create.service.DbService;
@@ -20,17 +18,12 @@ import com.android.mobile_project.ui.activity.create.service.InitService;
 import com.android.mobile_project.ui.activity.create.service.ToastService;
 import com.android.mobile_project.utils.dagger.component.provider.CreateHabitComponentProvider;
 import com.android.mobile_project.utils.dagger.component.sub.create.CreateHabitComponent;
-import com.android.mobile_project.utils.time.DayOfWeek;
 
 import javax.inject.Inject;
 
 public class CreateHabitActivity extends AppCompatActivity implements InitLayout, View.OnClickListener {
 
     private ActivityCreateHabitBinding binding;
-
-    private Observer<HabitModel> habitModelObserver;
-
-    private Long habitId = 0L;
 
     public CreateHabitComponent component;
 
@@ -42,20 +35,6 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
         }
         return INSTANCE;
     }
-
-    private final DbService.InsertHabitInWeek insertHabitInWeekCallBack = new DbService.InsertHabitInWeek() {
-        @SuppressLint("LongLogTag")
-        @Override
-        public void onInsertHabitInWeekSuccess() {
-            Log.i("insertHabitInWeekSuccess", "isSuccess");
-        }
-
-        @SuppressLint("LongLogTag")
-        @Override
-        public void onInsertHabitInWeekFailure() {
-            Log.e("insertHabitInWeekSuccess", "isFailure");
-        }
-    };
 
     @Inject
     CreateHabitViewModel viewModel;
@@ -74,8 +53,6 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
 
         initViewModel();
         viewModel.initService.intiDayOfWeekLogo();
-        habitModelObserver = habitModel -> habitId = habitModel.getHabitId();
-        viewModel.getHabitModelMutableLiveData().observe(this, habitModelObserver);
 
     }
 
@@ -113,6 +90,11 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
             }
 
             @Override
+            public void makeDayOfTimeInputtedIsEmptyToast() {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), CreateHabitToastConstant.CONTENT_DAY_OF_TIME_IS_EMPTY, Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
             public void makeErrorToast() {
                 runOnUiThread(()->Toast.makeText(getApplicationContext(), CreateHabitToastConstant.CONTENT_ERROR, Toast.LENGTH_SHORT).show());
             }
@@ -133,76 +115,37 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
 
                 if(binding.edtHname.getText().toString().trim().equals("") || binding.edtHname.getText().toString().trim().equals(null)){
                     viewModel.toastService.makeHabitNameInputtedIsEmptyToast();
-                    return;
                 }else {
                     viewModel.checkExistHabitByName(binding.edtHname.getText().toString().trim(),
                             new DbService.GetHabitByName() {
                                 @Override
-                                public void onGetHabitByNameSuccess() {
-                                    Log.i("checkExistHabitByName", "already existed");
-                                   viewModel.toastService.makeHabitNameIsExistedToast();
-                                   habitId = 0L;
+                                public void onGetHabitByNameSuccess(Long id) {
+                                    Log.i("checkExistHabitByName", "already existed with ID - " + id);
+                                    viewModel.toastService.makeDaysOfWeekInputtedIsEmptyToast();
                                 }
 
                                 @Override
                                 public void onGetHabitByNameFailure() {
                                     Log.i("checkExistHabitByName", "has not existed");
-                                    viewModel.insertHabit(getApplicationContext(), binding.edtHname.getText().toString().trim(), new DbService.InsertHabit() {
-                                        @Override
-                                        public void onInsertHabitSuccess() {
-                                            Log.i("insertHabit", "isSuccess");
-                                            viewModel.toastService.makeInsertHabitSuccessToast();
-                                        }
+                                        viewModel.insertHabit(binding.edtHname.getText().toString().trim(), new DbService.InsertHabit() {
+                                            @Override
+                                            public void onInsertHabitSuccess() {
+                                                Log.i("insertHabit", "isSuccess");
+                                                viewModel.toastService.makeInsertHabitSuccessToast();
+                                                finish();
+                                            }
 
-                                        @Override
-                                        public void onInsertHabitFailure() {
-                                            Log.e("insertHabit", "isFailure");
-                                            viewModel.toastService.makeErrorToast();
+                                            @Override
+                                            public void onInsertHabitFailure() {
+                                                Log.e("insertHabit", "isFailure");
+                                                viewModel.toastService.makeErrorToast();
+                                            }
                                         }
-                                    });
+                                    );
                                 }
                             }
                     );
                 }
-
-                if(habitId != 0L){
-
-                    if(!viewModel.isSelectSunDate() && !viewModel.isSelectMonDate() && !viewModel.isSelectTueDate() && !viewModel.isSelectWedDate()
-                            && !viewModel.isSelectThuDate() && !viewModel.isSelectFriDate() && !viewModel.isSelectSatDate()){
-                        viewModel.toastService.makeDaysOfWeekInputtedIsEmptyToast();
-                    }else {
-                        if(viewModel.isSelectSunDate()){
-                            viewModel.insertHabitInWeek(habitId, DayOfWeek.SUN.getId(), insertHabitInWeekCallBack);
-                        }
-
-                        if(viewModel.isSelectMonDate()){
-                            viewModel.insertHabitInWeek(habitId, DayOfWeek.MON.getId(), insertHabitInWeekCallBack);
-                        }
-
-                        if(viewModel.isSelectTueDate()){
-                            viewModel.insertHabitInWeek(habitId, DayOfWeek.TUE.getId(), insertHabitInWeekCallBack);
-                        }
-
-                        if(viewModel.isSelectWedDate()){
-                            viewModel.insertHabitInWeek(habitId, DayOfWeek.WED.getId(), insertHabitInWeekCallBack);
-                        }
-
-                        if(viewModel.isSelectThuDate()){
-                            viewModel.insertHabitInWeek(habitId, DayOfWeek.THU.getId(), insertHabitInWeekCallBack);
-                        }
-
-                        if(viewModel.isSelectFriDate()){
-                            viewModel.insertHabitInWeek(habitId, DayOfWeek.FRI.getId(), insertHabitInWeekCallBack);                }
-
-                        if(viewModel.isSelectSatDate()){
-                            viewModel.insertHabitInWeek(habitId, DayOfWeek.SAT.getId(), insertHabitInWeekCallBack);
-                        }
-
-                        finish();
-                    }
-
-                }
-
             }
         };
 

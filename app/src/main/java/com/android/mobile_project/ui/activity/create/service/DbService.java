@@ -8,7 +8,7 @@ public interface DbService {
     }
 
     interface GetHabitByName{
-        void onGetHabitByNameSuccess();
+        void onGetHabitByNameSuccess(Long id);
         void onGetHabitByNameFailure();
     }
 

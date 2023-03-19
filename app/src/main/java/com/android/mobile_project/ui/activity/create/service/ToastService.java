@@ -6,6 +6,7 @@ public interface ToastService {
     void makeHabitNameIsExistedToast();
     void makeHabitNameInputtedIsEmptyToast();
     void makeDaysOfWeekInputtedIsEmptyToast();
+    void makeDayOfTimeInputtedIsEmptyToast();
     void makeErrorToast();
 
     interface CreateHabitToastConstant{
@@ -14,6 +15,7 @@ public interface ToastService {
         String CONTENT_HABIT_NAME_IS_EXISTED = "Habit has been created, please input other name of habit";
         String CONTENT_ERROR = "System has some error now, please contract to us";
         String CONTENT_DAY_OF_WEEK_IS_EMPTY = "Please choose your days of week !";
+        String CONTENT_DAY_OF_TIME_IS_EMPTY = "Please choose your day time !";
     }
 
 }
