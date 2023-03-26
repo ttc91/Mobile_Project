@@ -4,6 +4,8 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.android.mobile_project.utils.time.DayOfWeek;
+
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -87,5 +89,47 @@ public class TimeUtils {
 
         return days;
     }
+
+    public Long getDayOfWeekId(String date){
+        Long dayOfWeekId = 0L;
+        LocalDate localDate = LocalDate.parse(date);
+        java.time.DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+        if (dayOfWeek.toString().equals(DayOfWeek.MON.getDayName())){
+            dayOfWeekId = DayOfWeek.MON.getId();
+        }else if(dayOfWeek.toString().equals(DayOfWeek.TUE.getDayName())){
+            dayOfWeekId = DayOfWeek.TUE.getId();
+        }else if(dayOfWeek.toString().equals(DayOfWeek.WED.getDayName())){
+            dayOfWeekId = DayOfWeek.WED.getId();
+        }else if(dayOfWeek.toString().equals(DayOfWeek.THU.getDayName())){
+            dayOfWeekId = DayOfWeek.THU.getId();
+        }else if(dayOfWeek.toString().equals(DayOfWeek.FRI.getDayName())){
+            dayOfWeekId = DayOfWeek.FRI.getId();
+        }else if(dayOfWeek.toString().equals(DayOfWeek.SAT.getDayName())){
+            dayOfWeekId = DayOfWeek.SAT.getId();
+        }else if(dayOfWeek.toString().equals(DayOfWeek.SUN.getDayName())){
+            dayOfWeekId = DayOfWeek.SUN.getId();
+        }
+        return dayOfWeekId;
+    }
+    public Long getCurrentDayOfWeekId(String dayName){
+        Long dayOfWeekId = 0L;
+        if (dayName.equals(DayOfWeek.MON.getDayName())){
+            dayOfWeekId = DayOfWeek.MON.getId();
+        }else if(dayName.toString().equals(DayOfWeek.TUE.getDayName())){
+            dayOfWeekId = DayOfWeek.TUE.getId();
+        }else if(dayName.toString().equals(DayOfWeek.WED.getDayName())){
+            dayOfWeekId = DayOfWeek.WED.getId();
+        }else if(dayName.toString().equals(DayOfWeek.THU.getDayName())){
+            dayOfWeekId = DayOfWeek.THU.getId();
+        }else if(dayName.toString().equals(DayOfWeek.FRI.getDayName())){
+            dayOfWeekId = DayOfWeek.FRI.getId();
+        }else if(dayName.toString().equals(DayOfWeek.SAT.getDayName())){
+            dayOfWeekId = DayOfWeek.SAT.getId();
+        }else if(dayName.toString().equals(DayOfWeek.SUN.getDayName())){
+            dayOfWeekId = DayOfWeek.SUN.getId();
+        }
+        return dayOfWeekId;
+    }
+
 
 }

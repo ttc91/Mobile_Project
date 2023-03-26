@@ -53,8 +53,7 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
         mUserIdObserver = aLong -> DataLocalManager.getInstance().setUserId(aLong) ;
         viewModel.getUserIdMutableLiveData().observe(this, mUserIdObserver);
 
-        checkUI();
-
+        viewModel.initService.initCheckingUI();
     }
 
     @Override
@@ -69,7 +68,7 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
 
         binding.setVm(viewModel);
 
-        viewModel.service = new DbService() {
+        viewModel.dbService = new DbService() {
             @Override
             public void setUser(String userName) {
 
@@ -124,6 +123,28 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
             }
         };
 
+        viewModel.initService = () -> {
+            boolean check = viewModel.dbService.checkExistUser(new DbService.GetUsernameFromLocalResult() {
+                @Override
+                public boolean onGetIdSuccess() {
+                    Log.i("InputActivity", "onGetIdSuccess");
+                    return true;
+                }
+
+                @Override
+                public boolean onGetIdFailure() {
+                    Log.e("InputActivity", "onGetIdFailure");
+                    return false;
+                }
+            });
+
+            if(check){
+                redirectToNextActivity();
+            }else{
+                viewModel.toastService.makeUsernameEmptyToast();
+            }
+        };
+
     }
 
     @Override
@@ -132,7 +153,7 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
         if(view.getId() == R.id.btn_next){
 
             if(binding.edtInputUser.getText().toString().trim().length() > 0){
-                viewModel.service.setUser(binding.edtInputUser.getText().toString().trim());
+                viewModel.dbService.setUser(binding.edtInputUser.getText().toString().trim());
             }
             else {
                 viewModel.toastService.makeUsernameEmptyToast();
@@ -155,29 +176,6 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
         viewModel.setDispose();
         mUserIdObserver = null;
         viewModel = null;
-    }
-
-    private void checkUI(){
-
-        boolean check = viewModel.service.checkExistUser(new DbService.GetUsernameFromLocalResult() {
-            @Override
-            public boolean onGetIdSuccess() {
-                Log.i("InputActivity", "onGetIdSuccess");
-                return true;
-            }
-
-            @Override
-            public boolean onGetIdFailure() {
-                Log.e("InputActivity", "onGetIdFailure");
-                return false;
-            }
-        });
-
-        if(check){
-           redirectToNextActivity();
-        }else{
-            viewModel.toastService.makeUsernameEmptyToast();
-        }
     }
 
     private void redirectToNextActivity(){

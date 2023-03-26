@@ -60,23 +60,21 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder>{
 
         List<HabitInWeekModel> habitInWeekModels = vm.getDayOfWeekHabitListByUserAndHabitId(habit.getHabitId());
 
-        HabitInWeekModel model = habitInWeekModels.get(0);
-
-        if(model.getTimerHour() != null && model.getTimerMinute() != null && model.getTimerSecond() != null){
-            holder.binding.timer.setVisibility(View.VISIBLE);
-            holder.binding.hTimer.setText(String.valueOf(habitInWeekModels.get(0).getTimerHour()));
-            holder.binding.mTimer.setText(String.valueOf(habitInWeekModels.get(0).getTimerMinute()));
-            holder.binding.sTimer.setText(String.valueOf(habitInWeekModels.get(0).getTimerSecond()));
-        }else {
-            holder.binding.timer.setVisibility(View.GONE);
-        }
+//        HabitInWeekModel model = habitInWeekModels.get(0);
+//
+//        if(model.getTimerHour() != null && model.getTimerMinute() != null && model.getTimerSecond() != null){
+//            holder.binding.timer.setVisibility(View.VISIBLE);
+//            holder.binding.hTimer.setText(String.valueOf(habitInWeekModels.get(0).getTimerHour()));
+//            holder.binding.mTimer.setText(String.valueOf(habitInWeekModels.get(0).getTimerMinute()));
+//            holder.binding.sTimer.setText(String.valueOf(habitInWeekModels.get(0).getTimerSecond()));
+//        }else {
+//            holder.binding.timer.setVisibility(View.GONE);
+//        }
 
     }
 
     @Override
     public int getItemCount() {
-
-
         if(habitModelList == null){
             return 0;
         }
@@ -93,11 +91,8 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder>{
 
         public ViewHolder(@NonNull RcvItemHabitBinding binding) {
             super(binding.getRoot());
-
             this.binding = binding;
-
             binding.getRoot().setOnClickListener(this);
-
         }
 
         @Override

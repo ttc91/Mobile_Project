@@ -1,6 +1,7 @@
 package com.android.mobile_project.data.local.sqlite.dao;
 
 import androidx.room.Dao;
+import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
@@ -30,5 +31,8 @@ public interface DayOfTimeDAO extends BaseDAO<DayOfTimeEntity>{
 
     @Query("SELECT * FROM tbl_day_of_time WHERE id = :id")
     Single<DayOfTimeEntity> getDayOfTimeById(Long id);
+
+    @Insert
+    void insertInBackgroundDb(DayOfTimeEntity e);
 
 }

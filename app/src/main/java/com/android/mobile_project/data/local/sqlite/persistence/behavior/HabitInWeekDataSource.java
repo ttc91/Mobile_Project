@@ -10,6 +10,6 @@ public interface HabitInWeekDataSource extends BaseDataSource<HabitInWeekEntity>
 
     Flowable<List<HabitInWeekEntity>> getDayOfWeekHabitListByUserAndHabitId(Long userId, Long habitId);
 
-    Flowable<List<HabitInWeekEntity>> getHabitInWeekEntityByDayOfWeekId(Long id);
+    Flowable<List<HabitInWeekEntity>> getHabitInWeekEntityByDayOfWeekId(Long userId, Long id);
 
 }

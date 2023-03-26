@@ -236,7 +236,6 @@ public class CreateHabitViewModel extends ViewModel {
                                             if (selectSatDate) {
                                                 insertHabitInWeek(id, DayOfWeek.SAT.getId(), insertHabitInWeekCallBack);
                                             }
-
                                         }
 
                                         @Override

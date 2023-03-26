@@ -75,8 +75,6 @@ public final class DatabaseModule {
         private final DayOfWeekDAO dayOfWeekDao;
         private final DayOfTimeDAO dayOfTimeDao;
 
-        private final CompositeDisposable mCompositeDisposable= new CompositeDisposable();
-
         private PopulatedDbAsyncTask(HabitTrackerDatabase db){
             this.dayOfWeekDao = db.dayOfWeekDao();
             this.dayOfTimeDao = db.dayOfTimeDao();
@@ -90,35 +88,10 @@ public final class DatabaseModule {
             DayOfTimeEntity nightEntity = new DayOfTimeEntity(DayOfTime.NIGHT.getId(), DayOfTime.NIGHT.getTimeName());
             DayOfTimeEntity anyTimeEntity = new DayOfTimeEntity(DayOfTime.ANYTIME.getId(), DayOfTime.ANYTIME.getTimeName());
 
-            mCompositeDisposable.add(this.dayOfTimeDao.insert(afternoonEntity)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            () -> Log.i("insertDayOfTime", afternoonEntity.dayOfTimeName),
-                            throwable -> Log.e("insertDayOfTime", "fail", throwable
-                    )
-            ));
-            mCompositeDisposable.add(this.dayOfTimeDao.insert(morningEntity)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            () -> Log.i("insertDayOfTime", morningEntity.dayOfTimeName),
-                            throwable -> Log.e("insertDayOfTime", "fail", throwable)
-                    ));
-            mCompositeDisposable.add(this.dayOfTimeDao.insert(nightEntity)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            () -> Log.i("insertDayOfTime", nightEntity.dayOfTimeName),
-                            throwable -> Log.e("insertDayOfTime", "fail", throwable)
-                    ));
-            mCompositeDisposable.add(this.dayOfTimeDao.insert(anyTimeEntity)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            () -> Log.i("insertDayOfTime", anyTimeEntity.dayOfTimeName),
-                            throwable -> Log.e("insertDayOfTime", "fail", throwable)
-                    ));
+            this.dayOfTimeDao.insertInBackgroundDb(afternoonEntity);
+            this.dayOfTimeDao.insertInBackgroundDb(morningEntity);
+            this.dayOfTimeDao.insertInBackgroundDb(nightEntity);
+            this.dayOfTimeDao.insertInBackgroundDb(anyTimeEntity);
 
             DayOfWeekEntity sunday = new DayOfWeekEntity(DayOfWeek.SUN.getId(), DayOfWeek.SUN.getDayName());
             DayOfWeekEntity monday = new DayOfWeekEntity(DayOfWeek.MON.getId(), DayOfWeek.MON.getDayName());
@@ -128,58 +101,13 @@ public final class DatabaseModule {
             DayOfWeekEntity friday = new DayOfWeekEntity(DayOfWeek.FRI.getId(), DayOfWeek.FRI.getDayName());
             DayOfWeekEntity saturday = new DayOfWeekEntity(DayOfWeek.SAT.getId(), DayOfWeek.SAT.getDayName());
 
-            mCompositeDisposable.add(this.dayOfWeekDao.insert(sunday)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            () -> Log.i("insertDayOfWeek", sunday.dayOfWeekName),
-                            throwable -> Log.e("insertDayOfWeek", "fail", throwable)
-                    ));
-            mCompositeDisposable.add(this.dayOfWeekDao.insert(monday)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            () -> Log.i("insertDayOfWeek", monday.dayOfWeekName),
-                            throwable -> Log.e("insertDayOfWeek", "fail", throwable)
-                    ));
-            mCompositeDisposable.add(this.dayOfWeekDao.insert(tuesday)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            () -> Log.i("insertDayOfWeek", tuesday.dayOfWeekName),
-                            throwable -> Log.e("insertDayOfWeek", "fail", throwable)
-                    ));
-            mCompositeDisposable.add(this.dayOfWeekDao.insert(wednesday)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            () -> Log.i("insertDayOfWeek", wednesday.dayOfWeekName),
-                            throwable -> Log.e("insertDayOfWeek", "fail", throwable)
-                    ));
-            mCompositeDisposable.add(this.dayOfWeekDao.insert(thursday)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            () -> Log.i("insertDayOfWeek", thursday.dayOfWeekName),
-                            throwable -> Log.e("insertDayOfWeek", "fail", throwable)
-                    ));
-            mCompositeDisposable.add(this.dayOfWeekDao.insert(friday)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            () -> Log.i("insertDayOfWeek", friday.dayOfWeekName),
-                            throwable -> Log.e("insertDayOfWeek", "fail", throwable)
-                    ));
-            mCompositeDisposable.add(this.dayOfWeekDao.insert(saturday)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            () -> Log.i("insertDayOfWeek", saturday.dayOfWeekName),
-                            throwable -> Log.e("insertDayOfWeek", "fail", throwable)
-                    ));
-
-            mCompositeDisposable.clear();
-            mCompositeDisposable.dispose();
+            this.dayOfWeekDao.insertInBackgroundDb(sunday);
+            this.dayOfWeekDao.insertInBackgroundDb(monday);
+            this.dayOfWeekDao.insertInBackgroundDb(tuesday);
+            this.dayOfWeekDao.insertInBackgroundDb(wednesday);
+            this.dayOfWeekDao.insertInBackgroundDb(thursday);
+            this.dayOfWeekDao.insertInBackgroundDb(friday);
+            this.dayOfWeekDao.insertInBackgroundDb(saturday);
 
             return null;
         }

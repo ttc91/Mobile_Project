@@ -35,7 +35,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/title_date"
-                android:text="March"
                 android:textSize="@dimen/_20ssp"
                 android:textStyle="bold" />
 
@@ -60,7 +59,6 @@
                     app:layout_constraintBottom_toBottomOf="@+id/title_date"
                     android:layout_marginBottom="@dimen/_2sdp"
                     android:layout_marginEnd="@dimen/_1sdp"
-                    android:text="3"
                     android:textSize="@dimen/_13ssp"
                     android:textStyle="bold"/>
 
@@ -75,7 +73,8 @@
                 android:clickable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:focusable="true" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         
@@ -108,7 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:gravity="center"
-                android:text="Habbit"
+                android:text="@string/title_habit"
                 android:textSize="@dimen/_13ssp"
                 android:textStyle="bold"/>
 
@@ -120,7 +119,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical">
 
                     <TextView
@@ -130,7 +129,7 @@
                         android:layout_marginTop="@dimen/_10sdp"
                         android:layout_marginStart="@dimen/_8sdp"
                         android:layout_marginEnd="@dimen/_8sdp"
-                        android:text="LIST TO DO"
+                        android:text="@string/title_to_do_list"
                         android:textSize="@dimen/_10ssp"
                         android:textStyle="bold"
                         android:background="#E0E0E0"
@@ -155,7 +154,7 @@
                         android:layout_marginTop="@dimen/_10sdp"
                         android:layout_marginStart="@dimen/_8sdp"
                         android:layout_marginEnd="@dimen/_8sdp"
-                        android:text="DONE"
+                        android:text="@string/title_done"
                         android:textSize="@dimen/_10ssp"
                         android:textStyle="bold"
                         android:background="#E0E0E0"
@@ -180,7 +179,7 @@
                         android:layout_marginTop="@dimen/_10sdp"
                         android:layout_marginStart="@dimen/_8sdp"
                         android:layout_marginEnd="@dimen/_8sdp"
-                        android:text="FAILED"
+                        android:text="@string/title_failed"
                         android:textSize="@dimen/_10ssp"
                         android:textStyle="bold"
                         android:background="#E0E0E0"
@@ -215,17 +214,11 @@
                         android:layout_marginStart="@dimen/_10sdp"
                         android:visibility="gone"/>
 
-
                 </LinearLayout>
 
             </ScrollView>
 
-
         </LinearLayout>
-
-
-
-
 
     </LinearLayout>
 </layout>

@@ -43,7 +43,7 @@ public class LocalHabitInWeekDataSource implements HabitInWeekDataSource {
     }
 
     @Override
-    public Flowable<List<HabitInWeekEntity>> getHabitInWeekEntityByDayOfWeekId(Long id) {
-        return dao.getHabitInWeekEntityByDayOfWeekId(id);
+    public Flowable<List<HabitInWeekEntity>> getHabitInWeekEntityByDayOfWeekId(Long userId, Long id) {
+        return dao.getHabitInWeekEntityByDayOfWeekId(userId, id);
     }
 }

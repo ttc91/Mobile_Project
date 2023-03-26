@@ -41,6 +41,12 @@
     <string name="description_left_arrow_background">Back arrow background</string>
     <string name="text_create_button">CREATE</string>
 
+    <!--Home Fragment-->
+    <string name="title_habit">Habit</string>
+    <string name="title_to_do_list">LIST TO DO</string>
+    <string name="title_failed">FAILED</string>
+    <string name="title_done">DONE</string>
+
     <!--Original-->
     <string name="str_right_arrow">Right arrow</string>
 

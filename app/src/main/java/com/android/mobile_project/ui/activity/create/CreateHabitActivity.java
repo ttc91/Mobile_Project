@@ -121,7 +121,7 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
                                 @Override
                                 public void onGetHabitByNameSuccess(Long id) {
                                     Log.i("checkExistHabitByName", "already existed with ID - " + id);
-                                    viewModel.toastService.makeDaysOfWeekInputtedIsEmptyToast();
+                                    viewModel.toastService.makeHabitNameIsExistedToast();
                                 }
 
                                 @Override

@@ -1,6 +1,5 @@
 package com.android.mobile_project.ui.activity.main.fragment.home.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -16,11 +15,8 @@ public class AfterAdapter extends RecyclerView.Adapter<AfterAdapter.ViewHolder>{
 
     private final List<HabitModel> habitModelList;
 
-    private final Context context;
-
-    public AfterAdapter(Context context, List<HabitModel> habitModelList){
+    public AfterAdapter(List<HabitModel> habitModelList){
         this.habitModelList = habitModelList;
-        this.context = context;
     }
 
     @NonNull

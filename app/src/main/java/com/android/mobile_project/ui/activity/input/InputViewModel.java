@@ -10,6 +10,7 @@ import com.android.mobile_project.data.remote.model.UserModel;
 import com.android.mobile_project.data.repository.UserRepository;
 import com.android.mobile_project.data.utils.mapper.UserMapper;
 import com.android.mobile_project.ui.activity.input.service.DbService;
+import com.android.mobile_project.ui.activity.input.service.InitService;
 import com.android.mobile_project.ui.activity.input.service.ToastService;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
 
@@ -43,7 +44,9 @@ public class InputViewModel extends ViewModel {
 
     protected ToastService toastService;
 
-    protected DbService service;
+    protected DbService dbService;
+
+    protected InitService initService;
 
     protected void insertUser(UserModel userModel, DbService.InsertUserResult callback){
         mCompositeDisposable.add(

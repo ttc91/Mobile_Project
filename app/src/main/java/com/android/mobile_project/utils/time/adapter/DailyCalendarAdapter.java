@@ -28,11 +28,16 @@ import java.util.Locale;
 public class DailyCalendarAdapter extends RecyclerView.Adapter<DailyCalendarAdapter.ViewHolder> {
 
     private final List<LocalDate> days;
+
     private static int selectedItemPosition;
+
     private static boolean isFirstInit = true;
+
     private final OnClickItem onClickItem;
 
     private final Context context;
+
+    private static final String DAY_FORMAT = "yyyy-MM-dd";
 
     public DailyCalendarAdapter(Context context, List<LocalDate> days, OnClickItem onClickItem) {
         this.days = days;
@@ -89,7 +94,7 @@ public class DailyCalendarAdapter extends RecyclerView.Adapter<DailyCalendarAdap
         holder.binding.parentView.setOnClickListener(view -> {
             selectedItemPosition = position;
             notifyDataSetChanged();
-            onClickItem.onClick(view, days, position);
+            onClickItem.onClick(view, date.format(DateTimeFormatter.ofPattern(DAY_FORMAT)));
         });
 
         if(isFirstInit){
@@ -118,7 +123,7 @@ public class DailyCalendarAdapter extends RecyclerView.Adapter<DailyCalendarAdap
     }
 
     public interface OnClickItem{
-        void onClick(View view, List<LocalDate> dates, int position);
+        void onClick(View view, String date);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

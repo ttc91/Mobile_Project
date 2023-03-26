@@ -1,6 +1,7 @@
 package com.android.mobile_project.data.local.sqlite.dao;
 
 import androidx.room.Dao;
+import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
@@ -38,5 +39,8 @@ public interface DayOfWeekDAO extends BaseDAO<DayOfWeekEntity>{
 
     @Query("SELECT * FROM tbl_day_of_week WHERE id = :id")
     Single<DayOfWeekEntity> getDayOfWeekById(Long id);
+
+    @Insert
+    void insertInBackgroundDb(DayOfWeekEntity e);
 
 }
