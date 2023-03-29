@@ -119,14 +119,16 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 //        viewModel.updateService.updateHabitLongestSteak();
 
         viewModel.initUIService.initDailyCalendar();
+
+
+
         viewModel.initUIService.initHabitInWeek();
-        viewModel.initUIService.initHistoryList();
         viewModel.initUIService.initAdapter();
         viewModel.initHabitListUI.initHabitModelList();
         viewModel.initHabitListUI.initHabitDoneModeList();
         viewModel.initHabitListUI.initHabitFailedModelList();
-        viewModel.initHabitListUI.initHabitBeforeModelList();
-        viewModel.initHabitListUI.initHabitAfterModelList();
+//        viewModel.initHabitListUI.initHabitBeforeModelList();
+//        viewModel.initHabitListUI.initHabitAfterModelList();
 
         return v;
     }
@@ -221,38 +223,27 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
             @Override
             public void initHistoryList() {
-                historyModelListObserver = historyModels -> viewModel.getHabitByUserIdAndHabitId(historyModels, true, new DbService.GetHabitByUserIdAndHabitIdResult() {
-                    @SuppressLint("LongLogTag")
-                    @Override
-                    public void onGetHabitByUserIdAndHabitIdSuccess(HabitModel model, CompositeDisposable disposable) {
-                        Log.i("getHabitByUserIdAndHabitId","onInsertHabitModelByUserIdAndHabitIdSuccess");
-                        disposable.clear();
-                    }
-
-                    @SuppressLint("LongLogTag")
-                    @Override
-                    public void onGetHabitByUserIdAndHabitIdFailure(CompositeDisposable disposable) {
-                        Log.e("getHabitByUserIdAndHabitId", "onInsertHabitModelByUserIdAndHabitIdSuccess");
-                        disposable.clear();
-                    }
-                });
-                viewModel.getHistoryModelListLiveData().observe(getViewLifecycleOwner(), historyModelListObserver);
             }
 
 
             @Override
             public void initHistoryListOfDay() {
+                historyModelListObserver = historyModels -> {
+                    String historyTime = LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT));
+                    viewModel.getOrInsertHistoriesList(historyTime, historyModels);
+                    viewModel.initCurrentAdapter(historyModels);
+                };
+                viewModel.getHistoryModelListLiveData().observe(getViewLifecycleOwner(), historyModelListObserver);
+
                 String historyTime = LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT));
                 viewModel.getHistoryByDate(historyTime, new DbService.GetHistoryByDateResult() {
                     @Override
                     public void onGetHistoryByDateSuccess(CompositeDisposable disposable) {
-                        Log.i("GetHistoryByDateResult", "onGetHabitInWeekListSuccess");
                         disposable.clear();
                     }
 
                     @Override
                     public void onGetHistoryByDateFailure(CompositeDisposable disposable) {
-                        Log.i("GetHistoryByDateResult", "onGetHabitInWeekListFailure");
                         disposable.clear();
                     }
                 });
@@ -286,11 +277,9 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                             if(viewModel.getHabitModelList().size() > 0){
                                 binding.tTodo.setVisibility(View.VISIBLE);
                                 binding.rcvHabitList.setVisibility(View.VISIBLE);
-                                viewModel.setHideToDo(false);
                             }else {
                                 binding.tTodo.setVisibility(View.GONE);
                                 binding.rcvHabitList.setVisibility(View.GONE);
-                                viewModel.setHideToDo(true);
                             }
                         };
 
@@ -314,11 +303,9 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                             if(viewModel.getHabitModelDoneList().size() > 0){
                                 binding.tDone.setVisibility(View.VISIBLE);
                                 binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
-                                viewModel.setHideDone(false);
                             }else {
                                 binding.tDone.setVisibility(View.GONE);
                                 binding.rcvHabitDoneList.setVisibility(View.GONE);
-                                viewModel.setHideDone(true);
                             }
                         };
 
@@ -343,11 +330,9 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                             if(viewModel.getHabitModelFailedList().size() > 0){
                                 binding.tFailed.setVisibility(View.VISIBLE);
                                 binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
-                                viewModel.setHideFailed(false);
                             }else {
                                 binding.tFailed.setVisibility(View.GONE);
                                 binding.rcvHabitFailedList.setVisibility(View.GONE);
-                                viewModel.setHideFailed(true);
                             }
                         };
 

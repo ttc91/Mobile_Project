@@ -115,17 +115,17 @@ public class TimeUtils {
         Long dayOfWeekId = 0L;
         if (dayName.equals(DayOfWeek.MON.getDayName())){
             dayOfWeekId = DayOfWeek.MON.getId();
-        }else if(dayName.toString().equals(DayOfWeek.TUE.getDayName())){
+        }else if(dayName.equals(DayOfWeek.TUE.getDayName())){
             dayOfWeekId = DayOfWeek.TUE.getId();
-        }else if(dayName.toString().equals(DayOfWeek.WED.getDayName())){
+        }else if(dayName.equals(DayOfWeek.WED.getDayName())){
             dayOfWeekId = DayOfWeek.WED.getId();
-        }else if(dayName.toString().equals(DayOfWeek.THU.getDayName())){
+        }else if(dayName.equals(DayOfWeek.THU.getDayName())){
             dayOfWeekId = DayOfWeek.THU.getId();
-        }else if(dayName.toString().equals(DayOfWeek.FRI.getDayName())){
+        }else if(dayName.equals(DayOfWeek.FRI.getDayName())){
             dayOfWeekId = DayOfWeek.FRI.getId();
-        }else if(dayName.toString().equals(DayOfWeek.SAT.getDayName())){
+        }else if(dayName.equals(DayOfWeek.SAT.getDayName())){
             dayOfWeekId = DayOfWeek.SAT.getId();
-        }else if(dayName.toString().equals(DayOfWeek.SUN.getDayName())){
+        }else if(dayName.equals(DayOfWeek.SUN.getDayName())){
             dayOfWeekId = DayOfWeek.SUN.getId();
         }
         return dayOfWeekId;

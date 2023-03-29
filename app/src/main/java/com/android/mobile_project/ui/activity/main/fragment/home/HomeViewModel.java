@@ -88,17 +88,16 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
         @Override
         public void onInsertHistorySuccess(CompositeDisposable disposable) {
             Log.i("mInsertHistoryResult", "onInsertHistorySuccess");
-            disposable.clear();
         }
 
         @Override
         public void onInsertHistoryFailure(CompositeDisposable disposable) {
             Log.i("mInsertHistoryResult", "onInsertHistoryFailure");
-            disposable.clear();
         }
     };
 
     private List<HabitInWeekModel> habitInWeekModelList = new ArrayList<>();
+    private MutableLiveData<List<HistoryModel>> historyModelListMutableLiveData = new MutableLiveData<>();
 
     private MutableLiveData<List<HabitModel>> habitModelListMutableLiveData = new MutableLiveData<>();
     private List<HabitModel> habitModelList = new ArrayList<>();
@@ -120,8 +119,6 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
     private List<HabitModel> habitModelFailedList = new ArrayList<>();
     private FailedHabitAdapter failedHabitAdapter;
 
-    private MutableLiveData<List<HistoryModel>> historyModelListMutableLiveData = new MutableLiveData<>();
-
     private boolean hideToDo = false;
     private boolean hideDone = false;
     private boolean hideFailed = false;
@@ -135,6 +132,10 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
 
     protected DailyCalendarAdapter dailyCalendarAdapter;
     private List<LocalDate> days = new ArrayList<>();
+
+    protected LiveData<List<HistoryModel>> getHistoryModelListLiveData(){
+        return historyModelListMutableLiveData;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void setDate(TextView text){
@@ -184,10 +185,6 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
 
     protected void setAfterAdapter(AfterAdapter afterAdapter) {
         this.afterAdapter = afterAdapter;
-    }
-
-    protected LiveData<List<HistoryModel>> getHistoryModelListLiveData(){
-        return historyModelListMutableLiveData;
     }
 
     protected LiveData<List<HabitModel>> getHabitModelListLiveData (){
@@ -414,7 +411,7 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
             if(model.getHistoryHabitsState().equals(VAL_NULL)){
                 mCompositeDisposable.add(
                         mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getInstance().getUserId(), model.getHabitId())
-                                .observeOn(Schedulers.single())
+                                .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(habitEntity -> {
                                     Log.i("getHabitByUserIdAndHabitId","onSuccess");
@@ -431,7 +428,7 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
             }else if(model.getHistoryHabitsState().equals(VAL_TRUE)){
                 mCompositeDisposable.add(
                         mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getInstance().getUserId(), model.getHabitId())
-                                .observeOn(Schedulers.single())
+                                .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(habitEntity -> {
                                     Log.i("getHabitByUserIdAndHabitId","onSuccess");
@@ -448,7 +445,7 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
             }else {
                 mCompositeDisposable.add(
                         mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getInstance().getUserId(), model.getHabitId())
-                                .observeOn(Schedulers.single())
+                                .observeOn(AndroidSchedulers.mainThread())
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(habitEntity -> {
                                     Log.i("getHabitByUserIdAndHabitId","onSuccess");
@@ -479,40 +476,35 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
                 .subscribeOn(Schedulers.single())
                 .subscribe(historyEntityList -> {
                     Log.i("getHistoryByDate","onNext");
-
-                    if(historyTime.equals(LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT)))){
-                        if(historyEntityList.size() == 0){
-                            List<HistoryModel> historyModels = new ArrayList<>();
-                            HistoryModel historyModel = new HistoryModel();
-                            for(HabitInWeekModel model : habitInWeekModelList){
-
-                                historyModel.setHistoryDate(historyTime);
-                                historyModel.setUserId(DataLocalManager.getInstance().getUserId());
-                                historyModel.setHistoryHabitsState(VAL_NULL);
-                                historyModel.setHabitId(model.getHabitId());
-
-                                insertHistory(historyModel, mInsertHistoryResult);
-                                historyModels.add(historyModel);
-                            }
-                            historyModelListMutableLiveData.postValue(historyModels);
-                            return;
-                        }
-                    }
-
                     historyModelListMutableLiveData.postValue(HistoryMapper.getInstance().mapToListModel(historyEntityList));
                     callback.onGetHistoryByDateSuccess(mCompositeDisposable);
-
                 }, throwable -> {
                     Log.e("getHistoryByDate", "onError", throwable);
                     callback.onGetHistoryByDateFailure(mCompositeDisposable);
                 })
         );
+
+    }
+
+    protected void getOrInsertHistoriesList(String historyTime, List<HistoryModel> models){
+        if(models.size() == 0){
+            List<HistoryModel> historyModelList = new ArrayList<>();
+            HistoryModel model = new HistoryModel();
+            habitInWeekModelList.forEach(habitInWeekModel -> {
+                model.setHistoryDate(historyTime);
+                model.setUserId(DataLocalManager.getInstance().getUserId());
+                model.setHistoryHabitsState(VAL_NULL);
+                model.setHabitId(habitInWeekModel.getHabitId());
+                insertHistory(model, mInsertHistoryResult);
+                historyModelList.add(model);
+            });
+            historyModelListMutableLiveData.postValue(historyModelList);
+        }
     }
 
     protected void insertHistory(HistoryModel historyModel, DbService.InsertHistoryResult callback){
         mCompositeDisposable.add(
-                mHistoryRepository.getMHistoryDataSource()
-                        .insert(HistoryMapper.getInstance().mapToEntity(historyModel))
+                mHistoryRepository.getMHistoryDataSource().insert(HistoryMapper.getInstance().mapToEntity(historyModel))
                         .observeOn(Schedulers.single())
                         .subscribeOn(Schedulers.io())
                         .subscribe(() -> {
@@ -683,6 +675,21 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
                         }
                 )
         );
+    }
+
+    //Be used to init list for all
+    protected void initCurrentAdapter(List<HistoryModel> models){
+        getHabitByUserIdAndHabitId(models, true, new DbService.GetHabitByUserIdAndHabitIdResult() {
+            @Override
+            public void onGetHabitByUserIdAndHabitIdSuccess(HabitModel model, CompositeDisposable disposable) {
+                disposable.clear();
+            }
+
+            @Override
+            public void onGetHabitByUserIdAndHabitIdFailure(CompositeDisposable disposable) {
+                disposable.clear();
+            }
+        });
     }
 
 }
