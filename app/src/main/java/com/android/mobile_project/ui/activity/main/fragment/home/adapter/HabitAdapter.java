@@ -2,6 +2,7 @@ package com.android.mobile_project.ui.activity.main.fragment.home.adapter;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import javax.inject.Inject;
 
 public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder>{
 
+    public final String TAG = this.getClass().getSimpleName();
     private final Context context;
     private final List<HabitModel> habitModelList;
     private final RecyclerViewClickListener recyclerViewClickListener;
@@ -97,6 +99,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder>{
 
         @Override
         public void onClick(View view) {
+            Log.d(TAG, "onClick: " + habitModelList.size() + " - " + getAdapterPosition());
             recyclerViewClickListener.onClick(binding.getRoot(), habitModelList, getAdapterPosition());
         }
     }

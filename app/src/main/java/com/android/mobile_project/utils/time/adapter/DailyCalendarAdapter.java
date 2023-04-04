@@ -62,7 +62,7 @@ public class DailyCalendarAdapter extends RecyclerView.Adapter<DailyCalendarAdap
         LocalDate date = days.get(position);
 
         DayOfWeek day = date.getDayOfWeek();
-        String dayName = day.getDisplayName(TextStyle.FULL, Locale.getDefault());
+        String dayName = day.getDisplayName(TextStyle.FULL, Locale.US);
 
         switch (dayName){
             case DateConstant.DateName.DATE_MONDAY :

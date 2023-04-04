@@ -146,7 +146,7 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
         int m = (int) (TimeUnit.MILLISECONDS.toMinutes(mTimeLeftInMillis) % TimeUnit.HOURS.toMinutes(1));
         int s = (int) (TimeUnit.MILLISECONDS.toSeconds(mTimeLeftInMillis) % TimeUnit.MINUTES.toSeconds(1));
 
-        String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d:%02d", h, m, s);
+        String timeLeftFormatted = String.format(Locale.US, "%02d:%02d:%02d", h, m, s);
 
         binding.tvTime.setText(timeLeftFormatted);
 

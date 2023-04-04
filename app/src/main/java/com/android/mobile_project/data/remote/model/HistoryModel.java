@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,5 +17,6 @@ public class HistoryModel extends BaseModel {
     private String historyHabitsState;
     private Long userId;
     private Long habitId;
+
 
 }

@@ -148,7 +148,7 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
 
                 LocalDate date = LocalDate.now();
                 DayOfWeek day = date.getDayOfWeek();
-                String dayName = day.getDisplayName(TextStyle.FULL, Locale.getDefault());
+                String dayName = day.getDisplayName(TextStyle.FULL, Locale.US);
 
                 LocalDate[] dateWeek = new LocalDate[7];
 
