@@ -103,6 +103,11 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         super.onAttach(context);
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
     @Override
@@ -112,17 +117,28 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         View v = initContentView();
         initViewModel();
+        viewModel.initUIService.initHabitInWeek();
+
+        return v;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        Log.i("HomeFragment", "onViewCreated");
 
         viewModel.setDate(binding.tvDate);
         viewModel.setMonth(binding.titleMonth);
 
 //        viewModel.updateService.updateHabitLongestSteak();
 
+
+
         viewModel.initUIService.initDailyCalendar();
 
 
-
-        viewModel.initUIService.initHabitInWeek();
         viewModel.initUIService.initAdapter();
         viewModel.initHabitListUI.initHabitModelList();
         viewModel.initHabitListUI.initHabitDoneModeList();
@@ -130,7 +146,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 //        viewModel.initHabitListUI.initHabitBeforeModelList();
 //        viewModel.initHabitListUI.initHabitAfterModelList();
 
-        return v;
     }
 
     @Override
@@ -263,8 +278,19 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                     @Override
                     public void initHabitModelList() {
                         Log.i("initHabitModelList", String.valueOf(viewModel.getHabitModelList().size()));
+
+                        viewModel.recyclerViewClickListener = (v, habitModelList, position) -> {
+
+                            HabitModel model = habitModelList.get(position);
+
+                            Intent intent = new Intent(getContext(), HabitSettingActivity.class);
+                            intent.putExtra("habitId", model.getHabitId());
+                            startActivity(intent);
+
+                        };
+
                         viewModel.setAdapter(new HabitAdapter(getContext(), viewModel.getHabitModelList(), viewModel.recyclerViewClickListener, viewModel));
-                        viewModel.getAdapter().notifyDataSetChanged();
+
 
                         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
                         binding.rcvHabitList.setAdapter(viewModel.getAdapter());
@@ -284,6 +310,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                         };
 
                         viewModel.getHabitModelListLiveData().observe(getViewLifecycleOwner(), habitModelNullListObserver);
+                        viewModel.getAdapter().notifyDataSetChanged();
                     }
 
                     @Override
@@ -384,15 +411,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         };
 
-//        viewModel.recyclerViewClickListener = (v, habitModelList, position) -> {
-//
-//            HabitModel model = habitModelList.get(position);
-//
-//            Intent intent = new Intent(getContext(), HabitSettingActivity.class);
-//            intent.putExtra("habitId", model.getHabitId());
-//            startActivity(intent);
-//
-//        };
+
 
 //        viewModel.updateService = () -> {
 //

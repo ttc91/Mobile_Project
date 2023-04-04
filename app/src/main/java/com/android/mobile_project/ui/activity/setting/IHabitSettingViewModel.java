@@ -1,17 +1,14 @@
 package com.android.mobile_project.ui.activity.setting;
 
-import com.android.mobile_project.data.remote.model.HabitModel;
-import com.android.mobile_project.data.remote.model.HistoryModel;
-import com.android.mobile_project.data.remote.model.RemainderModel;
+import com.android.mobile_project.ui.activity.setting.service.DbService;
 
-import java.util.List;
 
 public interface IHabitSettingViewModel {
 
-    HabitModel getHabitByUserIdAndHabitId(Long habitId);
-    List<RemainderModel> getRemainderListByHabitId();
-    void updateRemainder(RemainderModel remainderModel);
-    void deleteRemainder(RemainderModel remainderModel);
-    HistoryModel getHistoryByHabitIdAndDate(Long habitId, String date);
+    void getHabitByUserIdAndHabitId(Long habitId, DbService.GetHabitByUserIdAndHabitIdResult callback);
+    void getRemainderListByHabitId(DbService.GetRemainderListByHabitIdResult callback);
+    void updateRemainder(int position, Long hourOld, Long minutesOld, Long hourNew, Long minutesNew, DbService.UpdateRemainderResult callback);
+    void deleteRemainderByTimerHourAndTimerMinutesAndId(Long h, Long m, DbService.DeleteRemainderResult callback);
+    void getHistoryByHabitIdAndDate(Long habitId, String date, DbService.GetHistoryByHabitAndDateResult callback);
 
 }

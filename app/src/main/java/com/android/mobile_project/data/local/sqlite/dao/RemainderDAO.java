@@ -26,4 +26,8 @@ public interface RemainderDAO extends BaseDAO<RemainderEntity>{
     @Query("SELECT * FROM tbl_remainder WHERE hour_time = :h AND minutes_time = :m AND habit_id = :id")
     Single<RemainderEntity> checkExistRemainder(Long h, Long m, Long id);
 
+    @Transaction
+    @Query("DELETE FROM tbl_remainder WHERE hour_time = :h AND minutes_time = :m AND habit_id = :id")
+    Completable deleteRemainderByTimerHourAndTimerMinutesAndId(Long h, Long m, Long id);
+
 }

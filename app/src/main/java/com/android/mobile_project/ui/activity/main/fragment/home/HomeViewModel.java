@@ -417,6 +417,7 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
                                     Log.i("getHabitByUserIdAndHabitId","onSuccess");
                                     if(isCurrentDate){
                                         habitModelList.add(HabitMapper.getInstance().mapToModel(habitEntity));
+                                        habitModelListMutableLiveData.postValue(habitModelList);
                                     }
                                     callback.onGetHabitByUserIdAndHabitIdSuccess(HabitMapper.getInstance().mapToModel(habitEntity), mCompositeDisposable);
                                 }, throwable -> {
@@ -434,6 +435,7 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
                                     Log.i("getHabitByUserIdAndHabitId","onSuccess");
                                     if(isCurrentDate){
                                         habitModelDoneList.add(HabitMapper.getInstance().mapToModel(habitEntity));
+                                        habitModelDoneListMutableLiveData.postValue(habitModelDoneList);
                                     }
                                     callback.onGetHabitByUserIdAndHabitIdSuccess(HabitMapper.getInstance().mapToModel(habitEntity), mCompositeDisposable);
                                 }, throwable -> {
@@ -451,6 +453,7 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
                                     Log.i("getHabitByUserIdAndHabitId","onSuccess");
                                     if(isCurrentDate){
                                         habitModelFailedList.add(HabitMapper.getInstance().mapToModel(habitEntity));
+                                        habitModelFailedListMutableLiveData.postValue(habitModelFailedList);
                                     }
                                     callback.onGetHabitByUserIdAndHabitIdSuccess(HabitMapper.getInstance().mapToModel(habitEntity), mCompositeDisposable);
                                 }, throwable -> {
@@ -463,9 +466,9 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
 
         }
 
-        habitModelListMutableLiveData.postValue(habitModelList);
-        habitModelDoneListMutableLiveData.postValue(habitModelDoneList);
-        habitModelFailedListMutableLiveData.postValue(habitModelFailedList);
+
+
+
 
     }
 
