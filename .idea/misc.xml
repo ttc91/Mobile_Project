@@ -72,6 +72,23 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/menu/bottom_nav.xml" value="0.22864583333333333" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.206" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1755" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/activity_main.xml" value="0.209375" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/fragment_home.xml" value="0.209375" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/fragment_setting.xml" value="0.209375" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/habit_listview_item_habits.xml" value="0.209375" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/layout_habit_item_swipe.xml" value="0.209375" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/layout_item_missing.xml" value="0.209375" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/layout_missing_doing.xml" value="0.209375" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/layout_remainder_dialog.xml" value="0.209375" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/layout_reminder_item.xml" value="0.209375" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/layout_time_picker_dialog.xml" value="0.209375" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/layout_ver_calendar.xml" value="0.209375" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/layout_your_record.xml" value="0.209375" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/rcv_horizontal_calendar_text_date.xml" value="0.5" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/rcv_item_habit.xml" value="0.209375" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/rcv_item_habit_after.xml" value="0.209375" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/rcv_item_habit_failed.xml" value="0.209375" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/rcv_vertical_calendar_text_date.xml" value="0.209375" />
       </map>
     </option>
   </component>

@@ -14,7 +14,7 @@ import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 
 @MyCustomAnnotation.MyScope.ActivityScope
-public class LocalHabitDataSource implements HabitDataSource {
+public class LocalHabitDataSource extends BaseDataSource implements HabitDataSource {
 
     private final HabitDAO dao;
 
@@ -55,22 +55,22 @@ public class LocalHabitDataSource implements HabitDataSource {
 
     @Override
     public Flowable<List<HabitEntity>> getHabitListByUserId(Long id) {
-        return dao.getHabitListByUserId(id);
+        return subscribeFlowable(dao.getHabitListByUserId(id));
     }
 
     @Override
     public Single<HabitEntity> getHabitByUserIdAndHabitId(Long userId, Long habitId) {
-        return dao.getHabitByUserIdAndHabitId(userId, habitId);
+        return subscribeSingle(dao.getHabitByUserIdAndHabitId(userId, habitId));
     }
 
     @Override
     public Completable updateDateOfTimeInHabit(Long dayOfTimeId, Long habitId) {
-        return dao.updateDateOfTimeInHabit(dayOfTimeId, habitId);
+        return subscribeCompletable(dao.updateDateOfTimeInHabit(dayOfTimeId, habitId));
     }
 
     @Override
     public Completable updateNameOfHabit(String hName, Long habitId) {
-        return dao.updateNameOfHabit(hName, habitId);
+        return subscribeCompletable(dao.updateNameOfHabit(hName, habitId));
     }
 
     @Override

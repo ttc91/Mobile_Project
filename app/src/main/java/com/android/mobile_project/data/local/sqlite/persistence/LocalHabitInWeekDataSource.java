@@ -13,7 +13,7 @@ import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Flowable;
 
 @MyCustomAnnotation.MyScope.ActivityScope
-public class LocalHabitInWeekDataSource implements HabitInWeekDataSource {
+public class LocalHabitInWeekDataSource extends BaseDataSource implements HabitInWeekDataSource {
 
     private final HabitInWeekDAO dao;
 
@@ -24,26 +24,26 @@ public class LocalHabitInWeekDataSource implements HabitInWeekDataSource {
 
     @Override
     public Completable insert(HabitInWeekEntity habitInWeekEntity) {
-        return dao.insert(habitInWeekEntity);
+        return subscribeCompletable(dao.insert(habitInWeekEntity));
     }
 
     @Override
     public Completable delete(HabitInWeekEntity habitInWeekEntity) {
-        return dao.delete(habitInWeekEntity);
+        return subscribeCompletable(dao.delete(habitInWeekEntity));
     }
 
     @Override
     public Completable update(HabitInWeekEntity habitInWeekEntity) {
-        return dao.update(habitInWeekEntity);
+        return subscribeCompletable(dao.update(habitInWeekEntity));
     }
 
     @Override
     public Flowable<List<HabitInWeekEntity>> getDayOfWeekHabitListByUserAndHabitId(Long userId, Long habitId) {
-        return dao.getDayOfWeekHabitListByUserAndHabitId(userId, habitId);
+        return subscribeFlowable(dao.getDayOfWeekHabitListByUserAndHabitId(userId, habitId));
     }
 
     @Override
     public Flowable<List<HabitInWeekEntity>> getHabitInWeekEntityByDayOfWeekId(Long userId, Long id) {
-        return dao.getHabitInWeekEntityByDayOfWeekId(userId, id);
+        return subscribeFlowable(dao.getHabitInWeekEntityByDayOfWeekId(userId, id));
     }
 }

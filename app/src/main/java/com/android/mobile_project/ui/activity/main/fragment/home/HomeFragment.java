@@ -30,8 +30,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import com.android.mobile_project.R;
-import com.android.mobile_project.data.local.DataLocalManager;
-import com.android.mobile_project.data.remote.model.DayOfWeekModel;
 import com.android.mobile_project.data.remote.model.HabitInWeekModel;
 import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.data.remote.model.HistoryModel;
@@ -43,30 +41,25 @@ import com.android.mobile_project.utils.dagger.component.sub.main.fragment.HomeC
 import com.android.mobile_project.utils.time.adapter.DailyCalendarAdapter;
 import com.android.mobile_project.utils.time.utils.TimeUtils;
 import com.android.mobile_project.ui.InitLayout;
-import com.android.mobile_project.ui.activity.count.CountDownActivity;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.AfterAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.BeforeAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.DoneHabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.FailedHabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.HabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.service.InitUIService;
-import com.android.mobile_project.ui.activity.setting.HabitSettingActivity;
-import com.android.mobile_project.utils.time.DayOfWeek;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
-public class HomeFragment extends Fragment implements InitLayout, View.OnClickListener{
+public class HomeFragment extends Fragment implements InitLayout, View.OnClickListener {
+
+    private static final String TAG = HomeFragment.class.getSimpleName();
 
     private FragmentHomeBinding binding;
 
@@ -98,7 +91,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     @Override
     public void onAttach(@NonNull Context context) {
         Log.i("HomeFragment", "onAttach");
-        component = ((MainActivity)getActivity()).component.mHomeComponent().create();
+        component = ((MainActivity) getActivity()).component.mHomeComponent().create();
         component.inject(this);
         super.onAttach(context);
     }
@@ -118,19 +111,57 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
 //        viewModel.updateService.updateHabitLongestSteak();
 
-        viewModel.initUIService.initDailyCalendar();
+        initDailyCalendar();
+        //viewModel.initUIService.initDailyCalendar();
 
+        initHistoryListOfDay();
+        //viewModel.initUIService.initHabitInWeek();
+        //viewModel.initUIService.initAdapter();
+        viewModel.getHabitModelListLiveData().observe(getViewLifecycleOwner(),
+                habitModels -> initHabitModelList(habitModels));
 
-
-        viewModel.initUIService.initHabitInWeek();
-        viewModel.initUIService.initAdapter();
-        viewModel.initHabitListUI.initHabitModelList();
-        viewModel.initHabitListUI.initHabitDoneModeList();
-        viewModel.initHabitListUI.initHabitFailedModelList();
+        viewModel.getHabitModelDoneListLiveData().observe(getViewLifecycleOwner(),
+                habitModels -> initHabitDoneModeList(habitModels));
+        viewModel.getHabitModelFailedListLiveData().observe(getViewLifecycleOwner(), new Observer<List<HabitModel>>() {
+            @Override
+            public void onChanged(List<HabitModel> habitModels) {
+                initHabitFailedModelList(habitModels);
+            }
+        });
 //        viewModel.initHabitListUI.initHabitBeforeModelList();
 //        viewModel.initHabitListUI.initHabitAfterModelList();
 
         return v;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void initDailyCalendar(){
+        TimeUtils utils = new TimeUtils();
+        viewModel.setDays(utils.getSixtyDaysArray());
+
+        viewModel.dailyCalendarAdapter = new DailyCalendarAdapter(getContext(), viewModel.getDays(), viewModel.getOnClickItem());
+        viewModel.dailyCalendarAdapter.notifyDataSetChanged();
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
+
+        binding.rvHorCalendar.setLayoutManager(layoutManager);
+        binding.rvHorCalendar.setAdapter(viewModel.dailyCalendarAdapter);
+        binding.rvHorCalendar.smoothScrollToPosition(viewModel.getDays().size() / 2 + 1);
+
+        SnapHelper helper = new LinearSnapHelper();
+        helper.attachToRecyclerView(binding.rvHorCalendar);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void initHistoryListOfDay(){
+        historyModelListObserver = historyModels -> {
+            String historyTime = LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT));
+            viewModel.getOrInsertHistoriesList(historyTime, historyModels);
+            viewModel.getHabitByUserIdAndHabitId(historyModels, true);
+        };
+        viewModel.getHistoryModelListLiveData().observe(getViewLifecycleOwner(), historyModelListObserver);
+
+        String historyTime = LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT));
+        viewModel.getHistoryByDate(historyTime);
     }
 
     @Override
@@ -138,6 +169,109 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         binding = FragmentHomeBinding.inflate(getLayoutInflater());
         binding.setA(this);
         return binding.getRoot();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void initHabitModelList(List<HabitModel> habitModels) {
+        if (habitModels.size() > 0) {
+            binding.tTodo.setVisibility(View.VISIBLE);
+            binding.rcvHabitList.setVisibility(View.VISIBLE);
+            viewModel.setmHabitAdapter(new HabitAdapter(getContext(), habitModels, viewModel.recyclerViewClickListener));
+            viewModel.getmHabitAdapter().notifyDataSetChanged();
+
+            RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+            binding.rcvHabitList.setAdapter(viewModel.getmHabitAdapter());
+            binding.rcvHabitList.setLayoutManager(manager);
+
+            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallbackHabitNullList);
+            itemTouchHelper.attachToRecyclerView(binding.rcvHabitList);
+        } else {
+            binding.tTodo.setVisibility(View.GONE);
+            binding.rcvHabitList.setVisibility(View.GONE);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void initHabitDoneModeList(List<HabitModel> habitModels) {
+        viewModel.setDoneHabitAdapter(new DoneHabitAdapter(getContext(), habitModels));
+        viewModel.getDoneHabitAdapter().notifyDataSetChanged();
+
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        binding.rcvHabitDoneList.setAdapter(viewModel.getDoneHabitAdapter());
+        binding.rcvHabitDoneList.setLayoutManager(manager);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallbackHabitDoneList);
+        itemTouchHelper.attachToRecyclerView(binding.rcvHabitDoneList);
+        if (habitModels.size() > 0) {
+            binding.tDone.setVisibility(View.VISIBLE);
+            binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
+        } else {
+            binding.tDone.setVisibility(View.GONE);
+            binding.rcvHabitDoneList.setVisibility(View.GONE);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void initHabitFailedModelList(List<HabitModel> habitModels) {
+        viewModel.setFailedHabitAdapter(new FailedHabitAdapter(habitModels, getContext()));
+        viewModel.getFailedHabitAdapter().notifyDataSetChanged();
+
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        binding.rcvHabitFailedList.setAdapter(viewModel.getFailedHabitAdapter());
+        binding.rcvHabitFailedList.setLayoutManager(manager);
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallbackHabitFailedList);
+        itemTouchHelper.attachToRecyclerView(binding.rcvHabitFailedList);
+
+        if (habitModels.size() > 0) {
+            binding.tFailed.setVisibility(View.VISIBLE);
+            binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
+        } else {
+            binding.tFailed.setVisibility(View.GONE);
+            binding.rcvHabitFailedList.setVisibility(View.GONE);
+        }
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void initHabitBeforeModelList() {
+        viewModel.setHabitModelBeforeList(new ArrayList<>());
+        //viewModel.setBeforeAdapter(new BeforeAdapter(viewModel.getHabitModelBeforeList(), null));
+        viewModel.getBeforeAdapter().notifyDataSetChanged();
+
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        binding.rcvBefore.setAdapter(viewModel.getBeforeAdapter());
+        binding.rcvBefore.setLayoutManager(manager);
+
+        habitModelBeforeListObserver = habitModelList -> {
+            if (viewModel.getHabitModelBeforeList().size() > 0) {
+                binding.rcvBefore.setVisibility(View.VISIBLE);
+            } else {
+                binding.rcvBefore.setVisibility(View.GONE);
+            }
+        };
+        viewModel.getHabitModelBeforeListMutableLiveData().observe(getViewLifecycleOwner(), habitModelBeforeListObserver);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void initHabitAfterModelList() {
+        viewModel.setHabitModelAfterList(new ArrayList<>());
+        viewModel.setAfterAdapter(new AfterAdapter(viewModel.getHabitModelAfterList()));
+        viewModel.getAfterAdapter().notifyDataSetChanged();
+
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+        binding.rcvAfter.setAdapter(viewModel.getAfterAdapter());
+        binding.rcvAfter.setLayoutManager(manager);
+
+        habitModelAfterListObserver = habitModelList -> {
+            if (viewModel.getHabitModelBeforeList().size() > 0) {
+                binding.rcvAfter.setVisibility(View.VISIBLE);
+            } else {
+                binding.rcvAfter.setVisibility(View.GONE);
+            }
+        };
+        viewModel.getHabitModelAfterListMutableLiveData().observe(getViewLifecycleOwner(), habitModelAfterListObserver);
+
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -148,41 +282,28 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         binding.setVm(viewModel);
 
         viewModel.getCurrentDayOfWeek();
-        viewModel.getHabitInWeekModels(viewModel.getDayOfWeekId(), new DbService.GetHabitInWeekListResult() {
-            @SuppressLint("LongLogTag")
+        Log.d(TAG, "getCurrentDayOfWeek: " + viewModel.getDayOfWeekId());
+        viewModel.getHabitsByUserId();
+        viewModel.getHabitsOfUserMutableLiveData().observe(getViewLifecycleOwner(), new Observer<List<HabitModel>>() {
             @Override
-            public void onGetHabitInWeekListSuccess(int size, List<HabitInWeekModel> models, CompositeDisposable disposable) {
-                Log.i("getHabitInWeekModels with size", String.valueOf(size));
-                disposable.clear();
-            }
-
-            @Override
-            public void onGetHabitInWeekListFailure(CompositeDisposable disposable) {
-                Log.i("getHabitInWeekModels","onGetHabitInWeekListFailure");
-                disposable.clear();
+            public void onChanged(List<HabitModel> habitModels) {
+                viewModel.getHabitInWeekModels2(viewModel.getDayOfWeekId(), habitModels);
+                viewModel.getHabitModelAfterListMutableLiveData().observe(getViewLifecycleOwner(), new Observer<List<HabitModel>>() {
+                    @Override
+                    public void onChanged(List<HabitModel> habitModels) {
+                        Log.d(TAG, "getHabitModelAfter: " + habitModels.size());
+                    }
+                });
             }
         });
 
         viewModel.setOnClickItem((view, date) -> {
 
             TimeUtils utils = new TimeUtils();
-            if(LocalDate.parse(date).isBefore(utils.getSelectedDate()) ||
-                LocalDate.parse(date).isAfter(utils.getSelectedDate())){
-                viewModel.getHabitsWhenClickDailyCalendar(date, new DbService.GetHabitsWhenClickDailyCalendarResult() {
-                    @SuppressLint("LongLogTag")
-                    @Override
-                    public void onGetHabitsWhenClickDailyCalendarSuccess(CompositeDisposable disposable) {
-                        Log.i("getHabitsWhenClickDailyCalendar", "onGetHabitsWhenClickDailyCalendarSuccess");
-                        disposable.clear();
-                    }
-
-                    @SuppressLint("LongLogTag")
-                    @Override
-                    public void onGetHabitsWhenClickDailyCalendarFailure(CompositeDisposable disposable) {
-                        Log.i("getHabitsWhenClickDailyCalendar", "onGetHabitsWhenClickDailyCalendarFailure");
-                        disposable.clear();
-                    }
-                });
+            if (LocalDate.parse(date).isBefore(utils.getSelectedDate()) ||
+                    LocalDate.parse(date).isAfter(utils.getSelectedDate())) {
+                Log.d(TAG, "setOnClickItem: " + date);
+                viewModel.getHabitsWhenClickDailyCalendar1(date);
 
                 binding.tTodo.setVisibility(View.GONE);
                 binding.tFailed.setVisibility(View.GONE);
@@ -190,7 +311,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 binding.rcvHabitList.setVisibility(View.GONE);
                 binding.rcvHabitFailedList.setVisibility(View.GONE);
                 binding.rcvHabitDoneList.setVisibility(View.GONE);
-            }else {
+            } else {
                 binding.tTodo.setVisibility(View.VISIBLE);
                 binding.tFailed.setVisibility(View.VISIBLE);
                 binding.tDone.setVisibility(View.VISIBLE);
@@ -200,189 +321,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
             }
 
         });
-
-        viewModel.initUIService = new InitUIService() {
-            @SuppressLint("NotifyDataSetChanged")
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void initDailyCalendar() {
-                TimeUtils utils = new TimeUtils();
-                viewModel.setDays(utils.getSixtyDaysArray());
-
-                viewModel.dailyCalendarAdapter = new DailyCalendarAdapter(getContext(), viewModel.getDays(), viewModel.getOnClickItem());
-                viewModel.dailyCalendarAdapter.notifyDataSetChanged();
-                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
-
-                binding.rvHorCalendar.setLayoutManager(layoutManager);
-                binding.rvHorCalendar.setAdapter(viewModel.dailyCalendarAdapter);
-                binding.rvHorCalendar.smoothScrollToPosition(viewModel.getDays().size() / 2 + 1);
-
-                SnapHelper helper = new LinearSnapHelper();
-                helper.attachToRecyclerView(binding.rvHorCalendar);
-            }
-
-            @Override
-            public void initHistoryList() {
-            }
-
-
-            @Override
-            public void initHistoryListOfDay() {
-                historyModelListObserver = historyModels -> {
-                    String historyTime = LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT));
-                    viewModel.getOrInsertHistoriesList(historyTime, historyModels);
-                    viewModel.initCurrentAdapter(historyModels);
-                };
-                viewModel.getHistoryModelListLiveData().observe(getViewLifecycleOwner(), historyModelListObserver);
-
-                String historyTime = LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT));
-                viewModel.getHistoryByDate(historyTime, new DbService.GetHistoryByDateResult() {
-                    @Override
-                    public void onGetHistoryByDateSuccess(CompositeDisposable disposable) {
-                        disposable.clear();
-                    }
-
-                    @Override
-                    public void onGetHistoryByDateFailure(CompositeDisposable disposable) {
-                        disposable.clear();
-                    }
-                });
-            }
-
-            /**
-             * Used for update habit in week per date
-             */
-            @Override
-            public void initHabitInWeek() {
-                viewModel.initUIService.initHistoryListOfDay();
-            }
-
-            @Override
-            public void initAdapter() {
-                viewModel.initHabitListUI = new InitUIService.InitHabitListUI() {
-                    @Override
-                    public void initHabitModelList() {
-                        Log.i("initHabitModelList", String.valueOf(viewModel.getHabitModelList().size()));
-                        viewModel.setAdapter(new HabitAdapter(getContext(), viewModel.getHabitModelList(), viewModel.recyclerViewClickListener, viewModel));
-                        viewModel.getAdapter().notifyDataSetChanged();
-
-                        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                        binding.rcvHabitList.setAdapter(viewModel.getAdapter());
-                        binding.rcvHabitList.setLayoutManager(manager);
-
-                        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallbackHabitNullList);
-                        itemTouchHelper.attachToRecyclerView(binding.rcvHabitList);
-
-                        habitModelNullListObserver = habitModels -> {
-                            if(viewModel.getHabitModelList().size() > 0){
-                                binding.tTodo.setVisibility(View.VISIBLE);
-                                binding.rcvHabitList.setVisibility(View.VISIBLE);
-                            }else {
-                                binding.tTodo.setVisibility(View.GONE);
-                                binding.rcvHabitList.setVisibility(View.GONE);
-                            }
-                        };
-
-                        viewModel.getHabitModelListLiveData().observe(getViewLifecycleOwner(), habitModelNullListObserver);
-                    }
-
-                    @Override
-                    public void initHabitDoneModeList() {
-                        Log.i("initHabitDoneModeList", String.valueOf(viewModel.getHabitModelDoneList().size()));
-                        viewModel.setDoneHabitAdapter(new DoneHabitAdapter(getContext(), viewModel.getHabitModelDoneList()));
-                        viewModel.getDoneHabitAdapter().notifyDataSetChanged();
-
-                        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                        binding.rcvHabitDoneList.setAdapter(viewModel.getDoneHabitAdapter());
-                        binding.rcvHabitDoneList.setLayoutManager(manager);
-
-                        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallbackHabitDoneList);
-                        itemTouchHelper.attachToRecyclerView(binding.rcvHabitDoneList);
-
-                        habitModelDoneListObserver = habitModelList -> {
-                            if(viewModel.getHabitModelDoneList().size() > 0){
-                                binding.tDone.setVisibility(View.VISIBLE);
-                                binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
-                            }else {
-                                binding.tDone.setVisibility(View.GONE);
-                                binding.rcvHabitDoneList.setVisibility(View.GONE);
-                            }
-                        };
-
-                        viewModel.getHabitModelDoneListLiveData().observe(getViewLifecycleOwner(), habitModelDoneListObserver);
-                    }
-
-                    @SuppressLint("LongLogTag")
-                    @Override
-                    public void initHabitFailedModelList() {
-                        Log.i("initHabitFailedModelList", String.valueOf(viewModel.getHabitModelFailedList().size()));
-                        viewModel.setFailedHabitAdapter(new FailedHabitAdapter(viewModel.getHabitModelFailedList(), getContext()));
-                        viewModel.getFailedHabitAdapter().notifyDataSetChanged();
-
-                        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                        binding.rcvHabitFailedList.setAdapter(viewModel.getFailedHabitAdapter());
-                        binding.rcvHabitFailedList.setLayoutManager(manager);
-
-                        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallbackHabitFailedList);
-                        itemTouchHelper.attachToRecyclerView(binding.rcvHabitFailedList);
-
-                        habitModelFailedListObserver = habitModelList -> {
-                            if(viewModel.getHabitModelFailedList().size() > 0){
-                                binding.tFailed.setVisibility(View.VISIBLE);
-                                binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
-                            }else {
-                                binding.tFailed.setVisibility(View.GONE);
-                                binding.rcvHabitFailedList.setVisibility(View.GONE);
-                            }
-                        };
-
-                        viewModel.getHabitModelFailedListLiveData().observe(getViewLifecycleOwner(), habitModelFailedListObserver);
-                    }
-
-                    @Override
-                    public void initHabitBeforeModelList() {
-                        viewModel.setHabitModelBeforeList(new ArrayList<>());
-                        viewModel.setBeforeAdapter(new BeforeAdapter(viewModel.getHabitModelBeforeList(), null, viewModel));
-                        viewModel.getBeforeAdapter().notifyDataSetChanged();
-
-                        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                        binding.rcvBefore.setAdapter(viewModel.getBeforeAdapter());
-                        binding.rcvBefore.setLayoutManager(manager);
-
-                        habitModelBeforeListObserver = habitModelList -> {
-                            if (viewModel.getHabitModelBeforeList().size() > 0) {
-                                binding.rcvBefore.setVisibility(View.VISIBLE);
-                            } else {
-                                binding.rcvBefore.setVisibility(View.GONE);
-                            }
-                        };
-                        viewModel.getHabitModelBeforeListMutableLiveData().observe(getViewLifecycleOwner(), habitModelBeforeListObserver);
-                    }
-
-                    @Override
-                    public void initHabitAfterModelList() {
-                        viewModel.setHabitModelAfterList(new ArrayList<>());
-                        viewModel.setAfterAdapter(new AfterAdapter(viewModel.getHabitModelAfterList()));
-                        viewModel.getAfterAdapter().notifyDataSetChanged();
-
-                        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-                        binding.rcvAfter.setAdapter(viewModel.getAfterAdapter());
-                        binding.rcvAfter.setLayoutManager(manager);
-
-                        habitModelAfterListObserver = habitModelList -> {
-                            if (viewModel.getHabitModelBeforeList().size() > 0) {
-                                binding.rcvAfter.setVisibility(View.VISIBLE);
-                            } else {
-                                binding.rcvAfter.setVisibility(View.GONE);
-                            }
-                        };
-                        viewModel.getHabitModelAfterListMutableLiveData().observe(getViewLifecycleOwner(), habitModelAfterListObserver);
-                    }
-
-                };
-            }
-
-        };
 
 //        viewModel.recyclerViewClickListener = (v, habitModelList, position) -> {
 //
@@ -417,29 +355,29 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         int id = view.getId();
 
-        if(id == R.id.btn_ch){
+        if (id == R.id.btn_ch) {
             clickCreateHabit();
-        }else if(id == R.id.t_todo){
-            if(!viewModel.isHideToDo()){
+        } else if (id == R.id.t_todo) {
+            if (!viewModel.isHideToDo()) {
                 viewModel.setHideToDo(true);
                 binding.rcvHabitList.setVisibility(View.GONE);
-            }else {
+            } else {
                 viewModel.setHideToDo(false);
                 binding.rcvHabitList.setVisibility(View.VISIBLE);
             }
-        }else if(id == R.id.t_done){
-            if(!viewModel.isHideDone()){
+        } else if (id == R.id.t_done) {
+            if (!viewModel.isHideDone()) {
                 viewModel.setHideDone(true);
                 binding.rcvHabitDoneList.setVisibility(View.GONE);
-            }else {
+            } else {
                 viewModel.setHideDone(false);
                 binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
             }
-        }else if(id == R.id.t_failed){
-            if(!viewModel.isHideFailed()){
+        } else if (id == R.id.t_failed) {
+            if (!viewModel.isHideFailed()) {
                 viewModel.setHideFailed(true);
                 binding.rcvHabitFailedList.setVisibility(View.GONE);
-            }else {
+            } else {
                 viewModel.setHideFailed(false);
                 binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
             }
@@ -447,7 +385,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
     }
 
-    private void clickCreateHabit(){
+    private void clickCreateHabit() {
         Intent intent = new Intent(getContext(), CreateHabitActivity.class);
         startActivity(intent);
     }
@@ -466,37 +404,13 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
             int position = viewHolder.getAdapterPosition();
 
-            switch (direction){
+            switch (direction) {
                 case ItemTouchHelper.LEFT:
-                    viewModel.updateHistory(position, HabitAdapter.class, VAL_FALSE, new DbService.UpdateHistoryResult() {
-                        @Override
-                        public void onUpdateHistorySuccess(CompositeDisposable disposable) {
-                            Log.i("updateHistory", "onUpdateHistorySuccess - setToFalse");
-                            disposable.clear();
-                        }
-
-                        @Override
-                        public void onUpdateHistoryFailure(CompositeDisposable disposable) {
-                            Log.e("updateHistory", "onUpdateHistoryFailure");
-                            disposable.clear();
-                        }
-                    });
+                    viewModel.updateHistory(position, HabitAdapter.class, VAL_FALSE);
                     break;
 
                 case ItemTouchHelper.RIGHT:
-                    viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE, new DbService.UpdateHistoryResult() {
-                        @Override
-                        public void onUpdateHistorySuccess(CompositeDisposable disposable) {
-                            Log.i("updateHistory", "onUpdateHistorySuccess - setToTrue");
-                            disposable.clear();
-                        }
-
-                        @Override
-                        public void onUpdateHistoryFailure(CompositeDisposable disposable) {
-                            Log.e("updateHistory", "onUpdateHistoryFailure");
-                            disposable.clear();
-                        }
-                    });
+                    viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE);
                     break;
 
             }
@@ -508,25 +422,25 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX,
                                 float dY, int actionState, boolean isCurrentlyActive) {
 
-            if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
+            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
 
                 View itemView = viewHolder.itemView;
                 Paint p = new Paint();
                 Bitmap icon;
 
-                if(dX < 0){
+                if (dX < 0) {
                     icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_red_close);
                     p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
                     c.drawBitmap(icon,
                             (float) itemView.getRight() - icon.getWidth() - 10,
-                            (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight())/2,
-                                p
-                            );
+                            (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight()) / 2,
+                            p
+                    );
                 }
 
-                if(dX > 0) {
+                if (dX > 0) {
                     int position = viewHolder.getAdapterPosition();
-                    if(position != -1){
+                    if (position != -1) {
 
 //                        HabitModel habitModel = viewModel.getHabitModelList().get(position);
 //                        List<HabitInWeekModel> models = viewModel.getDayOfWeekHabitListByUserAndHabitId(habitModel.getHabitId());
@@ -543,14 +457,14 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 //                                    (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight())/2,
 //                                    p);
 //                        }else {
-                            icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_purple_clock);
+                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_purple_clock);
 
-                            p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
+                        p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
 
-                            c.drawBitmap(icon,
-                                    (float) itemView.getLeft() + 10,
-                                    (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight())/2,
-                                    p);
+                        c.drawBitmap(icon,
+                                (float) itemView.getLeft() + 10,
+                                (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight()) / 2,
+                                p);
 //                        }
 
                     }
@@ -560,7 +474,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 viewHolder.itemView.setAlpha(alpha);
                 viewHolder.itemView.setTranslationX(dX);
 
-            }else {
+            } else {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
 
@@ -585,19 +499,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 case ItemTouchHelper.LEFT:
                     break;
                 case ItemTouchHelper.RIGHT:
-                    viewModel.updateHistory(position, DoneHabitAdapter.class, VAL_NULL, new DbService.UpdateHistoryResult() {
-                        @Override
-                        public void onUpdateHistorySuccess(CompositeDisposable disposable) {
-                            Log.i("updateHistory", "onUpdateHistorySuccess - setToNull");
-                            disposable.clear();
-                        }
-
-                        @Override
-                        public void onUpdateHistoryFailure(CompositeDisposable disposable) {
-                            Log.e("updateHistory", "onUpdateHistoryFailure");
-                            disposable.clear();
-                        }
-                    });
+                    viewModel.updateHistory(position, DoneHabitAdapter.class, VAL_NULL);
                     break;
             }
 
@@ -628,19 +530,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 case ItemTouchHelper.LEFT:
                     break;
                 case ItemTouchHelper.RIGHT:
-                    viewModel.updateHistory(position, FailedHabitAdapter.class, VAL_NULL, new DbService.UpdateHistoryResult() {
-                        @Override
-                        public void onUpdateHistorySuccess(CompositeDisposable disposable) {
-                            Log.i("updateHistory", "onUpdateHistorySuccess - setToNull");
-                            disposable.clear();
-                        }
-
-                        @Override
-                        public void onUpdateHistoryFailure(CompositeDisposable disposable) {
-                            Log.e("updateHistory", "onUpdateHistoryFailure");
-                            disposable.clear();
-                        }
-                    });
+                    viewModel.updateHistory(position, FailedHabitAdapter.class, VAL_NULL);
                     break;
             }
 

@@ -58,7 +58,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder>{
 
         holder.binding.hname.setText(habit.getHabitName());
 
-        List<HabitInWeekModel> habitInWeekModels = vm.getDayOfWeekHabitListByUserAndHabitId(habit.getHabitId());
+        //List<HabitInWeekModel> habitInWeekModels = vm.getDayOfWeekHabitListByUserAndHabitId(habit.getHabitId());
 
 //        HabitInWeekModel model = habitInWeekModels.get(0);
 //

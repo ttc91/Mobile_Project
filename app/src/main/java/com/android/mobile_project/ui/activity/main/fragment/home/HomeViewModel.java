@@ -8,9 +8,9 @@ import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.android.mobile_project.data.local.DataLocalManager;
+import com.android.mobile_project.data.local.sqlite.entity.db.HabitEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.HabitInWeekEntity;
 import com.android.mobile_project.data.remote.model.HabitInWeekModel;
 import com.android.mobile_project.data.remote.model.HabitModel;
@@ -22,17 +22,18 @@ import com.android.mobile_project.data.repository.HistoryRepository;
 import com.android.mobile_project.data.utils.mapper.HabitInWeekMapper;
 import com.android.mobile_project.data.utils.mapper.HabitMapper;
 import com.android.mobile_project.data.utils.mapper.HistoryMapper;
+import com.android.mobile_project.ui.activity.base.BaseViewModel;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.AfterAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.BeforeAdapter;
-import com.android.mobile_project.ui.activity.main.fragment.home.service.DbService;
-import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
-import com.android.mobile_project.utils.time.adapter.DailyCalendarAdapter;
-import com.android.mobile_project.utils.time.utils.TimeUtils;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.DoneHabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.FailedHabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.HabitAdapter;
+import com.android.mobile_project.ui.activity.main.fragment.home.service.DbService;
 import com.android.mobile_project.ui.activity.main.fragment.home.service.InitUIService;
 import com.android.mobile_project.ui.activity.main.fragment.home.service.UpdateService;
+import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
+import com.android.mobile_project.utils.time.adapter.DailyCalendarAdapter;
+import com.android.mobile_project.utils.time.utils.TimeUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -53,8 +54,9 @@ import io.reactivex.subscribers.DisposableSubscriber;
 
 @MyCustomAnnotation.MyScope.FragmentScope
 @RequiresApi(api = Build.VERSION_CODES.O)
-public class HomeViewModel extends ViewModel implements IHomeViewModel{
+public class HomeViewModel extends BaseViewModel {
 
+    private static final String TAG = HomeViewModel.class.getSimpleName();
     private final DayOfWeekRepository mDayOfWeekRepository;
     private final HabitInWeekRepository mHabitInWeekRepository;
     private final HistoryRepository mHistoryRepository;
@@ -82,7 +84,6 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
     protected HabitAdapter.RecyclerViewClickListener recyclerViewClickListener;
     protected InitUIService.InitHabitListUI initHabitListUI;
 
-    private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
     private DbService.InsertHistoryResult mInsertHistoryResult = new DbService.InsertHistoryResult() {
         @Override
@@ -97,11 +98,17 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
     };
 
     private List<HabitInWeekModel> habitInWeekModelList = new ArrayList<>();
+    private MutableLiveData<List<HabitInWeekModel>> habitInWeekModelListMutableLiveData = new MutableLiveData<>();
+
+    public LiveData<List<HabitInWeekModel>> getHabitInWeekModelListLD() {
+        return habitInWeekModelListMutableLiveData;
+    }
+
     private MutableLiveData<List<HistoryModel>> historyModelListMutableLiveData = new MutableLiveData<>();
 
     private MutableLiveData<List<HabitModel>> habitModelListMutableLiveData = new MutableLiveData<>();
     private List<HabitModel> habitModelList = new ArrayList<>();
-    private HabitAdapter adapter;
+    private HabitAdapter mHabitAdapter;
 
     private MutableLiveData<List<HabitModel>> habitModelBeforeListMutableLiveData = new MutableLiveData<>();
     private List<HabitModel> habitModelBeforeList = new ArrayList<>();
@@ -125,7 +132,7 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
 
     private final TimeUtils timeUtils = new TimeUtils();
     private final java.time.DayOfWeek day = timeUtils.getSelectedDate().getDayOfWeek();
-    private final String dayName = day.getDisplayName(TextStyle.FULL, Locale.getDefault());
+    private final String dayName = day.getDisplayName(TextStyle.FULL, Locale.US);
     private Long dayOfWeekId;
 
     private DailyCalendarAdapter.OnClickItem onClickItem;
@@ -133,25 +140,25 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
     protected DailyCalendarAdapter dailyCalendarAdapter;
     private List<LocalDate> days = new ArrayList<>();
 
-    protected LiveData<List<HistoryModel>> getHistoryModelListLiveData(){
+    protected LiveData<List<HistoryModel>> getHistoryModelListLiveData() {
         return historyModelListMutableLiveData;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    protected void setDate(TextView text){
+    protected void setDate(TextView text) {
         text.setText(timeUtils.getDateFromLocalDate());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    protected void setMonth(TextView text){
+    protected void setMonth(TextView text) {
         text.setText(timeUtils.getMonthYearFromDate());
     }
 
-    protected LiveData<List<HabitModel>> getHabitModelBeforeListMutableLiveData(){
+    protected LiveData<List<HabitModel>> getHabitModelBeforeListMutableLiveData() {
         return habitModelBeforeListMutableLiveData;
     }
 
-    protected LiveData<List<HabitModel>> getHabitModelAfterListMutableLiveData(){
+    public LiveData<List<HabitModel>> getHabitModelAfterListMutableLiveData() {
         return habitModelAfterListMutableLiveData;
     }
 
@@ -187,15 +194,15 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
         this.afterAdapter = afterAdapter;
     }
 
-    protected LiveData<List<HabitModel>> getHabitModelListLiveData (){
+    protected LiveData<List<HabitModel>> getHabitModelListLiveData() {
         return habitModelListMutableLiveData;
     }
 
-    protected LiveData<List<HabitModel>> getHabitModelDoneListLiveData (){
+    protected LiveData<List<HabitModel>> getHabitModelDoneListLiveData() {
         return habitModelDoneListMutableLiveData;
     }
 
-    protected LiveData<List<HabitModel>> getHabitModelFailedListLiveData (){
+    protected LiveData<List<HabitModel>> getHabitModelFailedListLiveData() {
         return habitModelFailedListMutableLiveData;
     }
 
@@ -223,7 +230,7 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
         this.days = days;
     }
 
-    protected Long getDayOfWeekId(){
+    protected Long getDayOfWeekId() {
         return this.dayOfWeekId;
     }
 
@@ -275,12 +282,12 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
         this.habitModelList = habitModelList;
     }
 
-    protected HabitAdapter getAdapter() {
-        return adapter;
+    protected HabitAdapter getmHabitAdapter() {
+        return mHabitAdapter;
     }
 
-    protected void setAdapter(HabitAdapter adapter) {
-        this.adapter = adapter;
+    protected void setmHabitAdapter(HabitAdapter mHabitAdapter) {
+        this.mHabitAdapter = mHabitAdapter;
     }
 
     protected DoneHabitAdapter getDoneHabitAdapter() {
@@ -299,195 +306,85 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
         this.failedHabitAdapter = failedHabitAdapter;
     }
 
-    protected void getCurrentDayOfWeek(){
+    protected void getCurrentDayOfWeek() {
+        Log.d(TAG, "getCurrentDayOfWeek: " + dayName);
         this.dayOfWeekId = timeUtils.getCurrentDayOfWeekId(this.dayName);
     }
 
-    @SuppressLint("LongLogTag")
-    protected void getHabitInWeekModels(Long dateOfWeekId, DbService.GetHabitInWeekListResult callback){
-        mCompositeDisposable.add(
-                mHabitInWeekRepository.getMHabitInWeekDataSource().getHabitInWeekEntityByDayOfWeekId(DataLocalManager.getInstance().getUserId(), dateOfWeekId)
-                        .observeOn(Schedulers.io())
-                        .subscribeOn(Schedulers.single())
-                        .subscribe(habitInWeekEntities -> {
-                                    Log.i("getHabitInWeekEntityByDayOfWeekId","onNext");
-                                    habitInWeekModelList = HabitInWeekMapper.getInstance().mapToListModel(habitInWeekEntities);
-                                    callback.onGetHabitInWeekListSuccess(habitInWeekEntities.size(),
-                                            HabitInWeekMapper.getInstance().mapToListModel(habitInWeekEntities),
-                                            mCompositeDisposable);
-                                }, throwable -> {
-                                    Log.e("getHabitInWeekEntityByDayOfWeekId", "onError", throwable);
-                                    callback.onGetHabitInWeekListFailure(mCompositeDisposable);
-                                }
-                        )
-        );
+    private List<HabitModel> habitsOfUser = new ArrayList<>();
+
+    private MutableLiveData<List<HabitModel>> habitsOfUserMutableLiveData = new MutableLiveData<>();
+
+    public LiveData<List<HabitModel>> getHabitsOfUserMutableLiveData() {
+        return habitsOfUserMutableLiveData;
     }
 
-    @SuppressLint("LongLogTag")
-    protected void getHabitsWhenClickDailyCalendar(String date, DbService.GetHabitsWhenClickDailyCalendarResult callback){
-
-        if(LocalDate.parse(date).equals(timeUtils.getSelectedDate())){
-            habitModelBeforeList.clear();
-            beforeAdapter.notifyItemInserted(habitModelAfterList.size() - 1);
-            habitModelBeforeListMutableLiveData.postValue(habitModelBeforeList);
-            habitModelAfterList.clear();
-            afterAdapter.notifyItemInserted(habitModelAfterList.size() - 1);
-            habitModelAfterListMutableLiveData.postValue(habitModelAfterList);
-        }else {
-            if(LocalDate.parse(date).isBefore(timeUtils.getSelectedDate())){
-                mCompositeDisposable.add(
-                        mHistoryRepository.getMHistoryDataSource().getHistoryByDate(DataLocalManager.getInstance().getUserId(), date)
-                                .observeOn(Schedulers.io())
-                                .subscribeOn(Schedulers.single())
-                                .subscribe(historyEntityList -> {
-                                            Log.i("getHabitDifferenceFromCurrentDay","onNext");
-                                            callback.onGetHabitsWhenClickDailyCalendarSuccess(mCompositeDisposable);
-                                            getHabitByUserIdAndHabitId(HistoryMapper.getInstance().mapToListModel(historyEntityList),
-                                                    false,
-                                                    new DbService.GetHabitByUserIdAndHabitIdResult() {
-                                                        @Override
-                                                        public void onGetHabitByUserIdAndHabitIdSuccess(HabitModel model, CompositeDisposable disposable) {
-                                                            Log.i("GetHabitByUserIdAndHabitIdResult", "onGetHabitByUserIdAndHabitIdSuccess");
-                                                            habitModelBeforeList.add(model);
-                                                            disposable.clear();
-                                                        }
-
-                                                        @Override
-                                                        public void onGetHabitByUserIdAndHabitIdFailure(CompositeDisposable disposable) {
-                                                            Log.e("GetHabitByUserIdAndHabitIdResult", "onGetHabitByUserIdAndHabitIdFailure");
-                                                            disposable.clear();
-                                                        }
-                                                    });
-                                            habitModelBeforeListMutableLiveData.postValue(habitModelBeforeList);
-                                        }, throwable -> {
-                                            Log.e("getHabitDifferenceFromCurrentDay", "onError", throwable);
-                                            callback.onGetHabitsWhenClickDailyCalendarFailure(mCompositeDisposable);
-                                        }
-                                )
-                );
-            }else{
-                Long id = timeUtils.getDayOfWeekId(date);
-                getHabitInWeekModels(id, new DbService.GetHabitInWeekListResult() {
+    public void getHabitsByUserId() {
+        mHabitRepository.getMHabitDataSource()
+                .getHabitListByUserId(DataLocalManager.getInstance().getUserId())
+                .subscribe(new CustomSubscriber<List<HabitEntity>>() {
                     @Override
-                    public void onGetHabitInWeekListSuccess(int size, List<HabitInWeekModel> models, CompositeDisposable disposable) {
-                        Log.i("getHabitInWeekModels","onGetHabitInWeekListSuccess");
-                        for(HabitInWeekModel model : models){
-                            getHabitByUserIdAndHabitId(model.getHabitId(),
-                                    new DbService.GetHabitByUserIdAndHabitIdResult() {
-                                        @Override
-                                        public void onGetHabitByUserIdAndHabitIdSuccess(HabitModel model, CompositeDisposable disposable) {
-                                            Log.i("GetHabitByUserIdAndHabitIdResult","onGetHabitByUserIdAndHabitIdSuccess");
-                                            habitModelAfterList.add(model);
-                                            afterAdapter.notifyItemInserted(habitModelAfterList.size() - 1);
-                                            disposable.clear();
-                                        }
-
-                                        @Override
-                                        public void onGetHabitByUserIdAndHabitIdFailure(CompositeDisposable disposable) {
-                                            Log.e("GetHabitByUserIdAndHabitIdResult","onGetHabitByUserIdAndHabitIdFailure");
-                                            disposable.clear();
-                                        }
-                                    });
-                        }
-                        habitModelAfterListMutableLiveData.postValue(habitModelAfterList);
-                        disposable.clear();
-                    }
-
-                    @Override
-                    public void onGetHabitInWeekListFailure(CompositeDisposable disposable) {
-                        Log.e("getHabitInWeekModels", "onGetHabitInWeekListFailure");
-                        disposable.clear();
+                    public void onNext(List<HabitEntity> habitEntities) {
+                        habitsOfUser = HabitMapper.getInstance().mapToListModel(habitEntities);
+                        habitsOfUserMutableLiveData.postValue(habitsOfUser);
                     }
                 });
-            }
-        }
     }
 
+    public void getHabitInWeekModels1(Long dateOfWeekId) {
+        mHabitInWeekRepository.getMHabitInWeekDataSource().getHabitInWeekEntityByDayOfWeekId(DataLocalManager.getInstance().getUserId(), dateOfWeekId)
+                .subscribe(new CustomSubscriber<List<HabitInWeekEntity>>() {
+                    @Override
+                    public void onNext(List<HabitInWeekEntity> habitInWeekEntities) {
+                        Log.d(TAG, "onNext: habitInWeekEntities size = " + habitInWeekEntities.size());
+                        habitInWeekModelList = HabitInWeekMapper.getInstance().mapToListModel(habitInWeekEntities);
+//                        for (HabitInWeekModel model : habitInWeekModelList) {
+//                            getHabitByUserIdAndHabitId1(model.getHabitId());
+//                        }
+//                        habitModelAfterListMutableLiveData.postValue(habitModelAfterList);
+                        habitInWeekModelListMutableLiveData.postValue(habitInWeekModelList);
+                    }
+                });
+    }
+
+    public void getHabitInWeekModels2(Long dateOfWeekId, List<HabitModel> models) {
+        mHabitInWeekRepository.getMHabitInWeekDataSource().getHabitInWeekEntityByDayOfWeekId(DataLocalManager.getInstance().getUserId(), dateOfWeekId)
+                .subscribe(new CustomSubscriber<List<HabitInWeekEntity>>() {
+                    @Override
+                    public void onNext(List<HabitInWeekEntity> habitInWeekEntities) {
+                        Log.d(TAG, "onNext: habitInWeekEntities size = " + habitInWeekEntities.size());
+                        habitInWeekModelList = HabitInWeekMapper.getInstance().mapToListModel(habitInWeekEntities);
+                        for (HabitInWeekModel model : habitInWeekModelList) {
+                            //getHabitByUserIdAndHabitId1(model.getHabitId());
+                            for (HabitModel habit : models) {
+                                if (habit.getHabitId().equals(model.getHabitId())) {
+                                    habitModelAfterList.add(habit);
+                                }
+                            }
+                        }
+                        Log.d(TAG, "habitModelAfterList.size(): " + habitModelAfterList.size());
+                        //afterAdapter.notifyItemInserted(habitModelAfterList.size() - 1);
+                        habitModelAfterListMutableLiveData.postValue(habitModelAfterList);
+                    }
+                });
+    }
 
     @SuppressLint("LongLogTag")
-    protected void getHabitByUserIdAndHabitId(List<HistoryModel> models, boolean isCurrentDate, DbService.GetHabitByUserIdAndHabitIdResult callback){
+    protected void getHabitByUserIdAndHabitId1(Long habitId) {
 
-        for(HistoryModel model : models){
-            if(model.getHistoryHabitsState().equals(VAL_NULL)){
-                mCompositeDisposable.add(
-                        mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getInstance().getUserId(), model.getHabitId())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribeOn(Schedulers.io())
-                                .subscribe(habitEntity -> {
-                                    Log.i("getHabitByUserIdAndHabitId","onSuccess");
-                                    if(isCurrentDate){
-                                        habitModelList.add(HabitMapper.getInstance().mapToModel(habitEntity));
-                                    }
-                                    callback.onGetHabitByUserIdAndHabitIdSuccess(HabitMapper.getInstance().mapToModel(habitEntity), mCompositeDisposable);
-                                }, throwable -> {
-                                    Log.e("getHabitByUserIdAndHabitId", "onError", throwable);
-                                    callback.onGetHabitByUserIdAndHabitIdFailure(mCompositeDisposable);
-                                }
-                        )
-                );
-            }else if(model.getHistoryHabitsState().equals(VAL_TRUE)){
-                mCompositeDisposable.add(
-                        mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getInstance().getUserId(), model.getHabitId())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribeOn(Schedulers.io())
-                                .subscribe(habitEntity -> {
-                                    Log.i("getHabitByUserIdAndHabitId","onSuccess");
-                                    if(isCurrentDate){
-                                        habitModelDoneList.add(HabitMapper.getInstance().mapToModel(habitEntity));
-                                    }
-                                    callback.onGetHabitByUserIdAndHabitIdSuccess(HabitMapper.getInstance().mapToModel(habitEntity), mCompositeDisposable);
-                                }, throwable -> {
-                                    Log.e("getHabitByUserIdAndHabitId", "onError", throwable);
-                                    callback.onGetHabitByUserIdAndHabitIdFailure(mCompositeDisposable);
-                                }
-                        )
-                );
-            }else {
-                mCompositeDisposable.add(
-                        mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getInstance().getUserId(), model.getHabitId())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribeOn(Schedulers.io())
-                                .subscribe(habitEntity -> {
-                                    Log.i("getHabitByUserIdAndHabitId","onSuccess");
-                                    if(isCurrentDate){
-                                        habitModelFailedList.add(HabitMapper.getInstance().mapToModel(habitEntity));
-                                    }
-                                    callback.onGetHabitByUserIdAndHabitIdSuccess(HabitMapper.getInstance().mapToModel(habitEntity), mCompositeDisposable);
-                                }, throwable -> {
-                                    Log.e("getHabitByUserIdAndHabitId", "onError", throwable);
-                                    callback.onGetHabitByUserIdAndHabitIdFailure(mCompositeDisposable);
-                                }
-                        )
-                );
-            }
-
-        }
-
-        habitModelListMutableLiveData.postValue(habitModelList);
-        habitModelDoneListMutableLiveData.postValue(habitModelDoneList);
-        habitModelFailedListMutableLiveData.postValue(habitModelFailedList);
-
+        mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getInstance().getUserId(), habitId)
+                .subscribe(new CustomSingleObserver<HabitEntity>() {
+                    @Override
+                    public void onSuccess(@NonNull HabitEntity habitEntity) {
+                        habitModelAfterList.add(HabitMapper.getInstance().mapToModel(habitEntity));
+                        Log.d(TAG, "habitModelAfterList.size(): " + habitModelAfterList.size());
+                        afterAdapter.notifyItemInserted(habitModelAfterList.size() - 1);
+                    }
+                });
     }
 
-    protected void getHistoryByDate(String historyTime, DbService.GetHistoryByDateResult callback){
-        mCompositeDisposable.add(
-                mHistoryRepository.getMHistoryDataSource().getHistoryByDate(DataLocalManager.getInstance().getUserId(), historyTime)
-                .observeOn(Schedulers.io())
-                .subscribeOn(Schedulers.single())
-                .subscribe(historyEntityList -> {
-                    Log.i("getHistoryByDate","onNext");
-                    historyModelListMutableLiveData.postValue(HistoryMapper.getInstance().mapToListModel(historyEntityList));
-                    callback.onGetHistoryByDateSuccess(mCompositeDisposable);
-                }, throwable -> {
-                    Log.e("getHistoryByDate", "onError", throwable);
-                    callback.onGetHistoryByDateFailure(mCompositeDisposable);
-                })
-        );
-
-    }
-
-    protected void getOrInsertHistoriesList(String historyTime, List<HistoryModel> models){
-        if(models.size() == 0){
+    protected void getOrInsertHistoriesList(String historyTime, List<HistoryModel> models) {
+        if (models.size() == 0) {
             List<HistoryModel> historyModelList = new ArrayList<>();
             HistoryModel model = new HistoryModel();
             habitInWeekModelList.forEach(habitInWeekModel -> {
@@ -495,68 +392,145 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
                 model.setUserId(DataLocalManager.getInstance().getUserId());
                 model.setHistoryHabitsState(VAL_NULL);
                 model.setHabitId(habitInWeekModel.getHabitId());
-                insertHistory(model, mInsertHistoryResult);
+                insertHistory(model);
                 historyModelList.add(model);
             });
             historyModelListMutableLiveData.postValue(historyModelList);
         }
     }
 
-    protected void insertHistory(HistoryModel historyModel, DbService.InsertHistoryResult callback){
-        mCompositeDisposable.add(
-                mHistoryRepository.getMHistoryDataSource().insert(HistoryMapper.getInstance().mapToEntity(historyModel))
-                        .observeOn(Schedulers.single())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(() -> {
-                            Log.i("insertHistory","onComplete");
-                            callback.onInsertHistorySuccess(mCompositeDisposable);
-                        }, throwable -> {
-                            Log.e("insertHistory", "onError", throwable);
-                            callback.onInsertHistoryFailure(mCompositeDisposable);
-                        }
-                )
-        );
+    protected void insertHistory(HistoryModel historyModel) {
+        mHistoryRepository.getMHistoryDataSource().insert(HistoryMapper.getInstance().mapToEntity(historyModel))
+                .observeOn(Schedulers.single())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new CustomCompletableObserver() {
+                    @Override
+                    public void onComplete() {
+                        Log.i("insertHistory", "onComplete");
+                    }
+                });
 
     }
 
-    protected void updateHabit(HabitModel habitModel){
-        mHabitRepository.getMHabitDataSource().update(HabitMapper.getInstance().mapToEntity(habitModel))
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.single())
-            .subscribe(new CompletableObserver() {
-                @Override
-                public void onSubscribe(@NonNull Disposable d) {
-                    Log.i("updateHabit", "onSubscribe");
-                }
-
-                @Override
-                public void onComplete() {
-                    Log.i("updateHabit", "onComplete");
-                }
-
-                @Override
-                public void onError(@NonNull Throwable e) {
-                    Log.e("updateHabit", "onError", e);
-                }
-            });
+    public void getHabitsWhenClickDailyCalendar1(String date) {
+        if (LocalDate.parse(date).equals(timeUtils.getSelectedDate())) {
+            Log.d(TAG, "getHabitsWhenClickDailyCalendar1: if");
+            habitModelBeforeList.clear();
+            //beforeAdapter.notifyItemInserted(habitModelAfterList.size() - 1);
+            habitModelBeforeListMutableLiveData.postValue(habitModelBeforeList);
+            habitModelAfterList.clear();
+            //afterAdapter.notifyItemInserted(habitModelAfterList.size() - 1);
+            habitModelAfterListMutableLiveData.postValue(habitModelAfterList);
+        } else {
+            Log.d(TAG, "getHabitsWhenClickDailyCalendar1: else");
+            if (LocalDate.parse(date).isBefore(timeUtils.getSelectedDate())) {
+                mHistoryRepository.getMHistoryDataSource().getHistoryByDate(DataLocalManager.getInstance().getUserId(), date)
+                        .subscribe(historyEntityList -> {
+                                    getHabitByUserIdAndHabitId(HistoryMapper.getInstance().mapToListModel(historyEntityList), false);
+                                    habitModelBeforeListMutableLiveData.postValue(habitModelBeforeList);
+                                }, throwable -> {
+                                    Log.e(TAG, "getHabitDifferenceFromCurrentDay onError", throwable);
+                                    //callback.onGetHabitsWhenClickDailyCalendarFailure(mCompositeDisposable);
+                                }
+                        );
+            } else {
+                Long id = timeUtils.getDayOfWeekId(date);
+                getHabitInWeekModels2(id, habitsOfUser);
+            }
+        }
     }
 
     @SuppressLint("LongLogTag")
-    protected void updateHistory(int position, Class<?> adapterName, String value, DbService.UpdateHistoryResult callback){
+    protected void getHabitByUserIdAndHabitId(List<HistoryModel> models, boolean isCurrentDate) {
+
+        for (HistoryModel model : models) {
+            if (model.getHistoryHabitsState().equals(VAL_NULL)) {
+                mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getInstance().getUserId(), model.getHabitId())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(habitEntity -> {
+                                    Log.i("getHabitByUserIdAndHabitId", "onSuccess");
+                                    if (isCurrentDate) {
+                                        habitModelList.add(HabitMapper.getInstance().mapToModel(habitEntity));
+                                    }
+                                    habitModelListMutableLiveData.postValue(habitModelList);
+                                    //callback.onGetHabitByUserIdAndHabitIdSuccess(HabitMapper.getInstance().mapToModel(habitEntity), mCompositeDisposable);
+                                }, throwable -> {
+                                    Log.e("getHabitByUserIdAndHabitId", "onError", throwable);
+                                    //callback.onGetHabitByUserIdAndHabitIdFailure(mCompositeDisposable);
+                                }
+                        );
+            } else if (model.getHistoryHabitsState().equals(VAL_TRUE)) {
+                mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getInstance().getUserId(), model.getHabitId())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(habitEntity -> {
+                                    Log.i("getHabitByUserIdAndHabitId", "onSuccess");
+                                    if (isCurrentDate) {
+                                        habitModelDoneList.add(HabitMapper.getInstance().mapToModel(habitEntity));
+                                    }
+                                    habitModelDoneListMutableLiveData.postValue(habitModelDoneList);
+                                    //callback.onGetHabitByUserIdAndHabitIdSuccess(HabitMapper.getInstance().mapToModel(habitEntity), mCompositeDisposable);
+                                }, throwable -> {
+                                    Log.e("getHabitByUserIdAndHabitId", "onError", throwable);
+                                    //callback.onGetHabitByUserIdAndHabitIdFailure(mCompositeDisposable);
+                                }
+                        );
+            } else {
+                mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getInstance().getUserId(), model.getHabitId())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(habitEntity -> {
+                                    Log.i("getHabitByUserIdAndHabitId", "onSuccess");
+                                    if (isCurrentDate) {
+                                        habitModelFailedList.add(HabitMapper.getInstance().mapToModel(habitEntity));
+                                    }
+                                    habitModelFailedListMutableLiveData.postValue(habitModelFailedList);
+                                    //callback.onGetHabitByUserIdAndHabitIdSuccess(HabitMapper.getInstance().mapToModel(habitEntity), mCompositeDisposable);
+                                }, throwable -> {
+                                    Log.e("getHabitByUserIdAndHabitId", "onError", throwable);
+                                    //callback.onGetHabitByUserIdAndHabitIdFailure(mCompositeDisposable);
+                                }
+                        );
+            }
+
+        }
+
+
+    }
+
+    protected void getHistoryByDate(String historyTime) {
+        mHistoryRepository.getMHistoryDataSource().getHistoryByDate(DataLocalManager.getInstance().getUserId(), historyTime)
+                .subscribe(historyEntityList -> {
+                    Log.i("getHistoryByDate", "onNext");
+                    historyModelListMutableLiveData.postValue(HistoryMapper.getInstance().mapToListModel(historyEntityList));
+                }, throwable -> {
+                    Log.e("getHistoryByDate", "onError", throwable);
+                });
+
+    }
+
+    protected void initCurrentAdapter(List<HistoryModel> models) {
+        //getHabitByUserIdAndHabitId(models);
+    }
+
+    @SuppressLint("LongLogTag")
+    protected void updateHistory(int position, Class<?> adapterName, String
+            value) {
 
         final HabitModel habitModel;
 
         if (HabitAdapter.class.equals(adapterName)) {
             habitModel = habitModelList.get(position);
             habitModelList.remove(position);
-            adapter.notifyItemRemoved(position);
+            mHabitAdapter.notifyItemRemoved(position);
             habitModelListMutableLiveData.postValue(habitModelList);
-        }else if(DoneHabitAdapter.class.equals(adapterName)){
+        } else if (DoneHabitAdapter.class.equals(adapterName)) {
             habitModel = habitModelDoneList.get(position);
             habitModelDoneList.remove(position);
             doneHabitAdapter.notifyItemRemoved(position);
             habitModelDoneListMutableLiveData.postValue(habitModelDoneList);
-        }else {
+        } else {
             habitModel = habitModelFailedList.get(position);
             habitModelFailedList.remove(position);
             failedHabitAdapter.notifyItemRemoved(position);
@@ -566,130 +540,65 @@ public class HomeViewModel extends ViewModel implements IHomeViewModel{
         getHistoryByHabitIdAndDate(habitModel.getHabitId(),
                 LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT)),
                 new DbService.GetHistoryByHabitIdAndDateResult() {
-            @Override
-            public void onGetHistoryByHabitIdAndDateSuccess(HistoryModel model) {
-                Log.i("getHistoryByHabitIdAndDate with ID", String.valueOf(model.getHistoryId()));
-                model.setHistoryHabitsState(value);
-                mCompositeDisposable.add(
+                    @Override
+                    public void onGetHistoryByHabitIdAndDateSuccess(HistoryModel model) {
+                        Log.i("getHistoryByHabitIdAndDate with ID", String.valueOf(model.getHistoryId()));
+                        model.setHistoryHabitsState(value);
                         mHistoryRepository.getMHistoryDataSource().update(HistoryMapper.getInstance().mapToEntity(model))
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(Schedulers.single())
                                 .subscribe(() -> {
-                                    Log.i("updateHistory", "onComplete");
-                                    callback.onUpdateHistorySuccess(mCompositeDisposable);
-                                }, throwable -> {
-                                    Log.e("updateHistory", "onError", throwable);
-                                    callback.onUpdateHistoryFailure(mCompositeDisposable);
-                                }
-                        )
-                );
+                                            Log.i("updateHistory", "onComplete");
+                                            //callback.onUpdateHistorySuccess(mCompositeDisposable);
+                                        }, throwable -> {
+                                            Log.e("updateHistory", "onError", throwable);
+                                            //callback.onUpdateHistoryFailure(mCompositeDisposable);
+                                        }
+                                );
 
-                switch (value){
-                    case VAL_NULL:
-                        habitModelList.add(habitModel);
-                        adapter.notifyItemInserted(habitModelList.size() - 1);
-                        habitModelListMutableLiveData.postValue(habitModelList);
-                        break;
-                    case VAL_TRUE:
-                        habitModelDoneList.add(habitModel);
-                        doneHabitAdapter.notifyItemInserted(habitModelDoneList.size() - 1);
-                        habitModelDoneListMutableLiveData.postValue(habitModelDoneList);
-                        break;
-                    case VAL_FALSE:
-                        habitModelFailedList.add(habitModel);
-                        failedHabitAdapter.notifyItemInserted(habitModelFailedList.size() - 1);
-                        habitModelFailedListMutableLiveData.postValue(habitModelFailedList);
-                        break;
-                    default:
-                        break;
-                }
-
-            }
-            @Override
-            public void onGetHistoryByHabitIdAndDateFailure() {
-                Log.e("getHistoryByHabitIdAndDate with ID", "onGetHistoryByHabitIdAndDateFailure");
-            }
-        });
-
-    }
-
-    @SuppressLint("LongLogTag")
-    @Override
-    public void getHistoryByHabitIdAndDate(Long id, String date, DbService.GetHistoryByHabitIdAndDateResult callback){
-        mCompositeDisposable.add(
-                mHistoryRepository.getMHistoryDataSource().getHistoryByHabitIdAndDate(id, date)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(historyEntity -> {
-                            Log.i("getHistoryByHabitIdAndDate", "onSuccess");
-                            callback.onGetHistoryByHabitIdAndDateSuccess(HistoryMapper.getInstance().mapToModel(historyEntity));
-                        }, throwable -> {
-                            Log.e("getHistoryByHabitIdAndDate", "onError", throwable);
-                            callback.onGetHistoryByHabitIdAndDateFailure();
+                        switch (value) {
+                            case VAL_NULL:
+                                habitModelList.add(habitModel);
+                                mHabitAdapter.notifyItemInserted(habitModelList.size() - 1);
+                                habitModelListMutableLiveData.postValue(habitModelList);
+                                break;
+                            case VAL_TRUE:
+                                habitModelDoneList.add(habitModel);
+                                doneHabitAdapter.notifyItemInserted(habitModelDoneList.size() - 1);
+                                habitModelDoneListMutableLiveData.postValue(habitModelDoneList);
+                                break;
+                            case VAL_FALSE:
+                                habitModelFailedList.add(habitModel);
+                                failedHabitAdapter.notifyItemInserted(habitModelFailedList.size() - 1);
+                                habitModelFailedListMutableLiveData.postValue(habitModelFailedList);
+                                break;
+                            default:
+                                break;
                         }
-                )
-        );
-    }
-    @Override
-    public List<HabitInWeekModel> getDayOfWeekHabitListByUserAndHabitId(Long habitId){
 
-        final List<HabitInWeekModel>[] habitInWeekModels = new List[]{new ArrayList<>()};
-
-        mHabitInWeekRepository.getMHabitInWeekDataSource().getDayOfWeekHabitListByUserAndHabitId(DataLocalManager.getInstance().getUserId(), habitId)
-                .observeOn(Schedulers.single())
-                .subscribeWith(new DisposableSubscriber<List<HabitInWeekEntity>>() {
-                    @Override
-                    public void onNext(List<HabitInWeekEntity> habitInWeekEntities) {
-                        habitInWeekModels[0] = HabitInWeekMapper.getInstance().mapToListModel(habitInWeekEntities);
                     }
 
-                    @SuppressLint("LongLogTag")
                     @Override
-                    public void onError(Throwable t) {
-                        Log.e("getDayOfWeekHabitListByUserAndHabitId", "onError", t);
-                    }
-
-                    @SuppressLint("LongLogTag")
-                    @Override
-                    public void onComplete() {
-                        Log.i("getDayOfWeekHabitListByUserAndHabitId","onComplete");
+                    public void onGetHistoryByHabitIdAndDateFailure() {
+                        Log.e("getHistoryByHabitIdAndDate with ID", "onGetHistoryByHabitIdAndDateFailure");
                     }
                 });
 
-        return habitInWeekModels[0];
     }
 
-    @SuppressLint("LongLogTag")
-    protected void getHabitByUserIdAndHabitId(Long habitId, DbService.GetHabitByUserIdAndHabitIdResult callback){
-
-        mCompositeDisposable.add(
-                mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getInstance().getUserId(), habitId)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(habitEntity -> {
-                            Log.i("getHabitByUserIdAndHabitId", "onSuccess");
-                            callback.onGetHabitByUserIdAndHabitIdSuccess(HabitMapper.getInstance().mapToModel(habitEntity), mCompositeDisposable);
+    public void getHistoryByHabitIdAndDate(Long id, String
+            date, DbService.GetHistoryByHabitIdAndDateResult callback) {
+        mHistoryRepository.getMHistoryDataSource().getHistoryByHabitIdAndDate(id, date)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(historyEntity -> {
+                            Log.i(TAG, "getHistoryByHabitIdAndDate onSuccess");
+                            //callback.onGetHistoryByHabitIdAndDateSuccess(HistoryMapper.getInstance().mapToModel(historyEntity));
                         }, throwable -> {
-                            Log.e("getHabitByUserIdAndHabitId", "onError", throwable);
-                            callback.onGetHabitByUserIdAndHabitIdFailure(mCompositeDisposable);
+                            Log.e(TAG, "getHistoryByHabitIdAndDate onError", throwable);
+                            //callback.onGetHistoryByHabitIdAndDateFailure();
                         }
-                )
-        );
-    }
-
-    //Be used to init list for all
-    protected void initCurrentAdapter(List<HistoryModel> models){
-        getHabitByUserIdAndHabitId(models, true, new DbService.GetHabitByUserIdAndHabitIdResult() {
-            @Override
-            public void onGetHabitByUserIdAndHabitIdSuccess(HabitModel model, CompositeDisposable disposable) {
-                disposable.clear();
-            }
-
-            @Override
-            public void onGetHabitByUserIdAndHabitIdFailure(CompositeDisposable disposable) {
-                disposable.clear();
-            }
-        });
+                );
     }
 
 }
