@@ -2,6 +2,7 @@ package com.android.mobile_project.ui.activity.setting.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -12,9 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.mobile_project.data.remote.model.RemainderModel;
 import com.android.mobile_project.databinding.LayoutReminderItemBinding;
 import com.android.mobile_project.ui.activity.setting.IHabitSettingViewModel;
+import com.android.mobile_project.ui.activity.setting.service.DbService;
 import com.android.mobile_project.ui.dialog.RemainderDialog;
 
 import java.util.List;
+
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.ViewHolder>{
 
@@ -23,11 +27,13 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
     private final FragmentManager manager;
     private final IHabitSettingViewModel vm;
 
+    @SuppressLint("NotifyDataSetChanged")
     public RemainderAdapter(Context context, List<RemainderModel> remainderModelList, FragmentManager manager, IHabitSettingViewModel vm){
         this.context = context;
         this.remainderModelList = remainderModelList;
         this.manager = manager;
         this.vm = vm;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -39,26 +45,36 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
         return new ViewHolder(binding);
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
         RemainderModel model = remainderModelList.get(position);
         holder.binding.tHour.setText(String.valueOf(model.getHourTime()));
         holder.binding.tMinute.setText(String.valueOf(model.getMinutesTime()));
 
         holder.binding.btnClose.setOnClickListener(view -> {
-            vm.deleteRemainder(model);
-            remainderModelList.remove(model);
-            notifyDataSetChanged();
+            vm.deleteRemainderByTimerHourAndTimerMinutesAndId(model.getHourTime(), model.getMinutesTime(), new DbService.DeleteRemainderResult() {
+                @SuppressLint({"LongLogTag", "NotifyDataSetChanged"})
+                @Override
+                public void onDeleteRemainderSuccess(CompositeDisposable disposable) {
+                    Log.i("RemainderAdapter-deleteRemainder", "onDeleteRemainderSuccess");
+                    disposable.clear();
+                    notifyItemRemoved(position);
+                }
 
+                @SuppressLint("LongLogTag")
+                @Override
+                public void onDeleteRemainderFailure(CompositeDisposable disposable) {
+                    Log.i("RemainderAdapter-deleteRemainder", "onDeleteRemainderFailure");
+                    disposable.clear();
+                }
+            });
+            remainderModelList.remove(model);
         });
 
         holder.binding.rItem.setOnClickListener(view -> {
-
-            RemainderDialog dialog = new RemainderDialog(model, context, vm);
+            RemainderDialog dialog = new RemainderDialog(position, model.getHourTime(), model.getMinutesTime(), context, vm);
             dialog.show(manager, "");
-
         });
 
     }

@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -18,6 +19,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,12 +34,12 @@ import com.android.mobile_project.data.remote.model.RemainderModel;
 import com.android.mobile_project.databinding.ActivityHabitSettingBinding;
 import com.android.mobile_project.databinding.LayoutRemainderDialogBinding;
 import com.android.mobile_project.databinding.LayoutTimePickerDialogBinding;
+import com.android.mobile_project.ui.activity.setting.service.DbService;
+import com.android.mobile_project.ui.activity.setting.service.ToastService;
 import com.android.mobile_project.utils.dagger.component.sub.setting.HabitSettingComponent;
-import com.android.mobile_project.utils.time.DayOfTime;
 import com.android.mobile_project.utils.time.DayOfWeek;
 import com.android.mobile_project.utils.time.utils.TimeUtils;
 import com.android.mobile_project.ui.InitLayout;
-import com.android.mobile_project.ui.activity.main.MainActivity;
 import com.android.mobile_project.ui.activity.setting.adapter.MonthlyCalendarHabitAdapter;
 import com.android.mobile_project.ui.activity.setting.adapter.RemainderAdapter;
 import com.android.mobile_project.ui.activity.setting.service.InitService;
@@ -53,6 +55,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+
 public class HabitSettingActivity extends AppCompatActivity implements InitLayout, View.OnClickListener {
 
     private static final String ZERO_VALUE = "00";
@@ -63,6 +67,41 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
 
     private final static int MAX_MINUTES_MAX = 59;
     private final static int MIN_MINUTES_MAX = 0;
+    private final static String STRING_HABIT_ID = "habitId";
+
+    private boolean checkHabitValidName = false;
+
+    private DbService.InsertHabitInWeekResult insertHabitInWeekCallback = new DbService.InsertHabitInWeekResult() {
+        @SuppressLint("LongLogTag")
+        @Override
+        public void onInsertHabitInWeekSuccess(CompositeDisposable disposable) {
+            Log.i("HabitSettingActivity-insertHabitInWeekCallback", "onInsertHabitInWeekSuccess");
+            disposable.clear();
+        }
+
+        @SuppressLint("LongLogTag")
+        @Override
+        public void onInsertHabitInWeekFailure(CompositeDisposable disposable) {
+            Log.i("HabitSettingActivity-insertHabitInWeekCallback", "onInsertHabitInWeekFailure");
+            disposable.clear();
+        }
+    };
+
+    private Observer<HabitModel> habitModelObserver;
+
+    private Observer<List<HabitInWeekModel>> habitInWeekModelListObserver;
+
+    private Observer<Long> dayOfTimeModelIdObserver;
+
+    private Observer<Boolean> isUpdateHabitNameObserver;
+
+    private Observer<Boolean> isDeleteHabitInWeekObserver;
+
+    private Observer<Boolean> isUpdateDayOfTimeObserver;
+
+    private Observer<Boolean> isInsertOrRemoveRemainderModelListObserver;
+
+    private Observer<Integer> isUpdateRemainderModelObserver;
 
     @Inject
     HabitSettingViewModel viewModel;
@@ -73,7 +112,9 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
-//        component = ((MyApplication) getApplicationContext()).provideHabitSettingComponent();
+        Log.i("HabitSettingActivity", "onCreate()");
+
+        component = ((MyApplication) getApplicationContext()).provideHabitSettingComponent();
         component.inject(this);
 
         super.onCreate(savedInstanceState);
@@ -84,10 +125,27 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
 
         viewModel.initService.getHabit();
         viewModel.initService.getHabitInWeek();
+        viewModel.initService.getDayOfTime();
+        viewModel.initService.getRemainderList();
 
         viewModel.initService.initUI();
-        viewModel.initService.setCalendarOfMonthView();
+        viewModel.initService.initUpdateBehavior();
 
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i("HabitSettingActivity", "onStart()");
+        viewModel.getMHabitModelMutableLiveData().observe(this, habitModelObserver);
+        viewModel.getMHabitInWeekListMutableLiveData().observe(this, habitInWeekModelListObserver);
+        viewModel.getMDayOfTimeModelIdMutableLiveData().observe(this, dayOfTimeModelIdObserver);
+        viewModel.getUpdateHabitNameResultMutableLiveData().observe(this, isUpdateHabitNameObserver);
+        viewModel.getDeleteHabitInWeekResultMutableLiveData().observe(this, isDeleteHabitInWeekObserver);
+        viewModel.getUpdateDayOfTimeMutableLiveData().observe(this, isUpdateDayOfTimeObserver);
+        viewModel.getInsertOrRemoveRemainderModelListMutableLiveData().observe(this, isInsertOrRemoveRemainderModelListObserver);
+        viewModel.getUpdateRemainderMutableLiveData().observe(this, isUpdateRemainderModelObserver);
     }
 
     @Override
@@ -104,104 +162,176 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
 
         binding.executePendingBindings();
 
+        viewModel.toastService = new ToastService() {
+            @Override
+            public void makeUpdateHabitCompleteToast() {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), HabitSettingConstant.CONTENT_HABIT_UPDATE_COMPLETE, Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void makeErrorApplicationToast() {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), HabitSettingConstant.CONTENT_ERROR, Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void makeDaysOfWeekInputtedIsEmptyToast() {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), HabitSettingConstant.CONTENT_DAY_OF_WEEK_IS_EMPTY, Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void makeDayOfTimeInputtedIsEmptyToast() {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), HabitSettingConstant.CONTENT_HABIT_NAME_IS_EMPTY, Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void makeHabitNameIsExistedToast() {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), HabitSettingConstant.CONTENT_HABIT_NAME_IS_EXISTED, Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void makeHabitNameInputtedIsEmptyToast() {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), HabitSettingConstant.CONTENT_HABIT_NAME_IS_EMPTY, Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void makeRemainderWasExistedToast() {
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), HabitSettingConstant.CONTENT_REMAINDER_WAS_EXISTED, Toast.LENGTH_SHORT).show());
+            }
+        };
+
         viewModel.initService = new InitService() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void getHabit() {
 
                 Bundle extras = getIntent().getExtras();
-                Long habitId = extras.getLong("habitId");
+                Long habitId = extras.getLong(STRING_HABIT_ID);
 
-                HabitModel habitModel = viewModel.getHabitByUserIdAndHabitId(habitId);
-                binding.setHabit(habitModel);
-                viewModel.setHabitModel(habitModel);
+                viewModel.getHabitByUserIdAndHabitId(habitId, new DbService.GetHabitByUserIdAndHabitIdResult() {
+                    @SuppressLint("LongLogTag")
+                    @Override
+                    public void onGetHabitByUserIdAndHabitIdSuccess(HabitModel model, CompositeDisposable disposable) {
+                        Log.i("HabitSettingActivity-getHabitByUserIdAndHabitId", "onGetHabitByUserIdAndHabitIdSuccess");
+                        binding.setHabit(model);
+                        disposable.clear();
+                    }
 
-                viewModel.setRemainderModelList(viewModel.getRemainderListByHabitId());
+                    @SuppressLint("LongLogTag")
+                    @Override
+                    public void onGetHabitByUserIdAndHabitIdFailure(CompositeDisposable disposable) {
+                        Log.e("HabitSettingActivity-getHabitByUserIdAndHabitId", "onGetHabitByUserIdAndHabitIdFailure");
+                        disposable.clear();
+                    }
+                });
+
+                habitModelObserver = habitModel -> {
+
+                    viewModel.initService.setCalendarOfMonthView(habitModel.getHabitId());
+
+                    //Get day of week per Habit after accessed
+
+                    viewModel.getDayOfWeekHabitListByUserAndHabitId(habitModel.getHabitId(), new DbService.GetHabitInWeekHabitListByUserAndHabitId() {
+                        @SuppressLint("LongLogTag")
+                        @Override
+                        public void onGetHabitInWeekHabitListByUserAndHabitIdSuccess(CompositeDisposable disposable) {
+                            Log.i("HabitSettingActivity-getDayOfWeekHabitListByUserAndHabitId","onGetHabitInWeekHabitListByUserAndHabitIdSuccess");
+
+                            viewModel.getRemainderListByHabitId(new DbService.GetRemainderListByHabitIdResult() {
+                                @SuppressLint("LongLogTag")
+                                @Override
+                                public void onGetRemainderListByHabitIdSuccess(CompositeDisposable disposable) {
+                                    Log.i("HabitSettingActivity-getRemainderListByHabitId", "onGetRemainderListByHabitIdSuccess");
+                                    runOnUiThread(()-> viewModel.initService.initRemainderAdapter());
+                                    disposable.clear();
+                                }
+
+                                @SuppressLint("LongLogTag")
+                                @Override
+                                public void onGetRemainderListByHabitIdFailurẹ(CompositeDisposable disposable) {
+                                    Log.i("HabitSettingActivity-getRemainderListByHabitId", "onGetRemainderListByHabitIdFailurẹ");
+                                    runOnUiThread(()-> viewModel.initService.initRemainderAdapter());
+                                    disposable.clear();
+                                }
+                            });
+
+                        }
+
+                        @SuppressLint("LongLogTag")
+                        @Override
+                        public void onGetHabitInWeekHabitListByUserAndHabitIdFailure(CompositeDisposable disposable) {
+                            Log.e("HabitSettingActivity-getDayOfWeekHabitListByUserAndHabitId", "onGetHabitInWeekHabitListByUserAndHabitIdFailure");
+                            disposable.clear();
+                        }
+                    });
+
+                };
 
             }
 
             @Override
             public void getHabitInWeek() {
-                List<HabitInWeekModel> models = viewModel.getDayOfWeekHabitListByUserAndHabitId();
-                viewModel.setHabitInWeekModelList(models);
+                habitInWeekModelListObserver = habitInWeekModels -> {
+                    binding.setSun(viewModel.isSelectSunDate());
+                    binding.setMon(viewModel.isSelectMonDate());
+                    binding.setTue(viewModel.isSelectTueDate());
+                    binding.setWed(viewModel.isSelectWedDate());
+                    binding.setThu(viewModel.isSelectThuDate());
+                    binding.setFri(viewModel.isSelectFriDate());
+                    binding.setSat(viewModel.isSelectSatDate());
+                };
             }
 
-            @SuppressLint({"SetTextI18n", "NotifyDataSetChanged"})
+            @Override
+            public void getDayOfTime() {
+                dayOfTimeModelIdObserver = aLong -> {
+                    if(viewModel.isSelectAnytime()){
+                        binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any_white);
+                        binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning);
+                        binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon);
+                        binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night);
+                    }else if(viewModel.isSelectMorning()){
+                        binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any);
+                        binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning_white);
+                        binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon);
+                        binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night);
+                    }else if(viewModel.isSelectAfternoon()){
+                        binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any);
+                        binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning);
+                        binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon_white);
+                        binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night);
+                    }else if(viewModel.isSelectNight()){
+                        binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any);
+                        binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning);
+                        binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon);
+                        binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night_white);
+                    }
+                    binding.setAnytime(viewModel.isSelectAnytime());
+                    binding.setAfternoon(viewModel.isSelectAfternoon());
+                    binding.setMorning(viewModel.isSelectMorning());
+                    binding.setNight(viewModel.isSelectNight());
+                };
+            }
+
+            @SuppressLint({"LongLogTag", "NotifyDataSetChanged"})
+            @Override
+            public void getRemainderList() {
+                isInsertOrRemoveRemainderModelListObserver = aBoolean -> {
+                    Log.i("HabitSettingActivity-isInsertOrRemoveRemainderModelListObserver", "onChange");
+                    if(aBoolean){
+                        viewModel.getMRemainderAdapter().notifyItemInserted(viewModel.getRemainderModelList().size() - 1);
+                    }else {
+                        viewModel.getMRemainderAdapter().notifyDataSetChanged();
+                    }
+                };
+
+                isUpdateRemainderModelObserver = integer -> runOnUiThread(() -> {
+                    viewModel.getMRemainderAdapter().notifyItemChanged(integer);
+                });
+            }
+
+            @SuppressLint({"SetTextI18n"})
             @Override
             public void initUI() {
-
-                List<DayOfWeekModel> dayOfWeekModelList = new ArrayList<>();
-
-                for(HabitInWeekModel model : viewModel.getHabitInWeekModelList()){
-                    DayOfWeekModel dayOfWeekModel = viewModel.getDayOfWeekById(model.getDayOfWeekId());
-                    dayOfWeekModelList.add(dayOfWeekModel);
-                }
-
-                for(DayOfWeekModel model : dayOfWeekModelList){
-
-                    if (DayOfWeek.SUN.getDayName().equals(model.getDayOfWeekName())) {
-                        viewModel.setSelectSunDate(true);
-                    } else if (DayOfWeek.MON.getDayName().equals(model.getDayOfWeekName())) {
-                        viewModel.setSelectMonDate(true);
-                    } else if (DayOfWeek.TUE.getDayName().equals(model.getDayOfWeekName())) {
-                        viewModel.setSelectTueDate(true);
-                    } else if (DayOfWeek.WED.getDayName().equals(model.getDayOfWeekName())) {
-                        viewModel.setSelectWedDate(true);
-                    } else if (DayOfWeek.THU.getDayName().equals(model.getDayOfWeekName())) {
-                        viewModel.setSelectThuDate(true);
-                    } else if (DayOfWeek.FRI.getDayName().equals(model.getDayOfWeekName())) {
-                        viewModel.setSelectFriDate(true);
-                    } else if (DayOfWeek.SAT.getDayName().equals(model.getDayOfWeekName())) {
-                        viewModel.setSelectSatDate(true);
-                    }
-
-                }
-
-                binding.setSun(viewModel.isSelectSunDate());
-                binding.setMon(viewModel.isSelectMonDate());
-                binding.setTue(viewModel.isSelectTueDate());
-                binding.setWed(viewModel.isSelectWedDate());
-                binding.setThu(viewModel.isSelectThuDate());
-                binding.setFri(viewModel.isSelectFriDate());
-                binding.setSat(viewModel.isSelectSatDate());
-
-                DayOfTimeModel model = viewModel.getDayOfTimeById();
-
-                if (DayOfTime.ANYTIME.getTimeName().equals(model.getDayOfTimeName())) {
-                    viewModel.setSelectAnytime(true);
-                } else if (DayOfTime.MORNING.getTimeName().equals(model.getDayOfTimeName())) {
-                    viewModel.setSelectMorning(true);
-                } else if (DayOfTime.AFTERNOON.getTimeName().equals(model.getDayOfTimeName())) {
-                    viewModel.setSelectAfternoon(true);
-                } else if (DayOfTime.NIGHT.getTimeName().equals(model.getDayOfTimeName())) {
-                    viewModel.setSelectNight(true);
-                }
-
-                if(viewModel.isSelectAnytime()){
-                    binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any_white);
-                    binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning);
-                    binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon);
-                    binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night);
-                }else if(viewModel.isSelectMorning()){
-                    binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any);
-                    binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning_white);
-                    binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon);
-                    binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night);
-                }else if(viewModel.isSelectAfternoon()){
-                    binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any);
-                    binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning);
-                    binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon_white);
-                    binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night);
-                }else if(viewModel.isSelectNight()){
-                    binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any);
-                    binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning);
-                    binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon);
-                    binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night_white);
-                }
-
-                binding.setAnytime(viewModel.isSelectAnytime());
-                binding.setAfternoon(viewModel.isSelectAfternoon());
-                binding.setMorning(viewModel.isSelectMorning());
-                binding.setNight(viewModel.isSelectNight());
 
                 for(HabitInWeekModel m : viewModel.getHabitInWeekModelList()){
                     if(m.getTimerHour() == null && m.getTimerMinute() == null && m.getTimerSecond() == null ){
@@ -216,10 +346,16 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                     break;
                 }
 
-                final FragmentManager manager = getSupportFragmentManager();
+            }
 
-                RemainderAdapter adapter = new RemainderAdapter(getApplicationContext(), viewModel.getRemainderModelList(),manager, viewModel);
-                adapter.notifyDataSetChanged();
+            @SuppressLint({"NotifyDataSetChanged", "LongLogTag"})
+            @Override
+            public void initRemainderAdapter() {
+
+                Log.i("HabitSettingActivity-initRemainderAdapter", "initRemainderAdapter");
+
+                final FragmentManager manager = getSupportFragmentManager();
+                viewModel.setMRemainderAdapter(new RemainderAdapter(getApplicationContext(), viewModel.getRemainderModelList(), manager, viewModel));
 
                 FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getApplicationContext());
                 layoutManager.setFlexDirection(FlexDirection.ROW);
@@ -227,7 +363,101 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                 layoutManager.setAlignItems(AlignItems.CENTER);
 
                 binding.rcvReminder.setLayoutManager(layoutManager);
-                binding.rcvReminder.setAdapter(adapter);
+                binding.rcvReminder.setAdapter(viewModel.getMRemainderAdapter());
+
+            }
+
+            @Override
+            public void initUpdateBehavior() {
+
+                isUpdateHabitNameObserver = aBoolean -> viewModel.deleteHabitInWeekByHabitId(new DbService.DeleteHabitInWeekResult() {
+                    @SuppressLint("LongLogTag")
+                    @Override
+                    public void onDeleteHabitInWeekSuccess(CompositeDisposable disposable) {
+                        Log.i("HabitSettingActivity-deleteHabitInWeekByHabitId", "onDeleteHabitInWeekSuccess");
+                        disposable.clear();
+                    }
+
+                    @SuppressLint("LongLogTag")
+                    @Override
+                    public void onDeleteHabitInWeekFailure(CompositeDisposable disposable) {
+                        Log.e("HabitSettingActivity- ", "onDeleteHabitInWeekFailure");
+                        viewModel.toastService.makeErrorApplicationToast();
+                        disposable.clear();
+                    }
+                });
+
+                isDeleteHabitInWeekObserver = aBoolean -> {
+                    Long timerHour = Long.valueOf(binding.tHour.getText().toString().trim());
+                    Long timerMinutes = Long.valueOf(binding.tMinutes.getText().toString().trim());
+                    Long timerSecond = Long.valueOf(binding.tSecond.getText().toString().trim());
+
+                    if(viewModel.isSelectSunDate()){
+                        viewModel.insertHabitInWeek(DayOfWeek.SUN.getId(),
+                                timerHour, timerMinutes, timerSecond,
+                                insertHabitInWeekCallback
+                        );
+                    }
+
+                    if(viewModel.isSelectMonDate()){
+                        viewModel.insertHabitInWeek(DayOfWeek.MON.getId(),
+                                timerHour, timerMinutes, timerSecond,
+                                insertHabitInWeekCallback
+                        );
+                    }
+
+                    if(viewModel.isSelectTueDate()){
+                        viewModel.insertHabitInWeek(DayOfWeek.TUE.getId(),
+                                timerHour, timerMinutes, timerSecond,
+                                insertHabitInWeekCallback
+                        );
+                    }
+
+                    if(viewModel.isSelectWedDate()){
+                        viewModel.insertHabitInWeek(DayOfWeek.WED.getId(),
+                                timerHour, timerMinutes, timerSecond,
+                                insertHabitInWeekCallback
+                        );
+                    }
+
+                    if(viewModel.isSelectThuDate()){
+                        viewModel.insertHabitInWeek(DayOfWeek.THU.getId(),
+                                timerHour, timerMinutes, timerSecond,
+                                insertHabitInWeekCallback
+                        );
+                    }
+
+                    if(viewModel.isSelectFriDate()){
+                        viewModel.insertHabitInWeek(DayOfWeek.FRI.getId(),
+                                timerHour, timerMinutes, timerSecond,
+                                insertHabitInWeekCallback
+                        );
+                    }
+
+                    if(viewModel.isSelectSatDate()){
+                        viewModel.insertHabitInWeek(DayOfWeek.SAT.getId(),
+                                timerHour, timerMinutes, timerSecond,
+                                insertHabitInWeekCallback
+                        );
+                    }
+
+                    viewModel.updateDateOfTimeInHabit(new DbService.UpdateDateOfTimeInHabitResult() {
+                        @SuppressLint("LongLogTag")
+                        @Override
+                        public void onUpdateDateOfTimeInHabitSuccess(CompositeDisposable disposable) {
+                            Log.i("HabitSettingActivity-updateDateOfTimeInHabit", "onUpdateDateOfTimeInHabitSuccess");
+                        }
+
+                        @SuppressLint("LongLogTag")
+                        @Override
+                        public void onUpdateDateOfTimeInHabitFailure(CompositeDisposable disposable) {
+                            Log.e("HabitSettingActivity-updateDateOfTimeInHabit", "onUpdateDateOfTimeInHabitFailure");
+                            viewModel.toastService.makeErrorApplicationToast();
+                        }
+                    });
+                };
+
+                isUpdateDayOfTimeObserver = aBoolean -> onClickBackBtn();
 
             }
 
@@ -302,42 +532,31 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                 remainderBinding.btnCancel.setOnClickListener(view -> dialog.dismiss());
 
                 remainderBinding.btnSelect.setOnClickListener(view -> {
-
-                    RemainderModel model = viewModel.checkExistRemainder((long) remainderBinding.hNumPicker.getValue(),
-                            (long) remainderBinding.mNumPicker.getValue());
-
-                    if(model != null){
-                        Toast.makeText(getApplicationContext(), "Your remainder is exist !", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    viewModel.insertRemainder(model);
-                    viewModel.setRemainderModelList(viewModel.getRemainderListByHabitId());
-
-                    final FragmentManager manager = getSupportFragmentManager();
-
-                    RemainderAdapter adapter = new RemainderAdapter(getApplicationContext(), viewModel.getRemainderModelList(), manager, viewModel);
-                    adapter.notifyDataSetChanged();
-
-                    FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getApplicationContext());
-                    layoutManager.setFlexDirection(FlexDirection.ROW);
-                    layoutManager.setJustifyContent(JustifyContent.CENTER);
-                    layoutManager.setAlignItems(AlignItems.CENTER);
-
-                    binding.rcvReminder.setLayoutManager(layoutManager);
-                    binding.rcvReminder.setAdapter(adapter);
-
+                    viewModel.checkExistAndInsertRemainder((long) remainderBinding.hNumPicker.getValue(),
+                            (long) remainderBinding.mNumPicker.getValue(), new DbService.CheckExistRemainderResult() {
+                                @SuppressLint("LongLogTag")
+                                @Override
+                                public void onCheckExistRemainderSuccess(Long remainderId, CompositeDisposable disposable) {
+                                    Log.i("HabitSettingActivity-checkExistAndInsertRemainder", "onCheckExistRemainderSuccess");
+                                    viewModel.toastService.makeRemainderWasExistedToast();
+                                    disposable.clear();
+                                }
+                                @SuppressLint("LongLogTag")
+                                @Override
+                                public void onCheckExistRemainderFailure(CompositeDisposable disposable) {
+                                    Log.i("HabitSettingActivity-checkExistAndInsertRemainder", "onCheckExistRemainderFailure");
+                                    disposable.clear();
+                                }
+                            }
+                    );
                     dialog.dismiss();
-
                 });
-
                 dialog.show();
-
             }
 
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
-            public void setCalendarOfMonthView() {
+            public void setCalendarOfMonthView(Long habitId) {
 
                 String dateString = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 String[] dateStringSplit = dateString.split("-");
@@ -350,7 +569,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                 ArrayList<String> daysInMonth = utils.daysInMonthArray();
 
                 MonthlyCalendarHabitAdapter calendarAdapter = new MonthlyCalendarHabitAdapter(getApplicationContext(), today, daysInMonth, getPresentMonthYear,
-                        viewModel.getHabitModel().getHabitId(), viewModel);
+                        habitId, viewModel);
                 RecyclerView.LayoutManager manager = new GridLayoutManager(getApplicationContext(), 7);
 
                 binding.verCar.rcvCalendarVer.setLayoutManager(manager);
@@ -362,6 +581,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -394,6 +614,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
         viewModel.initService.initRemainderDialog(Gravity.BOTTOM);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @SuppressLint("NonConstantResourceId")
     private void onClickDayOfWeek(int id){
 
@@ -402,77 +623,77 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             case R.id.sun_date :
                 if (viewModel.isSelectSunDate()){
                     binding.sunDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date));
-                    binding.sunDate.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+                    binding.sunDate.setTextColor(getColor(R.color.black));
                     viewModel.setSelectSunDate(false);
                 }else {
                     binding.sunDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date_select));
-                    binding.sunDate.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                    binding.sunDate.setTextColor(getColor(R.color.white));
                     viewModel.setSelectSunDate(true);
                 }
                 break;
             case R.id.mon_date :
                 if (viewModel.isSelectMonDate()){
                     binding.monDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date));
-                    binding.monDate.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+                    binding.monDate.setTextColor(getColor(R.color.black));
                     viewModel.setSelectMonDate(false);
                 }else {
                     binding.monDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date_select));
-                    binding.monDate.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                    binding.monDate.setTextColor(getColor(R.color.white));
                     viewModel.setSelectMonDate(true);
                 }
                 break;
             case R.id.tue_date :
                 if (viewModel.isSelectTueDate()){
                     binding.tueDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date));
-                    binding.tueDate.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+                    binding.tueDate.setTextColor(getColor(R.color.black));
                     viewModel.setSelectTueDate(false);
                 }else {
                     binding.tueDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date_select));
-                    binding.tueDate.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                    binding.tueDate.setTextColor(getColor(R.color.white));
                     viewModel.setSelectTueDate(true);
                 }
                 break;
             case R.id.wed_date :
                 if (viewModel.isSelectWedDate()){
                     binding.wedDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date));
-                    binding.wedDate.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+                    binding.wedDate.setTextColor(getColor(R.color.black));
                     viewModel.setSelectWedDate(false);
                 }else {
                     binding.wedDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date_select));
-                    binding.wedDate.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                    binding.wedDate.setTextColor(getColor(R.color.white));
                     viewModel.setSelectWedDate(true);
                 }
                 break;
             case R.id.thu_date :
                 if (viewModel.isSelectThuDate()){
                     binding.thuDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date));
-                    binding.thuDate.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+                    binding.thuDate.setTextColor(getColor(R.color.black));
                     viewModel.setSelectThuDate(false);
                 }else {
                     binding.thuDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date_select));
-                    binding.thuDate.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                    binding.thuDate.setTextColor(getColor(R.color.white));
                     viewModel.setSelectThuDate(true);
                 }
                 break;
             case R.id.fri_date :
                 if (viewModel.isSelectFriDate()){
                     binding.friDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date));
-                    binding.friDate.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+                    binding.friDate.setTextColor(getColor(R.color.black));
                     viewModel.setSelectFriDate(false);
                 }else {
                     binding.friDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date_select));
-                    binding.friDate.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                    binding.friDate.setTextColor(getColor(R.color.white));
                     viewModel.setSelectFriDate(true);
                 }
                 break;
             case R.id.sat_date :
                 if (viewModel.isSelectSatDate()){
                     binding.satDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date));
-                    binding.satDate.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+                    binding.satDate.setTextColor(getColor(R.color.black));
                     viewModel.setSelectSatDate(false);
                 }else {
                     binding.satDate.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_cir_date_select));
-                    binding.satDate.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                    binding.satDate.setTextColor(getColor(R.color.white));
                     viewModel.setSelectSatDate(true);
                 }
                 break;
@@ -483,26 +704,27 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
 
     }
 
-    @SuppressLint("NonConstantResourceId")
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @SuppressLint({"NonConstantResourceId", "ResourceAsColor"})
     public void clickBtnDateOfTime(int id){
 
         binding.timeAfternoon.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_habit_name));
-        binding.tAfternoon.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+        binding.tAfternoon.setTextColor(getColor(R.color.black));
         binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon);
         viewModel.setSelectAfternoon(false);
 
         binding.timeAny.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_habit_name));
-        binding.tAny.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+        binding.tAny.setTextColor(getColor(R.color.black));
         binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any);
         viewModel.setSelectAnytime(false);
 
         binding.timeMorning.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_habit_name));
-        binding.tMorning.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+        binding.tMorning.setTextColor(getColor(R.color.black));
         binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning);
         viewModel.setSelectMorning(false);
 
         binding.timeNight.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_habit_name));
-        binding.tNight.setTextColor(Color.parseColor(String.valueOf(R.color.black)));
+        binding.tNight.setTextColor(getColor(R.color.black));
         binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night);
         viewModel.setSelectNight(false);
 
@@ -511,7 +733,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             case R.id.time_afternoon :
 
                 binding.timeAfternoon.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_habit_name_select));
-                binding.tAfternoon.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                binding.tAfternoon.setTextColor(getColor(R.color.white));
                 binding.lgAfternoon.setBackgroundResource(R.drawable.ic_lg_afternoon_white);
                 viewModel.setSelectAfternoon(true);
                 break;
@@ -519,7 +741,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             case R.id.time_any :
 
                 binding.timeAny.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_habit_name_select));
-                binding.tAny.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                binding.tAny.setTextColor(getColor(R.color.white));
                 binding.lgAny.setBackgroundResource(R.drawable.ic_lg_any_white);
                 viewModel.setSelectAnytime(true);
                 break;
@@ -527,7 +749,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             case R.id.time_morning :
 
                 binding.timeMorning.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_habit_name_select));
-                binding.tMorning.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                binding.tMorning.setTextColor(getColor(R.color.white));
                 binding.lgMorning.setBackgroundResource(R.drawable.ic_lg_morning_white);
                 viewModel.setSelectMorning(true);
                 break;
@@ -535,7 +757,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             case R.id.time_night :
 
                 binding.timeNight.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bck_habit_name_select));
-                binding.tNight.setTextColor(Color.parseColor(String.valueOf(R.color.white)));
+                binding.tNight.setTextColor(getColor(R.color.white));
                 binding.lgNight.setBackgroundResource(R.drawable.ic_lg_night_white);
                 viewModel.setSelectNight(true);
                 break;
@@ -548,121 +770,64 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
     }
 
     private void onClickBackBtn(){
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
+        finish();
     }
 
     private void onClickUpdate(){
 
-        for (HabitInWeekModel model : viewModel.getHabitInWeekModelList()){
-            viewModel.deleteHabitInWeek(model);
-        }
+        String habitName = binding.hname.getText().toString().trim();
 
-        viewModel.setHabitInWeekModelList(new ArrayList<>());
-
-        if(!viewModel.isSelectSunDate() && !viewModel.isSelectMonDate() && !viewModel.isSelectTueDate() && !viewModel.isSelectWedDate() && !viewModel.isSelectThuDate()
-            && !viewModel.isSelectFriDate() && !viewModel.isSelectSatDate()){
-            Toast.makeText(getApplicationContext(), "Please choose date in week of your habit !", Toast.LENGTH_SHORT).show();
+        if(habitName.equals("")){
+            viewModel.toastService.makeHabitNameInputtedIsEmptyToast();
             return;
+        }
+
+        viewModel.checkExistHabitByName(habitName,
+                new DbService.GetHabitByNameResult() {
+                    @SuppressLint("LongLogTag")
+                    @Override
+                    public void onGetHabitByNameSuccess(CompositeDisposable disposable, Long habitId) {
+                        Log.i("HabitSettingActivity-checkExistHabitByName", String.valueOf(habitId));
+                        checkHabitValidName = false;
+                        disposable.clear();
+                    }
+
+                    @SuppressLint("LongLogTag")
+                    @Override
+                    public void onGetHabitByNameFailure(CompositeDisposable disposable) {
+                        Log.i("HabitSettingActivity-checkExistHabitByName", "onGetHabitByNameFailure");
+                        checkHabitValidName = true;
+                        disposable.clear();
+                    }
+                }
+        );
+
+        if(checkHabitValidName){
+            if(!viewModel.isSelectSunDate() && !viewModel.isSelectMonDate() && !viewModel.isSelectTueDate() && !viewModel.isSelectWedDate() && !viewModel.isSelectThuDate()
+                    && !viewModel.isSelectFriDate() && !viewModel.isSelectSatDate()){
+                viewModel.toastService.makeDaysOfWeekInputtedIsEmptyToast();
+                return;
+            }else {
+                viewModel.updateNameOfHabit(habitName, new DbService.UpdateNameOfHabitResult() {
+                    @SuppressLint("LongLogTag")
+                    @Override
+                    public void onUpdateNameOfHabitSuccess(CompositeDisposable disposable) {
+                        Log.i("HabitSettingActivity - updateNameOfHabit", "onUpdateNameOfHabitSuccess");
+                    }
+
+                    @SuppressLint("LongLogTag")
+                    @Override
+                    public void onUpdateNameOfHabitFailure(CompositeDisposable disposable) {
+                        Log.e("HabitSettingActivity - updateNameOfHabit", "onUpdateNameOfHabitFailure");
+                    }
+                });
+
+            }
+            viewModel.toastService.makeUpdateHabitCompleteToast();
+
         }else {
-
-            if(viewModel.isSelectSunDate()){
-                HabitInWeekModel model = new HabitInWeekModel();
-                model.setHabitId(viewModel.getHabitModel().getHabitId());
-                model.setUserId(DataLocalManager.getInstance().getUserId());
-                model.setDayOfWeekId(1L);
-                model.setTimerHour(Long.valueOf(binding.tHour.getText().toString().trim()));
-                model.setTimerMinute(Long.valueOf(binding.tMinutes.getText().toString().trim()));
-                model.setTimerSecond(Long.valueOf(binding.tSecond.getText().toString().trim()));
-                viewModel.insertHabitInWeek(model);
-            }
-
-            if(viewModel.isSelectMonDate()){
-                HabitInWeekModel model = new HabitInWeekModel();
-                model.setHabitId(viewModel.getHabitModel().getHabitId());
-                model.setUserId(DataLocalManager.getInstance().getUserId());
-                model.setDayOfWeekId(2L);
-                model.setTimerHour(Long.valueOf(binding.tHour.getText().toString().trim()));
-                model.setTimerMinute(Long.valueOf(binding.tMinutes.getText().toString().trim()));
-                model.setTimerSecond(Long.valueOf(binding.tSecond.getText().toString().trim()));
-                viewModel.insertHabitInWeek(model);
-            }
-
-            if(viewModel.isSelectTueDate()){
-                HabitInWeekModel model = new HabitInWeekModel();
-                model.setHabitId(viewModel.getHabitModel().getHabitId());
-                model.setUserId(DataLocalManager.getInstance().getUserId());
-                model.setDayOfWeekId(3L);
-                model.setTimerHour(Long.valueOf(binding.tHour.getText().toString().trim()));
-                model.setTimerMinute(Long.valueOf(binding.tMinutes.getText().toString().trim()));
-                model.setTimerSecond(Long.valueOf(binding.tSecond.getText().toString().trim()));
-                viewModel.insertHabitInWeek(model);
-            }
-
-            if(viewModel.isSelectWedDate()){
-                HabitInWeekModel model = new HabitInWeekModel();
-                model.setHabitId(viewModel.getHabitModel().getHabitId());
-                model.setUserId(DataLocalManager.getInstance().getUserId());
-                model.setDayOfWeekId(4L);
-                model.setTimerHour(Long.valueOf(binding.tHour.getText().toString().trim()));
-                model.setTimerMinute(Long.valueOf(binding.tMinutes.getText().toString().trim()));
-                model.setTimerSecond(Long.valueOf(binding.tSecond.getText().toString().trim()));
-                viewModel.insertHabitInWeek(model);
-            }
-
-            if(viewModel.isSelectThuDate()){
-                HabitInWeekModel model = new HabitInWeekModel();
-                model.setHabitId(viewModel.getHabitModel().getHabitId());
-                model.setUserId(DataLocalManager.getInstance().getUserId());
-                model.setDayOfWeekId(5L);
-                model.setTimerHour(Long.valueOf(binding.tHour.getText().toString().trim()));
-                model.setTimerMinute(Long.valueOf(binding.tMinutes.getText().toString().trim()));
-                model.setTimerSecond(Long.valueOf(binding.tSecond.getText().toString().trim()));
-                viewModel.insertHabitInWeek(model);
-            }
-
-            if(viewModel.isSelectFriDate()){
-                HabitInWeekModel model = new HabitInWeekModel();
-                model.setHabitId(viewModel.getHabitModel().getHabitId());
-                model.setUserId(DataLocalManager.getInstance().getUserId());
-                model.setDayOfWeekId(6L);
-                model.setTimerHour(Long.valueOf(binding.tHour.getText().toString().trim()));
-                model.setTimerMinute(Long.valueOf(binding.tMinutes.getText().toString().trim()));
-                model.setTimerSecond(Long.valueOf(binding.tSecond.getText().toString().trim()));
-                viewModel.insertHabitInWeek(model);
-            }
-
-            if(viewModel.isSelectSatDate()){
-                HabitInWeekModel model = new HabitInWeekModel();
-                model.setHabitId(viewModel.getHabitModel().getHabitId());
-                model.setUserId(DataLocalManager.getInstance().getUserId());
-                model.setDayOfWeekId(7L);
-                model.setTimerHour(Long.valueOf(binding.tHour.getText().toString().trim()));
-                model.setTimerMinute(Long.valueOf(binding.tMinutes.getText().toString().trim()));
-                model.setTimerSecond(Long.valueOf(binding.tSecond.getText().toString().trim()));
-                viewModel.insertHabitInWeek(model);
-            }
-
+            viewModel.toastService.makeHabitNameIsExistedToast();
         }
-
-        if(viewModel.isSelectAnytime()){
-            DayOfTimeModel model = viewModel.searchDayOfTimeByName(DayOfTime.ANYTIME.getTimeName());
-            viewModel.updateDateOfTimeInHabit (model.getDayOfTimeId());
-        }else if(viewModel.isSelectMorning()){
-            DayOfTimeModel model = viewModel.searchDayOfTimeByName(DayOfTime.MORNING.getTimeName());
-            viewModel.updateDateOfTimeInHabit (model.getDayOfTimeId());
-        }
-        else if(viewModel.isSelectAfternoon()){
-            DayOfTimeModel model = viewModel.searchDayOfTimeByName(DayOfTime.AFTERNOON.getTimeName());
-            viewModel.updateDateOfTimeInHabit (model.getDayOfTimeId());
-        }else if(viewModel.isSelectNight()){
-            DayOfTimeModel model = viewModel.searchDayOfTimeByName(DayOfTime.NIGHT.getTimeName());
-            viewModel.updateDateOfTimeInHabit (model.getDayOfTimeId());
-        }
-
-        viewModel.updateNameOfHabit(binding.hname.getText().toString().trim());
-
-        onClickBackBtn();
 
     }
 
@@ -670,4 +835,10 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
         viewModel.initService.initTimerDialog(Gravity.BOTTOM);
     }
 
+    @Override
+    protected void onDestroy() {
+        Log.i("HabitSettingActivity", "onDestroy");
+        super.onDestroy();
+        viewModel.dispose();
+    }
 }

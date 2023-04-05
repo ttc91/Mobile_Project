@@ -16,4 +16,6 @@ public interface RemainderDataSource extends BaseDataSource<RemainderEntity> {
 
     Single<RemainderEntity> checkExistRemainder(Long h, Long m, Long id);
 
+    Completable deleteRemainderByTimerHourAndTimerMinutesAndId(Long h, Long m, Long id);
+
 }

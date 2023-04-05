@@ -86,18 +86,6 @@ public class HomeViewModel extends BaseViewModel {
     protected InitUIService.InitHabitListUI initHabitListUI;
 
 
-    private DbService.InsertHistoryResult mInsertHistoryResult = new DbService.InsertHistoryResult() {
-        @Override
-        public void onInsertHistorySuccess(CompositeDisposable disposable) {
-            Log.i("mInsertHistoryResult", "onInsertHistorySuccess");
-        }
-
-        @Override
-        public void onInsertHistoryFailure(CompositeDisposable disposable) {
-            Log.i("mInsertHistoryResult", "onInsertHistoryFailure");
-        }
-    };
-
     private List<HabitInWeekModel> habitInWeekModelList = new ArrayList<>();
     private MutableLiveData<List<HabitInWeekModel>> habitInWeekModelListMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<HabitInWeekModel>> habitAfterMutableLiveData = new MutableLiveData<>();
@@ -342,7 +330,7 @@ public class HomeViewModel extends BaseViewModel {
                     @Override
                     public void onNext(List<HabitEntity> habitEntities) {
                         habitsOfUser = HabitMapper.getInstance().mapToListModel(habitEntities);
-                        habitsOfUserMutableLiveData.postValue(habitsOfUser);
+                        habitsOfUserMutableLiveData.setValue(habitsOfUser);
                     }
                 });
     }
@@ -383,22 +371,6 @@ public class HomeViewModel extends BaseViewModel {
                         afterAdapter.notifyItemInserted(habitModelAfterList.size() - 1);
                     }
                 });
-    }
-
-    public void getOrInsertHistoriesList(String historyTime, List<HistoryModel> models) {
-        if (models.size() == 0) {
-            List<HistoryModel> historyModelList = new ArrayList<>();
-            HistoryModel model = new HistoryModel();
-            habitInWeekModelList.forEach(habitInWeekModel -> {
-                model.setHistoryDate(historyTime);
-                model.setUserId(DataLocalManager.getInstance().getUserId());
-                model.setHistoryHabitsState(VAL_NULL);
-                model.setHabitId(habitInWeekModel.getHabitId());
-                insertHistory(model);
-                historyModelList.add(model);
-            });
-            historyModelListMutableLiveData.postValue(historyModelList);
-        }
     }
 
     public void insertHistory(HistoryModel historyModel) {
@@ -492,8 +464,8 @@ public class HomeViewModel extends BaseViewModel {
     public void insertHistoriesList(String historyTime, List<HistoryModel> models, List<HabitInWeekModel> habitInWeeks) {
         Log.d(TAG, "insertHistoriesList: " + models.size() + " - " + habitInWeeks.size());
         List<HistoryModel> historyModelList = new ArrayList<>();
-        for (HabitInWeekModel habitInWeek : habitInWeeks) {
-            if (!checkIsInsertHistory(models, habitInWeek.getHabitId())) {
+        if (models.size() == 0) {
+            for (HabitInWeekModel habitInWeek : habitInWeeks) {
                 HistoryModel model = new HistoryModel();
                 model.setHistoryDate(historyTime);
                 model.setUserId(DataLocalManager.getInstance().getUserId());
@@ -501,6 +473,19 @@ public class HomeViewModel extends BaseViewModel {
                 model.setHabitId(habitInWeek.getHabitId());
                 insertHistory(model);
                 historyModelList.add(model);
+            }
+        } else {
+            historyModelList.addAll(models);
+            for (HabitInWeekModel habitInWeek : habitInWeeks) {
+                if (!checkIsInsertHistory(historyModelList, habitInWeek.getHabitId())) {
+                    HistoryModel model = new HistoryModel();
+                    model.setHistoryDate(historyTime);
+                    model.setUserId(DataLocalManager.getInstance().getUserId());
+                    model.setHistoryHabitsState(VAL_NULL);
+                    model.setHabitId(habitInWeek.getHabitId());
+                    insertHistory(model);
+                    historyModelList.add(model);
+                }
             }
         }
         Log.d(TAG, "insertHistoriesList end: " + historyModelList.size());

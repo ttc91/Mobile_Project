@@ -2,13 +2,24 @@ package com.android.mobile_project.ui.activity.setting.service;
 
 public interface InitService {
 
-    public void getHabit();
-    public void getHabitInWeek();
+    void getHabit();
 
-    public void initUI();
-    public void initTimerDialog(int gravity);
-    public void initRemainderDialog(int gravity);
+    void getHabitInWeek();
 
-    public void setCalendarOfMonthView();
+    void getDayOfTime();
+
+    void getRemainderList();
+
+    void initUI();
+
+    void initRemainderAdapter();
+
+    void initUpdateBehavior();
+
+    void initTimerDialog(int gravity);
+
+    void initRemainderDialog(int gravity);
+
+    void setCalendarOfMonthView(Long habitId);
 
 }

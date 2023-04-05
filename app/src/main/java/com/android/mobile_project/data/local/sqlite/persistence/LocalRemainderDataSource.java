@@ -52,4 +52,9 @@ public class LocalRemainderDataSource implements RemainderDataSource {
     public Single<RemainderEntity> checkExistRemainder(Long h, Long m, Long id) {
         return dao.checkExistRemainder(h, m, id);
     }
+
+    @Override
+    public Completable deleteRemainderByTimerHourAndTimerMinutesAndId(Long h, Long m, Long id) {
+        return dao.deleteRemainderByTimerHourAndTimerMinutesAndId(h, m, id);
+    }
 }
