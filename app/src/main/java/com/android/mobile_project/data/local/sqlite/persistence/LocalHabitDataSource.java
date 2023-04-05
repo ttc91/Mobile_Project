@@ -25,32 +25,32 @@ public class LocalHabitDataSource extends BaseDataSource implements HabitDataSou
 
     @Override
     public Completable insert(HabitEntity habitEntity) {
-        return dao.insert(habitEntity);
+        return subscribeCompletable(dao.insert(habitEntity));
     }
 
     @Override
     public Completable delete(HabitEntity habitEntity) {
-        return dao.delete(habitEntity);
+        return subscribeCompletable(dao.delete(habitEntity));
     }
 
     @Override
     public Completable update(HabitEntity habitEntity) {
-        return dao.update(habitEntity);
+        return subscribeCompletable(dao.update(habitEntity));
     }
 
     @Override
     public Completable deleteHabitById(Long id) {
-        return dao.deleteHabitById(id);
+        return subscribeCompletable(dao.deleteHabitById(id));
     }
 
     @Override
     public Flowable<List<HabitEntity>> getHabitListByUserAndDayOfTime(Long userId, Long dayOfTimeId) {
-        return dao.getHabitListByUserAndDayOfTime(userId, dayOfTimeId);
+        return subscribeFlowable(dao.getHabitListByUserAndDayOfTime(userId, dayOfTimeId));
     }
 
     @Override
     public Single<HabitEntity> getHabitByName(String name) {
-        return dao.getHabitByName(name);
+        return subscribeSingle(dao.getHabitByName(name));
     }
 
     @Override
@@ -75,6 +75,6 @@ public class LocalHabitDataSource extends BaseDataSource implements HabitDataSou
 
     @Override
     public Flowable<List<HabitEntity>> getHabitListDescByLongestSteak() {
-        return dao.getHabitListDescByLongestSteak();
+        return subscribeFlowable(dao.getHabitListDescByLongestSteak());
     }
 }

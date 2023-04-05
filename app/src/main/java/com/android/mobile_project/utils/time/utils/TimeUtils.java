@@ -94,19 +94,19 @@ public class TimeUtils {
         Long dayOfWeekId = 0L;
         LocalDate localDate = LocalDate.parse(date);
         java.time.DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-        if (dayOfWeek.toString().equals(DayOfWeek.MON.getDayName())){
+        if (dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.MON.getDayName())){
             dayOfWeekId = DayOfWeek.MON.getId();
-        }else if(dayOfWeek.toString().equals(DayOfWeek.TUE.getDayName())){
+        }else if(dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.TUE.getDayName())){
             dayOfWeekId = DayOfWeek.TUE.getId();
-        }else if(dayOfWeek.toString().equals(DayOfWeek.WED.getDayName())){
+        }else if(dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.WED.getDayName())){
             dayOfWeekId = DayOfWeek.WED.getId();
-        }else if(dayOfWeek.toString().equals(DayOfWeek.THU.getDayName())){
+        }else if(dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.THU.getDayName())){
             dayOfWeekId = DayOfWeek.THU.getId();
-        }else if(dayOfWeek.toString().equals(DayOfWeek.FRI.getDayName())){
+        }else if(dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.FRI.getDayName())){
             dayOfWeekId = DayOfWeek.FRI.getId();
-        }else if(dayOfWeek.toString().equals(DayOfWeek.SAT.getDayName())){
+        }else if(dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.SAT.getDayName())){
             dayOfWeekId = DayOfWeek.SAT.getId();
-        }else if(dayOfWeek.toString().equals(DayOfWeek.SUN.getDayName())){
+        }else if(dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.SUN.getDayName())){
             dayOfWeekId = DayOfWeek.SUN.getId();
         }
         return dayOfWeekId;
