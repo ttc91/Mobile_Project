@@ -32,6 +32,7 @@ import com.android.mobile_project.ui.activity.main.fragment.home.adapter.HabitAd
 import com.android.mobile_project.ui.activity.main.fragment.home.service.DbService;
 import com.android.mobile_project.ui.activity.main.fragment.home.service.InitUIService;
 import com.android.mobile_project.ui.activity.main.fragment.home.service.UpdateService;
+import com.android.mobile_project.utils.custom.SingleLiveEvent;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
 import com.android.mobile_project.utils.time.adapter.DailyCalendarAdapter;
 import com.android.mobile_project.utils.time.utils.TimeUtils;
@@ -87,7 +88,7 @@ public class HomeViewModel extends BaseViewModel {
 
 
     private List<HabitInWeekModel> habitInWeekModelList = new ArrayList<>();
-    private MutableLiveData<List<HabitInWeekModel>> habitInWeekModelListMutableLiveData = new MutableLiveData<>();
+    private SingleLiveEvent<List<HabitInWeekModel>> habitInWeekModelListMutableLiveData = new SingleLiveEvent<>();
     private MutableLiveData<List<HabitInWeekModel>> habitAfterMutableLiveData = new MutableLiveData<>();
 
     public LiveData<List<HabitInWeekModel>> getHabitInWeekModelListLD() {
@@ -98,8 +99,8 @@ public class HomeViewModel extends BaseViewModel {
         return habitAfterMutableLiveData;
     }
 
-    private MutableLiveData<List<HistoryModel>> historyModelListMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<HistoryModel>> historyInsertMutableLiveData = new MutableLiveData<>();
+    private SingleLiveEvent<List<HistoryModel>> historyModelListMutableLiveData = new SingleLiveEvent<>();
+    private SingleLiveEvent<List<HistoryModel>> historyInsertMutableLiveData = new SingleLiveEvent<>();
 
     private MutableLiveData<List<HabitModel>> habitModelListMutableLiveData = new MutableLiveData<>();
     private List<HabitModel> habitModelList = new ArrayList<>();
@@ -317,7 +318,7 @@ public class HomeViewModel extends BaseViewModel {
 
     private List<HabitModel> habitsOfUser = new ArrayList<>();
 
-    private MutableLiveData<List<HabitModel>> habitsOfUserMutableLiveData = new MutableLiveData<>();
+    private SingleLiveEvent<List<HabitModel>> habitsOfUserMutableLiveData = new SingleLiveEvent<>();
 
     public LiveData<List<HabitModel>> getHabitsOfUserMutableLiveData() {
         return habitsOfUserMutableLiveData;
@@ -475,9 +476,8 @@ public class HomeViewModel extends BaseViewModel {
                 historyModelList.add(model);
             }
         } else {
-            historyModelList.addAll(models);
             for (HabitInWeekModel habitInWeek : habitInWeeks) {
-                if (!checkIsInsertHistory(historyModelList, habitInWeek.getHabitId())) {
+                if (!checkIsInsertHistory(models, habitInWeek.getHabitId())) {
                     HistoryModel model = new HistoryModel();
                     model.setHistoryDate(historyTime);
                     model.setUserId(DataLocalManager.getInstance().getUserId());

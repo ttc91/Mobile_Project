@@ -144,19 +144,19 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         viewModel.getHabitsOfUserMutableLiveData().observe(getViewLifecycleOwner(), new Observer<List<HabitModel>>() {
             @Override
             public void onChanged(List<HabitModel> habitModels) {
-                Log.d(TAG, "onChanged: habitModels");
+                Log.d(TAG, "onChanged: habitModels" + habitModels.size());
                 if (habitModels.size() > 0) {
                     viewModel.getHabitInWeekModels1(viewModel.getDayOfWeekId());
                     viewModel.getHabitInWeekModelListLD().observe(getViewLifecycleOwner(), new Observer<List<HabitInWeekModel>>() {
                         @Override
                         public void onChanged(List<HabitInWeekModel> habitInWeekModels) {
                             String historyTime = LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT));
-                            Log.d(TAG, "historyTime: " + historyTime);
+                            Log.d(TAG, "historyTime: " + historyTime + " --  " + habitInWeekModels.size());
                             viewModel.getHistoryByDate(historyTime);
                             viewModel.getHistoryModelListLiveData().observe(getViewLifecycleOwner(), new Observer<List<HistoryModel>>() {
                                 @Override
                                 public void onChanged(List<HistoryModel> historyModels) {
-                                    Log.d(TAG, "historyModels: " + historyModels.size());
+                                    Log.d(TAG, "historyModels: " + historyModels.size() + "---" + habitInWeekModels.size());
                                     //Insert habit vào history
                                     if (historyModels.size() < habitInWeekModels.size()) {
                                         viewModel.insertHistoriesList(historyTime, historyModels, habitInWeekModels);
