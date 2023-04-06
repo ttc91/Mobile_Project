@@ -230,6 +230,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initHabitDoneModeList() {
         Log.d(TAG, "initHabitDoneModeList: " + viewModel.getHabitModelDoneList().size());

@@ -1,6 +1,8 @@
 package com.android.mobile_project.utils.time.utils;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -22,6 +24,7 @@ public class TimeUtils {
         return selectedDate;
     }
 
+    @SuppressLint("LongLogTag")
     @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<String> daysInMonthArray(){
 
@@ -32,13 +35,16 @@ public class TimeUtils {
 
         LocalDate firstDayOfMonth = selectedDate.withDayOfMonth(1);
         int numWeekOfMonth = firstDayOfMonth.getDayOfWeek().getValue();
+        Log.i("checkkkk", String.valueOf(numWeekOfMonth));
 
         for(int i = 1; i <= 42; i++){
 
-            if(i <= numWeekOfMonth || i >= numWeekOfMonth + dayInMonth){
+            if(i <= numWeekOfMonth || i > numWeekOfMonth + dayInMonth){
                 daysInMonthArray.add("");
+                Log.i("i <= numWeekOfMonth || i >= numWeekOfMonth + dayInMonth", "");
             }else {
                 daysInMonthArray.add(String.valueOf(i - numWeekOfMonth));
+                Log.i("else", String.valueOf(i - numWeekOfMonth));
             }
 
         }

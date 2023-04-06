@@ -10,26 +10,14 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.android.mobile_project.data.local.DataLocalManager;
-import com.android.mobile_project.data.local.sqlite.entity.db.DayOfTimeEntity;
-import com.android.mobile_project.data.local.sqlite.entity.db.DayOfWeekEntity;
-import com.android.mobile_project.data.local.sqlite.entity.db.HabitEntity;
-import com.android.mobile_project.data.local.sqlite.entity.db.HabitInWeekEntity;
-import com.android.mobile_project.data.local.sqlite.entity.db.HistoryEntity;
-import com.android.mobile_project.data.local.sqlite.entity.db.RemainderEntity;
-import com.android.mobile_project.data.remote.model.DayOfTimeModel;
-import com.android.mobile_project.data.remote.model.DayOfWeekModel;
 import com.android.mobile_project.data.remote.model.HabitInWeekModel;
 import com.android.mobile_project.data.remote.model.HabitModel;
-import com.android.mobile_project.data.remote.model.HistoryModel;
 import com.android.mobile_project.data.remote.model.RemainderModel;
 import com.android.mobile_project.data.repository.DayOfTimeRepository;
-import com.android.mobile_project.data.repository.DayOfWeekRepository;
 import com.android.mobile_project.data.repository.HabitInWeekRepository;
 import com.android.mobile_project.data.repository.HabitRepository;
 import com.android.mobile_project.data.repository.HistoryRepository;
 import com.android.mobile_project.data.repository.RemainderRepository;
-import com.android.mobile_project.data.utils.mapper.DayOfTimeMapper;
-import com.android.mobile_project.data.utils.mapper.DayOfWeekMapper;
 import com.android.mobile_project.data.utils.mapper.HabitInWeekMapper;
 import com.android.mobile_project.data.utils.mapper.HabitMapper;
 import com.android.mobile_project.data.utils.mapper.HistoryMapper;
@@ -50,12 +38,9 @@ import javax.inject.Inject;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.CompletableObserver;
-import io.reactivex.rxjava3.core.SingleObserver;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import io.reactivex.subscribers.DisposableSubscriber;
-import lombok.SneakyThrows;
 
 @MyCustomAnnotation.MyScope.ActivityScope
 public class HabitSettingViewModel extends ViewModel implements IHabitSettingViewModel{
@@ -63,15 +48,13 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
     private final HabitRepository mHabitRepository;
     private final RemainderRepository mRemainderRepository;
     private final HabitInWeekRepository mHabitInWeekRepository;
-    private final DayOfTimeRepository mDayOfTimeRepository;
     private final HistoryRepository mHistoryRepository;
 
     @Inject
-    public HabitSettingViewModel(HabitRepository mHabitRepository, RemainderRepository mRemainderRepository, HabitInWeekRepository mHabitInWeekRepository, DayOfTimeRepository mDayOfTimeRepository, HistoryRepository mHistoryRepository) {
+    public HabitSettingViewModel(HabitRepository mHabitRepository, RemainderRepository mRemainderRepository, HabitInWeekRepository mHabitInWeekRepository, HistoryRepository mHistoryRepository) {
         this.mHabitRepository = mHabitRepository;
         this.mRemainderRepository = mRemainderRepository;
         this.mHabitInWeekRepository = mHabitInWeekRepository;
-        this.mDayOfTimeRepository = mDayOfTimeRepository;
         this.mHistoryRepository = mHistoryRepository;
     }
 
