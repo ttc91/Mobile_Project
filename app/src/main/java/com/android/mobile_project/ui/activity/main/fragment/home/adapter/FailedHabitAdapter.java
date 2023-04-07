@@ -10,11 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.databinding.RcvItemHabitFailedBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FailedHabitAdapter extends RecyclerView.Adapter<FailedHabitAdapter.ViewHolder>{
 
-    private final List<HabitModel> habitModelList;
+    private List<HabitModel> habitModelList = new ArrayList<>();
 
     public FailedHabitAdapter(List<HabitModel> habitModelList) {
         this.habitModelList = habitModelList;
@@ -29,6 +30,7 @@ public class FailedHabitAdapter extends RecyclerView.Adapter<FailedHabitAdapter.
 
         return new ViewHolder(binding);
     }
+
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {

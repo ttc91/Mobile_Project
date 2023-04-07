@@ -10,11 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.databinding.RcvItemHabitDoneBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DoneHabitAdapter extends RecyclerView.Adapter<DoneHabitAdapter.ViewHolder>{
 
-    private final List<HabitModel> habitModelList;
+    private List<HabitModel> habitModelList = new ArrayList<>();
 
     public DoneHabitAdapter(List<HabitModel> habitModelList){
         this.habitModelList = habitModelList;

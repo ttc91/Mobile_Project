@@ -217,9 +217,10 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     @SuppressLint("NotifyDataSetChanged")
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initHabitModelList() {
-        if (viewModel.getHabitModelList() == null || viewModel.getHabitModelList().isEmpty()) {
-            return;
-        }
+//        if (viewModel.getHabitModelList() == null || viewModel.getHabitModelList().isEmpty()) {
+//            viewModel.getmHabitAdapter().notifyDataSetChanged();
+//            return;
+//        }
         Log.d(TAG, "initHabitModelList: " + viewModel.getHabitModelList().size());
 
         viewModel.recyclerViewClickListener = (v, habitModelList, position) -> {
@@ -232,7 +233,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         };
 
-        //viewModel.setmHabitAdapter(new HabitAdapter(viewModel.getHabitModelList(), viewModel.recyclerViewClickListener));
+        viewModel.setmHabitAdapter(new HabitAdapter(viewModel.getHabitModelList(), viewModel.recyclerViewClickListener));
         viewModel.getmHabitAdapter().notifyDataSetChanged();
 
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
@@ -253,11 +254,12 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     @SuppressLint("NotifyDataSetChanged")
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initHabitDoneModeList() {
-        if (viewModel.getHabitModelDoneList() == null || viewModel.getHabitModelDoneList().isEmpty()) {
-            return;
-        }
+//        if (viewModel.getHabitModelDoneList() == null || viewModel.getHabitModelDoneList().isEmpty()) {
+//            viewModel.getmDoneHabitAdapter().notifyDataSetChanged();
+//            return;
+//        }
         Log.d(TAG, "initHabitDoneModeList: " + viewModel.getHabitModelDoneList().size());
-        //viewModel.setmDoneHabitAdapter(new DoneHabitAdapter(viewModel.getHabitModelDoneList()));
+        viewModel.setmDoneHabitAdapter(new DoneHabitAdapter(viewModel.getHabitModelDoneList()));
         viewModel.getmDoneHabitAdapter().notifyDataSetChanged();
 
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
@@ -278,11 +280,12 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     @SuppressLint("NotifyDataSetChanged")
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initHabitFailedModelList() {
-        if (viewModel.getHabitModelFailedList() == null || viewModel.getHabitModelFailedList().isEmpty()) {
-            return;
-        }
+//        if (viewModel.getHabitModelFailedList() == null || viewModel.getHabitModelFailedList().isEmpty()) {
+//            viewModel.getmFailedHabitAdapter().notifyDataSetChanged();
+//            return;
+//        }
         Log.d(TAG, "initHabitFailedModelList: " + viewModel.getHabitModelFailedList().size());
-        //viewModel.setmFailedHabitAdapter(new FailedHabitAdapter(viewModel.getHabitModelFailedList()));
+        viewModel.setmFailedHabitAdapter(new FailedHabitAdapter(viewModel.getHabitModelFailedList()));
         viewModel.getmFailedHabitAdapter().notifyDataSetChanged();
 
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);

@@ -100,7 +100,7 @@ public class HomeViewModel extends BaseViewModel {
 
 
     private SingleLiveEvent<List<HabitInWeekModel>> habitInWeekModelListMutableLiveData = new SingleLiveEvent<>();
-    private MutableLiveData<List<HabitInWeekModel>> habitAfterMutableLiveData = new MutableLiveData<>();
+    private SingleLiveEvent<List<HabitInWeekModel>> habitAfterMutableLiveData = new SingleLiveEvent<>();
 
     public LiveData<List<HabitInWeekModel>> getHabitInWeekModelListLD() {
         return habitInWeekModelListMutableLiveData;
@@ -117,7 +117,7 @@ public class HomeViewModel extends BaseViewModel {
     private HabitAdapter mHabitAdapter = new HabitAdapter(habitModelList, recyclerViewClickListener);
 
     private MutableLiveData<List<HabitModel>> habitModelBeforeListMutableLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<HistoryModel>> historyBeforeListMutableLiveData = new MutableLiveData<>();
+    private SingleLiveEvent<List<HistoryModel>> historyBeforeListMutableLiveData = new SingleLiveEvent<>();
     private List<HabitModel> habitModelBeforeList = new ArrayList<>();
     private BeforeAdapter beforeAdapter;
 
@@ -546,34 +546,32 @@ public class HomeViewModel extends BaseViewModel {
     protected void updateHistory(int position, Class<?> adapterName, String
             value) {
 
-        final HabitModel habitModel;
+        HabitModel habitModel = new HabitModel();
         Log.d(TAG, "Before updateHistory: " + habitModelList.size()
                 + " -- " + habitModelDoneList.size() + " -- " + habitModelFailedList.size());
         if (HabitAdapter.class.equals(adapterName)) {
-            if (habitModelList.size() == 0) {
-                return;
+            if (habitModelList.size() != 0) {
+                habitModel = habitModelList.get(position);
+                habitModelList.remove(position);
+                setHabitStatus(habitModel, value);
+                mHabitAdapter.notifyItemRemoved(position);
             }
-            habitModel = habitModelList.get(position);
-            habitModelList.remove(position);
-            setHabitStatus(habitModel, value);
-            mHabitAdapter.notifyItemRemoved(position);
         } else if (DoneHabitAdapter.class.equals(adapterName)) {
-            if (habitModelDoneList.size() == 0) {
-                return;
+            if (habitModelDoneList.size() != 0) {
+                habitModel = habitModelDoneList.get(position);
+                habitModelDoneList.remove(position);
+                setHabitStatus(habitModel, value);
+                mDoneHabitAdapter.notifyItemRemoved(position);
             }
-            habitModel = habitModelDoneList.get(position);
-            habitModelDoneList.remove(position);
-            setHabitStatus(habitModel, value);
-            mDoneHabitAdapter.notifyItemRemoved(position);
         } else {
-            if (habitModelFailedList.size() == 0) {
-                return;
+            if (habitModelFailedList.size() != 0) {
+                habitModel = habitModelFailedList.get(position);
+                habitModelFailedList.remove(position);
+                setHabitStatus(habitModel, value);
+                mFailedHabitAdapter.notifyItemRemoved(position);
             }
-            habitModel = habitModelFailedList.get(position);
-            habitModelFailedList.remove(position);
-            setHabitStatus(habitModel, value);
-            mFailedHabitAdapter.notifyItemRemoved(position);
         }
+
         Log.d(TAG, "After updateHistory: " + habitModelList.size()
                 + " -- " + habitModelDoneList.size() + " -- " + habitModelFailedList.size());
         updateHistoryStatus(habitModel, LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT)), value);
@@ -582,22 +580,16 @@ public class HomeViewModel extends BaseViewModel {
     private void setHabitStatus(HabitModel habitModel, String status) {
         switch (status) {
             case VAL_NULL:
-                if (mHabitAdapter.getItemCount() == 0) {
-                    mHabitAdapter.notifyItemInserted(0);
-                }
                 habitModelList.add(habitModel);
+                mHabitAdapter.notifyItemInserted(habitModelList.size() - 1);
                 break;
             case VAL_TRUE:
-                if (mDoneHabitAdapter.getItemCount() == 0) {
-                    mDoneHabitAdapter.notifyItemInserted(0);
-                }
                 habitModelDoneList.add(habitModel);
+                mDoneHabitAdapter.notifyItemInserted(habitModelList.size() - 1);
                 break;
             case VAL_FALSE:
-                if (mFailedHabitAdapter.getItemCount() == 0) {
-                    mFailedHabitAdapter.notifyItemInserted(0);
-                }
                 habitModelFailedList.add(habitModel);
+                mFailedHabitAdapter.notifyItemInserted(habitModelList.size() - 1);
                 break;
             default:
                 break;

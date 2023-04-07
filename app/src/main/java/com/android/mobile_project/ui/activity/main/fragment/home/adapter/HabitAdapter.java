@@ -17,6 +17,7 @@ import com.android.mobile_project.databinding.RcvItemHabitBinding;
 import com.android.mobile_project.ui.activity.main.fragment.home.HomeViewModel;
 import com.android.mobile_project.ui.activity.main.fragment.home.IHomeViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,7 +25,7 @@ import javax.inject.Inject;
 public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder>{
 
     public final String TAG = this.getClass().getSimpleName();
-    private final List<HabitModel> habitModelList;
+    private List<HabitModel> habitModelList = new ArrayList<>();
     private final RecyclerViewClickListener recyclerViewClickListener;
 
     private IHomeViewModel vm;
