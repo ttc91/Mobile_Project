@@ -37,6 +37,7 @@ import com.android.mobile_project.databinding.FragmentHomeBinding;
 import com.android.mobile_project.ui.activity.create.CreateHabitActivity;
 import com.android.mobile_project.ui.activity.main.MainActivity;
 import com.android.mobile_project.ui.activity.main.fragment.home.service.DbService;
+import com.android.mobile_project.ui.activity.setting.HabitSettingActivity;
 import com.android.mobile_project.utils.dagger.component.sub.main.fragment.HomeComponent;
 import com.android.mobile_project.utils.time.adapter.DailyCalendarAdapter;
 import com.android.mobile_project.utils.time.utils.TimeUtils;
@@ -182,12 +183,24 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         return binding.getRoot();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initHabitModelList() {
         if (viewModel.getHabitModelList() == null || viewModel.getHabitModelList().isEmpty()) {
             return;
         }
         Log.d(TAG, "initHabitModelList: " + viewModel.getHabitModelList().size());
+
+        viewModel.recyclerViewClickListener = (v, habitModelList, position) -> {
+
+            HabitModel model = habitModelList.get(position);
+
+            Intent intent = new Intent(getContext(), HabitSettingActivity.class);
+            intent.putExtra("habitId", model.getHabitId());
+            startActivity(intent);
+
+        };
+
         viewModel.setmHabitAdapter(new HabitAdapter(getContext(), viewModel.getHabitModelList(), viewModel.recyclerViewClickListener));
         viewModel.getmHabitAdapter().notifyDataSetChanged();
 
@@ -206,6 +219,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initHabitDoneModeList() {
         if (viewModel.getHabitModelDoneList() == null || viewModel.getHabitModelDoneList().isEmpty()) {
@@ -307,27 +321,21 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 
                 viewModel.getHabitsWhenClickDailyCalendar1(date);
                 //Before
-                viewModel.getHistoryBeforeLD().observe(getViewLifecycleOwner(), new Observer<List<HistoryModel>>() {
-                    @Override
-                    public void onChanged(List<HistoryModel> historyModels) {
-                        if (historyModels.size() > 0) {
-                            initHabitModelList();
-                            initHabitDoneModeList();
-                            initHabitFailedModelList();
-                        }
+                viewModel.getHistoryBeforeLD().observe(getViewLifecycleOwner(), historyModels -> {
+                    if (historyModels.size() > 0) {
+                        initHabitModelList();
+                        initHabitDoneModeList();
+                        initHabitFailedModelList();
                     }
                 });
 
                 //After
-                viewModel.getHabitAfterLD().observe(getViewLifecycleOwner(), new Observer<List<HabitInWeekModel>>() {
-                    @Override
-                    public void onChanged(List<HabitInWeekModel> habitInWeekModels) {
-                        if (habitInWeekModels.size() > 0) {
-                            viewModel.getHabitListAfterDay(habitInWeekModels);
-                            initHabitModelList();
-                            initHabitDoneModeList();
-                            initHabitFailedModelList();
-                        }
+                viewModel.getHabitAfterLD().observe(getViewLifecycleOwner(), habitInWeekModels -> {
+                    if (habitInWeekModels.size() > 0) {
+                        viewModel.getHabitListAfterDay(habitInWeekModels);
+                        initHabitModelList();
+                        initHabitDoneModeList();
+                        initHabitFailedModelList();
                     }
                 });
                 binding.tTodo.setVisibility(View.GONE);

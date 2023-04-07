@@ -496,7 +496,7 @@ public class HomeViewModel extends BaseViewModel {
 
     private HabitModel getHabitById(List<HabitModel> habitModels, Long id) {
         for (HabitModel habit : habitModels) {
-            if (habit.getHabitId() == id) {
+            if (habit.getHabitId().equals(id)) {
                 return habit;
             }
         }
@@ -505,7 +505,7 @@ public class HomeViewModel extends BaseViewModel {
 
     private boolean checkIsInsertHistory(List<HistoryModel> models, Long id) {
         for (HistoryModel history : models) {
-            if (history.getHabitId() == id) {
+            if (history.getHabitId().equals(id)) {
                 return true;
             }
         }

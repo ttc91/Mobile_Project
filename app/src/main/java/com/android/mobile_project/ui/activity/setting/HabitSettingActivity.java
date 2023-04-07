@@ -2,7 +2,6 @@ package com.android.mobile_project.ui.activity.setting;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -25,12 +24,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.mobile_project.MyApplication;
 import com.android.mobile_project.R;
-import com.android.mobile_project.data.local.DataLocalManager;
-import com.android.mobile_project.data.remote.model.DayOfTimeModel;
-import com.android.mobile_project.data.remote.model.DayOfWeekModel;
 import com.android.mobile_project.data.remote.model.HabitInWeekModel;
 import com.android.mobile_project.data.remote.model.HabitModel;
-import com.android.mobile_project.data.remote.model.RemainderModel;
 import com.android.mobile_project.databinding.ActivityHabitSettingBinding;
 import com.android.mobile_project.databinding.LayoutRemainderDialogBinding;
 import com.android.mobile_project.databinding.LayoutTimePickerDialogBinding;

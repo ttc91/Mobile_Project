@@ -10,7 +10,6 @@
         android:layout_height="@dimen/_20sdp"
         android:id="@+id/date"
         android:textStyle="bold"
-        android:text="15"
         android:textSize="@dimen/_9ssp"
         android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"

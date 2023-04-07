@@ -2,7 +2,6 @@ package com.android.mobile_project.ui.activity.setting.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +32,8 @@ public class MonthlyCalendarHabitAdapter extends RecyclerView.Adapter<MonthlyCal
     private final static String STATE_VALUE_FALSE = "false";
 
     private final static String STRING_BLANK = "";
+
+    private final static String STRING_ZERO = "0";
 
     private final String today;
 
@@ -71,15 +72,16 @@ public class MonthlyCalendarHabitAdapter extends RecyclerView.Adapter<MonthlyCal
 
         if(!daysOfMonth.get(position).equals(STRING_BLANK)){
 
+            holder.binding.date.setText(daysOfMonth.get(position));
+            holder.binding.date.setTextColor(context.getColor(R.color.white));
+            holder.binding.date.setBackground(ContextCompat.getDrawable(context, R.drawable.bck_car_date));
+
             if(Integer.parseInt(daysOfMonth.get(position)) == Integer.parseInt(today)){
-
-                holder.binding.date.setText(daysOfMonth.get(position));
-                holder.binding.date.setTextColor(context.getColor(R.color.white));
                 holder.binding.date.setBackground(ContextCompat.getDrawable(context, R.drawable.bck_car_today));
-
             }else {
-                String getLocalDateString = presentMonthYear + "-" + daysOfMonth.get(position);
-                Log.i("check", getLocalDateString);
+                String getLocalDateString =
+                        presentMonthYear + "-" + (daysOfMonth.get(position).length() == 1
+                                ? STRING_ZERO + daysOfMonth.get(position) : daysOfMonth.get(position));
                 vm.getHistoryByHabitIdAndDate(habitId, getLocalDateString, new DbService.GetHistoryByHabitAndDateResult() {
                     @SuppressLint("LongLogTag")
                     @Override
@@ -88,27 +90,17 @@ public class MonthlyCalendarHabitAdapter extends RecyclerView.Adapter<MonthlyCal
                         if(model != null){
                             switch (model.getHistoryHabitsState()){
                                 case STATE_VALUE_NULL:
-                                    holder.binding.date.setText(daysOfMonth.get(position));
-                                    holder.binding.date.setTextColor(context.getColor(R.color.white));
                                     holder.binding.date.setBackground(ContextCompat.getDrawable(context, R.drawable.bck_car_null_date));
                                     break;
                                 case STATE_VALUE_FALSE:
-                                    holder.binding.date.setText(daysOfMonth.get(position));
-                                    holder.binding.date.setTextColor(context.getColor(R.color.white));
                                     holder.binding.date.setBackground(ContextCompat.getDrawable(context, R.drawable.bck_car_false_date));
                                     break;
                                 case STATE_VALUE_TRUE:
-                                    holder.binding.date.setText(daysOfMonth.get(position));
-                                    holder.binding.date.setTextColor(context.getColor(R.color.white));
                                     holder.binding.date.setBackground(ContextCompat.getDrawable(context, R.drawable.bck_car_true_date));
                                     break;
                                 default:
                                     break;
                             }
-                        }else {
-                            holder.binding.date.setText(daysOfMonth.get(position));
-                            holder.binding.date.setTextColor(context.getColor(R.color.white));
-                            holder.binding.date.setBackground(ContextCompat.getDrawable(context, R.drawable.bck_car_date));
                         }
                     }
 
@@ -137,14 +129,10 @@ public class MonthlyCalendarHabitAdapter extends RecyclerView.Adapter<MonthlyCal
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
-
         private final RcvVerticalCalendarTextDateBinding binding;
-
         public ViewHolder(@NonNull RcvVerticalCalendarTextDateBinding binding) {
             super(binding.getRoot());
-
             this.binding = binding;
-
         }
     }
 
