@@ -16,7 +16,17 @@ import java.util.ArrayList;
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class TimeUtils {
 
-    public TimeUtils(){}
+    private static TimeUtils mInstance;
+
+    public TimeUtils() {
+    }
+
+    public static TimeUtils getInstance() {
+        if (mInstance == null) {
+            mInstance = new TimeUtils();
+        }
+        return mInstance;
+    }
 
     private final LocalDate selectedDate = LocalDate.now();
 
@@ -24,9 +34,14 @@ public class TimeUtils {
         return selectedDate;
     }
 
+    public String getDateTodayString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return selectedDate.format(formatter);
+    }
+
     @SuppressLint("LongLogTag")
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public ArrayList<String> daysInMonthArray(){
+    public ArrayList<String> daysInMonthArray() {
 
         ArrayList<String> daysInMonthArray = new ArrayList<>();
         YearMonth yearMonth = YearMonth.from(selectedDate);
@@ -37,12 +52,12 @@ public class TimeUtils {
         int numWeekOfMonth = firstDayOfMonth.getDayOfWeek().getValue();
         Log.i("checkkkk", String.valueOf(numWeekOfMonth));
 
-        for(int i = 1; i <= 42; i++){
+        for (int i = 1; i <= 42; i++) {
 
-            if(i <= numWeekOfMonth || i > numWeekOfMonth + dayInMonth){
+            if (i <= numWeekOfMonth || i > numWeekOfMonth + dayInMonth) {
                 daysInMonthArray.add("");
                 Log.i("i <= numWeekOfMonth || i >= numWeekOfMonth + dayInMonth", "");
-            }else {
+            } else {
                 daysInMonthArray.add(String.valueOf(i - numWeekOfMonth));
                 Log.i("else", String.valueOf(i - numWeekOfMonth));
             }
@@ -54,14 +69,14 @@ public class TimeUtils {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public String getMonthYearFromDate(){
+    public String getMonthYearFromDate() {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM");
         return selectedDate.format(formatter);
 
     }
 
-    public String getDateFromLocalDate(){
+    public String getDateFromLocalDate() {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd");
         return selectedDate.format(formatter);
@@ -69,15 +84,13 @@ public class TimeUtils {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public ArrayList<LocalDate> getSixtyDaysArray()
-    {
+    public ArrayList<LocalDate> getSixtyDaysArray() {
 
         ArrayList<LocalDate> days = new ArrayList<>();
 
         LocalDate previousDates = selectedDate.minusDays(29);
 
-        while (previousDates.isBefore(selectedDate))
-        {
+        while (previousDates.isBefore(selectedDate)) {
             days.add(previousDates);
             previousDates = previousDates.plusDays(1);
         }
@@ -86,7 +99,7 @@ public class TimeUtils {
 
         LocalDate afterDate = selectedDate.plusDays(1);
 
-        while (days.size() < 60){
+        while (days.size() < 60) {
 
             days.add(afterDate);
             afterDate = afterDate.plusDays(1);
@@ -96,42 +109,43 @@ public class TimeUtils {
         return days;
     }
 
-    public Long getDayOfWeekId(String date){
+    public Long getDayOfWeekId(String date) {
         Long dayOfWeekId = 0L;
         LocalDate localDate = LocalDate.parse(date);
         java.time.DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-        if (dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.MON.getDayName())){
+        if (dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.MON.getDayName())) {
             dayOfWeekId = DayOfWeek.MON.getId();
-        }else if(dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.TUE.getDayName())){
+        } else if (dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.TUE.getDayName())) {
             dayOfWeekId = DayOfWeek.TUE.getId();
-        }else if(dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.WED.getDayName())){
+        } else if (dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.WED.getDayName())) {
             dayOfWeekId = DayOfWeek.WED.getId();
-        }else if(dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.THU.getDayName())){
+        } else if (dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.THU.getDayName())) {
             dayOfWeekId = DayOfWeek.THU.getId();
-        }else if(dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.FRI.getDayName())){
+        } else if (dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.FRI.getDayName())) {
             dayOfWeekId = DayOfWeek.FRI.getId();
-        }else if(dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.SAT.getDayName())){
+        } else if (dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.SAT.getDayName())) {
             dayOfWeekId = DayOfWeek.SAT.getId();
-        }else if(dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.SUN.getDayName())){
+        } else if (dayOfWeek.toString().equalsIgnoreCase(DayOfWeek.SUN.getDayName())) {
             dayOfWeekId = DayOfWeek.SUN.getId();
         }
         return dayOfWeekId;
     }
-    public Long getCurrentDayOfWeekId(String dayName){
+
+    public Long getCurrentDayOfWeekId(String dayName) {
         Long dayOfWeekId = 0L;
-        if (dayName.equals(DayOfWeek.MON.getDayName())){
+        if (dayName.equals(DayOfWeek.MON.getDayName())) {
             dayOfWeekId = DayOfWeek.MON.getId();
-        }else if(dayName.equals(DayOfWeek.TUE.getDayName())){
+        } else if (dayName.equals(DayOfWeek.TUE.getDayName())) {
             dayOfWeekId = DayOfWeek.TUE.getId();
-        }else if(dayName.equals(DayOfWeek.WED.getDayName())){
+        } else if (dayName.equals(DayOfWeek.WED.getDayName())) {
             dayOfWeekId = DayOfWeek.WED.getId();
-        }else if(dayName.equals(DayOfWeek.THU.getDayName())){
+        } else if (dayName.equals(DayOfWeek.THU.getDayName())) {
             dayOfWeekId = DayOfWeek.THU.getId();
-        }else if(dayName.equals(DayOfWeek.FRI.getDayName())){
+        } else if (dayName.equals(DayOfWeek.FRI.getDayName())) {
             dayOfWeekId = DayOfWeek.FRI.getId();
-        }else if(dayName.equals(DayOfWeek.SAT.getDayName())){
+        } else if (dayName.equals(DayOfWeek.SAT.getDayName())) {
             dayOfWeekId = DayOfWeek.SAT.getId();
-        }else if(dayName.equals(DayOfWeek.SUN.getDayName())){
+        } else if (dayName.equals(DayOfWeek.SUN.getDayName())) {
             dayOfWeekId = DayOfWeek.SUN.getId();
         }
         return dayOfWeekId;

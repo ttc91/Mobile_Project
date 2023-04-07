@@ -87,6 +87,17 @@ public class HomeViewModel extends BaseViewModel {
         this.habitInWeekModelList = habitInWeekModelList;
     }
 
+    public String getCalendarBarDate() {
+        return calendarBarDate;
+    }
+
+    public void setCalendarBarDate(String calendarBarDate) {
+        this.calendarBarDate = calendarBarDate;
+    }
+
+    private String calendarBarDate;
+
+
     private SingleLiveEvent<List<HabitInWeekModel>> habitInWeekModelListMutableLiveData = new SingleLiveEvent<>();
     private MutableLiveData<List<HabitInWeekModel>> habitAfterMutableLiveData = new MutableLiveData<>();
 
@@ -437,9 +448,9 @@ public class HomeViewModel extends BaseViewModel {
                 });
     }
 
-    public void getHabitsWhenClickDailyCalendar1(String date) {
+    public void getHabitsWhenClickDailyCalendar(String date) {
         if (LocalDate.parse(date).equals(timeUtils.getSelectedDate())) {
-            Log.d(TAG, "getHabitsWhenClickDailyCalendar1: if");
+            Log.d(TAG, "getHabitsWhenClickDailyCalendar: if");
             habitModelBeforeList.clear();
             //beforeAdapter.notifyItemInserted(habitModelAfterList.size() - 1);
             habitModelBeforeListMutableLiveData.postValue(habitModelBeforeList);
@@ -447,7 +458,7 @@ public class HomeViewModel extends BaseViewModel {
             //afterAdapter.notifyItemInserted(habitModelAfterList.size() - 1);
             habitModelAfterListMutableLiveData.postValue(habitModelAfterList);
         } else {
-            Log.d(TAG, "getHabitsWhenClickDailyCalendar1: else");
+            Log.d(TAG, "getHabitsWhenClickDailyCalendar: else");
             if (LocalDate.parse(date).isBefore(timeUtils.getSelectedDate())) {
                 mHistoryRepository.getMHistoryDataSource().getHistoryByDate(DataLocalManager.getInstance().getUserId(), date)
                         .subscribe(new CustomSubscriber<List<HistoryEntity>>() {

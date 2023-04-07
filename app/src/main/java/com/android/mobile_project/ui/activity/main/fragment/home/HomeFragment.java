@@ -58,6 +58,7 @@ import javax.inject.Inject;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class HomeFragment extends Fragment implements InitLayout, View.OnClickListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
@@ -65,6 +66,8 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     private FragmentHomeBinding binding;
 
     public HomeComponent component;
+
+    private TimeUtils utils = TimeUtils.getInstance();
 
     @Inject
     HomeViewModel viewModel;
@@ -113,6 +116,8 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         viewModel.setDate(binding.tvDate);
         viewModel.setMonth(binding.titleMonth);
         viewModel.getCurrentDayOfWeek();
+        Log.d(TAG, "onViewCreated: " + utils.getDateTodayString());
+        viewModel.setCalendarBarDate(utils.getDateTodayString());
         Log.d(TAG, "getCurrentDayOfWeek: " + viewModel.getDayOfWeekId());
         initDailyCalendar();
 
@@ -122,7 +127,13 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     @Override
     public void onResume() {
         super.onResume();
-        initHabitToday();
+        if (LocalDate.parse(viewModel.getCalendarBarDate()).isBefore(utils.getSelectedDate()) ||
+                LocalDate.parse(viewModel.getCalendarBarDate()).isAfter(utils.getSelectedDate())) {
+            initHabitNotToday(viewModel.getCalendarBarDate());
+        } else {
+            initHabitToday();
+        }
+
     }
 
     /*
@@ -159,9 +170,35 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         });
     }
 
+    private void initHabitNotToday(String date) {
+        viewModel.getHabitsWhenClickDailyCalendar(date);
+        //Before
+        viewModel.getHistoryBeforeLD().observe(getViewLifecycleOwner(), historyModels -> {
+            if (historyModels.size() > 0) {
+                initHabitModelList();
+                initHabitDoneModeList();
+                initHabitFailedModelList();
+            }
+        });
+        //After
+        viewModel.getHabitAfterLD().observe(getViewLifecycleOwner(), habitInWeekModels -> {
+            if (habitInWeekModels.size() > 0) {
+                viewModel.getHabitListAfterDay(habitInWeekModels);
+                initHabitModelList();
+                initHabitDoneModeList();
+                initHabitFailedModelList();
+            }
+        });
+        binding.tTodo.setVisibility(View.GONE);
+        binding.tFailed.setVisibility(View.GONE);
+        binding.tDone.setVisibility(View.GONE);
+        binding.rcvHabitList.setVisibility(View.GONE);
+        binding.rcvHabitFailedList.setVisibility(View.GONE);
+        binding.rcvHabitDoneList.setVisibility(View.GONE);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initDailyCalendar() {
-        TimeUtils utils = new TimeUtils();
         viewModel.setDays(utils.getSixtyDaysArray());
 
         viewModel.dailyCalendarAdapter = new DailyCalendarAdapter(getContext(), viewModel.getDays(), viewModel.getOnClickItem());
@@ -313,48 +350,14 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         binding.setVm(viewModel);
 
         viewModel.setOnClickItem((view, date) -> {
-
-            TimeUtils utils = new TimeUtils();
+            Log.d(TAG, "calender day: " + date);
+            viewModel.setCalendarBarDate(date);
             if (LocalDate.parse(date).isBefore(utils.getSelectedDate()) ||
                     LocalDate.parse(date).isAfter(utils.getSelectedDate())) {
-                Log.d(TAG, "setOnClickItem: diff today" + date);
-                
-                viewModel.getHabitsWhenClickDailyCalendar1(date);
-                //Before
-                viewModel.getHistoryBeforeLD().observe(getViewLifecycleOwner(), historyModels -> {
-                    if (historyModels.size() > 0) {
-                        initHabitModelList();
-                        initHabitDoneModeList();
-                        initHabitFailedModelList();
-                    }
-                });
-
-                //After
-                viewModel.getHabitAfterLD().observe(getViewLifecycleOwner(), habitInWeekModels -> {
-                    if (habitInWeekModels.size() > 0) {
-                        viewModel.getHabitListAfterDay(habitInWeekModels);
-                        initHabitModelList();
-                        initHabitDoneModeList();
-                        initHabitFailedModelList();
-                    }
-                });
-                binding.tTodo.setVisibility(View.GONE);
-                binding.tFailed.setVisibility(View.GONE);
-                binding.tDone.setVisibility(View.GONE);
-                binding.rcvHabitList.setVisibility(View.GONE);
-                binding.rcvHabitFailedList.setVisibility(View.GONE);
-                binding.rcvHabitDoneList.setVisibility(View.GONE);
+                initHabitNotToday(date);
             } else {
-                Log.d(TAG, "initViewModel: TOday");
-//                binding.tTodo.setVisibility(View.VISIBLE);
-//                binding.tFailed.setVisibility(View.VISIBLE);
-//                binding.tDone.setVisibility(View.VISIBLE);
-//                binding.rcvHabitList.setVisibility(View.VISIBLE);
-//                binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
-//                binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
                 initHabitToday();
             }
-
         });
 
 
