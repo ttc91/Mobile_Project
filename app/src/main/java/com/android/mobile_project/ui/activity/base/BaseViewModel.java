@@ -1,8 +1,12 @@
 package com.android.mobile_project.ui.activity.base;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import com.android.mobile_project.utils.custom.SingleLiveEvent;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -18,9 +22,9 @@ import io.reactivex.rxjava3.subscribers.DisposableSubscriber;
 public abstract class BaseViewModel extends ViewModel {
 
     protected CompositeDisposable mMainCompDisposable = new CompositeDisposable();
-    protected MutableLiveData<Boolean> mLiveDataIsLoading = new MutableLiveData<>();
-    protected MutableLiveData<Boolean> mLiveDataIsSuccess = new MutableLiveData<>();
-    protected MutableLiveData<Throwable> mLiveDataOnError = new MutableLiveData<>();
+    protected SingleLiveEvent<Boolean> mLiveDataIsLoading = new SingleLiveEvent<>();
+    protected SingleLiveEvent<Boolean> mLiveDataIsSuccess = new SingleLiveEvent<>();
+    protected SingleLiveEvent<Throwable> mLiveDataOnError = new SingleLiveEvent<>();
     public LiveData<Boolean> getLiveDataIsLoading() {
         return mLiveDataIsLoading;
     }
@@ -98,8 +102,28 @@ public abstract class BaseViewModel extends ViewModel {
 
         @Override
         public void onError(Throwable e) {
-
         }
 
     }
+
+    protected void addDisposable(Disposable disposable) {
+        if (mMainCompDisposable == null) {
+            mMainCompDisposable = new CompositeDisposable();
+        }
+        mMainCompDisposable.add(disposable);
+    }
+
+    public void unDisposable() {
+        if (mMainCompDisposable != null && mMainCompDisposable.isDisposed()) {
+            mMainCompDisposable.clear();
+        }
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        unDisposable();
+    }
+
+
 }
