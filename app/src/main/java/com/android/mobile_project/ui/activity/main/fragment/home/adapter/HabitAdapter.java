@@ -24,20 +24,17 @@ import javax.inject.Inject;
 public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder>{
 
     public final String TAG = this.getClass().getSimpleName();
-    private final Context context;
     private final List<HabitModel> habitModelList;
     private final RecyclerViewClickListener recyclerViewClickListener;
 
     private IHomeViewModel vm;
 
-    public HabitAdapter(Context context, List<HabitModel> habitModelList, RecyclerViewClickListener recyclerViewClickListener){
-        this.context = context;
+    public HabitAdapter(List<HabitModel> habitModelList, RecyclerViewClickListener recyclerViewClickListener){
         this.habitModelList = habitModelList;
         this.recyclerViewClickListener = recyclerViewClickListener;
     }
 
-    public HabitAdapter(Context context, List<HabitModel> habitModelList, RecyclerViewClickListener recyclerViewClickListener, IHomeViewModel iHomeViewModel){
-        this.context = context;
+    public HabitAdapter(List<HabitModel> habitModelList, RecyclerViewClickListener recyclerViewClickListener, IHomeViewModel iHomeViewModel){
         this.habitModelList = habitModelList;
         this.recyclerViewClickListener = recyclerViewClickListener;
         vm = iHomeViewModel;

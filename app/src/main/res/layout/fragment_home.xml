@@ -111,15 +111,17 @@
                 android:textSize="@dimen/_13ssp"
                 android:textStyle="bold"/>
 
-            <ScrollView
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/layout_scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/_10sdp"
+                android:fillViewport="true"
                 android:scrollbars="none">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <TextView
@@ -144,8 +146,8 @@
                         android:layout_marginTop="@dimen/_10sdp"
                         android:layout_marginEnd="@dimen/_10sdp"
                         android:layout_marginStart="@dimen/_10sdp"
+                        android:nestedScrollingEnabled="false"
                         android:visibility="gone"/>
-
 
                     <TextView
                         android:id="@+id/t_done"
@@ -169,6 +171,7 @@
                         android:layout_marginTop="@dimen/_10sdp"
                         android:layout_marginEnd="@dimen/_10sdp"
                         android:layout_marginStart="@dimen/_10sdp"
+                        android:nestedScrollingEnabled="false"
                         android:visibility="gone"/>
 
 
@@ -194,6 +197,7 @@
                         android:layout_marginTop="@dimen/_10sdp"
                         android:layout_marginEnd="@dimen/_10sdp"
                         android:layout_marginStart="@dimen/_10sdp"
+                        android:nestedScrollingEnabled="false"
                         android:visibility="gone"/>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -203,6 +207,7 @@
                         android:layout_marginTop="@dimen/_10sdp"
                         android:layout_marginEnd="@dimen/_10sdp"
                         android:layout_marginStart="@dimen/_10sdp"
+                        android:nestedScrollingEnabled="false"
                         android:visibility="gone"/>
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -212,11 +217,12 @@
                         android:layout_marginTop="@dimen/_10sdp"
                         android:layout_marginEnd="@dimen/_10sdp"
                         android:layout_marginStart="@dimen/_10sdp"
+                        android:nestedScrollingEnabled="false"
                         android:visibility="gone"/>
 
                 </LinearLayout>
 
-            </ScrollView>
+            </androidx.core.widget.NestedScrollView>
 
         </LinearLayout>
 

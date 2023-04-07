@@ -15,10 +15,8 @@ import java.util.List;
 public class DoneHabitAdapter extends RecyclerView.Adapter<DoneHabitAdapter.ViewHolder>{
 
     private final List<HabitModel> habitModelList;
-    private final Context context;
 
-    public DoneHabitAdapter(Context context, List<HabitModel> habitModelList){
-        this.context = context;
+    public DoneHabitAdapter(List<HabitModel> habitModelList){
         this.habitModelList = habitModelList;
     }
 

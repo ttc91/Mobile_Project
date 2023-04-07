@@ -15,11 +15,9 @@ import java.util.List;
 public class FailedHabitAdapter extends RecyclerView.Adapter<FailedHabitAdapter.ViewHolder>{
 
     private final List<HabitModel> habitModelList;
-    private final Context context;
 
-    public FailedHabitAdapter(List<HabitModel> habitModelList, Context context) {
+    public FailedHabitAdapter(List<HabitModel> habitModelList) {
         this.habitModelList = habitModelList;
-        this.context = context;
     }
 
     @NonNull

@@ -43,6 +43,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.functions.BiFunction;
 import io.reactivex.rxjava3.functions.Function3;
@@ -112,9 +113,8 @@ public class HomeViewModel extends BaseViewModel {
     private SingleLiveEvent<List<HistoryModel>> historyModelListMutableLiveData = new SingleLiveEvent<>();
     private SingleLiveEvent<List<HistoryModel>> historyInsertMutableLiveData = new SingleLiveEvent<>();
 
-    private MutableLiveData<List<HabitModel>> habitModelListMutableLiveData = new MutableLiveData<>();
     private List<HabitModel> habitModelList = new ArrayList<>();
-    private HabitAdapter mHabitAdapter;
+    private HabitAdapter mHabitAdapter = new HabitAdapter(habitModelList, recyclerViewClickListener);
 
     private MutableLiveData<List<HabitModel>> habitModelBeforeListMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<List<HistoryModel>> historyBeforeListMutableLiveData = new MutableLiveData<>();
@@ -125,13 +125,11 @@ public class HomeViewModel extends BaseViewModel {
     private List<HabitModel> habitModelAfterList = new ArrayList<>();
     private AfterAdapter afterAdapter;
 
-    private MutableLiveData<List<HabitModel>> habitModelDoneListMutableLiveData = new MutableLiveData<>();
     private List<HabitModel> habitModelDoneList = new ArrayList<>();
-    private DoneHabitAdapter doneHabitAdapter;
+    private DoneHabitAdapter mDoneHabitAdapter = new DoneHabitAdapter(habitModelDoneList);
 
-    private MutableLiveData<List<HabitModel>> habitModelFailedListMutableLiveData = new MutableLiveData<>();
     private List<HabitModel> habitModelFailedList = new ArrayList<>();
-    private FailedHabitAdapter failedHabitAdapter;
+    private FailedHabitAdapter mFailedHabitAdapter = new FailedHabitAdapter(habitModelFailedList);
 
     private boolean hideToDo = false;
     private boolean hideDone = false;
@@ -207,18 +205,6 @@ public class HomeViewModel extends BaseViewModel {
 
     protected void setAfterAdapter(AfterAdapter afterAdapter) {
         this.afterAdapter = afterAdapter;
-    }
-
-    protected LiveData<List<HabitModel>> getHabitModelListLiveData() {
-        return habitModelListMutableLiveData;
-    }
-
-    protected LiveData<List<HabitModel>> getHabitModelDoneListLiveData() {
-        return habitModelDoneListMutableLiveData;
-    }
-
-    protected LiveData<List<HabitModel>> getHabitModelFailedListLiveData() {
-        return habitModelFailedListMutableLiveData;
     }
 
     public DailyCalendarAdapter.OnClickItem getOnClickItem() {
@@ -305,20 +291,20 @@ public class HomeViewModel extends BaseViewModel {
         this.mHabitAdapter = mHabitAdapter;
     }
 
-    protected DoneHabitAdapter getDoneHabitAdapter() {
-        return doneHabitAdapter;
+    protected DoneHabitAdapter getmDoneHabitAdapter() {
+        return mDoneHabitAdapter;
     }
 
-    protected void setDoneHabitAdapter(DoneHabitAdapter doneHabitAdapter) {
-        this.doneHabitAdapter = doneHabitAdapter;
+    protected void setmDoneHabitAdapter(DoneHabitAdapter mDoneHabitAdapter) {
+        this.mDoneHabitAdapter = mDoneHabitAdapter;
     }
 
-    protected FailedHabitAdapter getFailedHabitAdapter() {
-        return failedHabitAdapter;
+    protected FailedHabitAdapter getmFailedHabitAdapter() {
+        return mFailedHabitAdapter;
     }
 
-    protected void setFailedHabitAdapter(FailedHabitAdapter failedHabitAdapter) {
-        this.failedHabitAdapter = failedHabitAdapter;
+    protected void setmFailedHabitAdapter(FailedHabitAdapter mFailedHabitAdapter) {
+        this.mFailedHabitAdapter = mFailedHabitAdapter;
     }
 
     protected void getCurrentDayOfWeek() {
@@ -524,10 +510,13 @@ public class HomeViewModel extends BaseViewModel {
     }
 
 
-    public void insertHistoriesList(String historyTime, List<HistoryModel> models, List<HabitInWeekModel> habitInWeeks) {
-        Log.d(TAG, "insertHistoriesList: " + models.size() + " - " + habitInWeeks.size());
+    public void insertHistoriesList(String historyTime, List<HistoryModel> histories, List<HabitInWeekModel> habitInWeeks) {
+        Log.d(TAG, "insertHistoriesList: " + histories.size() + " - " + habitInWeeks.size());
+        if (histories.isEmpty() && habitInWeeks.isEmpty()) {
+            return;
+        }
         List<HistoryModel> historyModelList = new ArrayList<>();
-        if (models.size() == 0) {
+        if (histories.isEmpty() && !habitInWeeks.isEmpty()) {
             for (HabitInWeekModel habitInWeek : habitInWeeks) {
                 HistoryModel model = new HistoryModel();
                 model.setHistoryDate(historyTime);
@@ -539,7 +528,7 @@ public class HomeViewModel extends BaseViewModel {
             }
         } else {
             for (HabitInWeekModel habitInWeek : habitInWeeks) {
-                if (!checkIsInsertHistory(models, habitInWeek.getHabitId())) {
+                if (!checkIsInsertHistory(histories, habitInWeek.getHabitId())) {
                     HistoryModel model = new HistoryModel();
                     model.setHistoryDate(historyTime);
                     model.setUserId(DataLocalManager.getInstance().getUserId());
@@ -558,69 +547,81 @@ public class HomeViewModel extends BaseViewModel {
             value) {
 
         final HabitModel habitModel;
-
+        Log.d(TAG, "Before updateHistory: " + habitModelList.size()
+                + " -- " + habitModelDoneList.size() + " -- " + habitModelFailedList.size());
         if (HabitAdapter.class.equals(adapterName)) {
+            if (habitModelList.size() == 0) {
+                return;
+            }
             habitModel = habitModelList.get(position);
             habitModelList.remove(position);
+            setHabitStatus(habitModel, value);
             mHabitAdapter.notifyItemRemoved(position);
-            habitModelListMutableLiveData.postValue(habitModelList);
         } else if (DoneHabitAdapter.class.equals(adapterName)) {
+            if (habitModelDoneList.size() == 0) {
+                return;
+            }
             habitModel = habitModelDoneList.get(position);
             habitModelDoneList.remove(position);
-            doneHabitAdapter.notifyItemRemoved(position);
-            habitModelDoneListMutableLiveData.postValue(habitModelDoneList);
+            setHabitStatus(habitModel, value);
+            mDoneHabitAdapter.notifyItemRemoved(position);
         } else {
+            if (habitModelFailedList.size() == 0) {
+                return;
+            }
             habitModel = habitModelFailedList.get(position);
             habitModelFailedList.remove(position);
-            failedHabitAdapter.notifyItemRemoved(position);
-            habitModelFailedListMutableLiveData.postValue(habitModelFailedList);
+            setHabitStatus(habitModel, value);
+            mFailedHabitAdapter.notifyItemRemoved(position);
         }
-
-        getHistoryByHabitIdAndDate(habitModel, LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT)), value);
-
-
+        Log.d(TAG, "After updateHistory: " + habitModelList.size()
+                + " -- " + habitModelDoneList.size() + " -- " + habitModelFailedList.size());
+        updateHistoryStatus(habitModel, LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT)), value);
     }
 
-    public void getHistoryByHabitIdAndDate(HabitModel habitModel, String date, String value) {
-        mHistoryRepository.getMHistoryDataSource().getHistoryByHabitIdAndDate(habitModel.getHabitId(), date)
-                .subscribe(historyEntity -> {
-                            Log.i(TAG, "getHistoryByHabitIdAndDate onSuccess");
-                            HistoryModel model = HistoryMapper.getInstance().mapToModel(historyEntity);
-                            model.setHistoryHabitsState(value);
-                            mHistoryRepository.getMHistoryDataSource().update(HistoryMapper.getInstance().mapToEntity(model))
-                                    .subscribe(() -> {
-                                                Log.i(TAG, "updateHistory onComplete");
-                                                //callback.onUpdateHistorySuccess(mCompositeDisposable);
-                                            }, throwable -> {
-                                                Log.e(TAG, "updateHistory onError", throwable);
-                                                //callback.onUpdateHistoryFailure(mCompositeDisposable);
-                                            }
-                                    );
+    private void setHabitStatus(HabitModel habitModel, String status) {
+        switch (status) {
+            case VAL_NULL:
+                if (mHabitAdapter.getItemCount() == 0) {
+                    mHabitAdapter.notifyItemInserted(0);
+                }
+                habitModelList.add(habitModel);
+                break;
+            case VAL_TRUE:
+                if (mDoneHabitAdapter.getItemCount() == 0) {
+                    mDoneHabitAdapter.notifyItemInserted(0);
+                }
+                habitModelDoneList.add(habitModel);
+                break;
+            case VAL_FALSE:
+                if (mFailedHabitAdapter.getItemCount() == 0) {
+                    mFailedHabitAdapter.notifyItemInserted(0);
+                }
+                habitModelFailedList.add(habitModel);
+                break;
+            default:
+                break;
+        }
+    }
 
-                            switch (value) {
-                                case VAL_NULL:
-                                    habitModelList.add(habitModel);
-                                    mHabitAdapter.notifyItemInserted(habitModelList.size() - 1);
-                                    habitModelListMutableLiveData.postValue(habitModelList);
-                                    break;
-                                case VAL_TRUE:
-                                    habitModelDoneList.add(habitModel);
-                                    doneHabitAdapter.notifyItemInserted(habitModelDoneList.size() - 1);
-                                    habitModelDoneListMutableLiveData.postValue(habitModelDoneList);
-                                    break;
-                                case VAL_FALSE:
-                                    habitModelFailedList.add(habitModel);
-                                    failedHabitAdapter.notifyItemInserted(habitModelFailedList.size() - 1);
-                                    habitModelFailedListMutableLiveData.postValue(habitModelFailedList);
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }, throwable -> {
-                            Log.e(TAG, "getHistoryByHabitIdAndDate onError", throwable);
-                            //callback.onGetHistoryByHabitIdAndDateFailure();
-                        }
-                );
+    public void updateHistoryStatus(HabitModel habitModel, String date, String value) {
+        mHistoryRepository.getMHistoryDataSource().getHistoryByHabitIdAndDate(habitModel.getHabitId(), date)
+                .subscribe(new CustomSingleObserver<HistoryEntity>() {
+                    @Override
+                    public void onSuccess(@NonNull HistoryEntity historyEntity) {
+                        HistoryModel model = HistoryMapper.getInstance().mapToModel(historyEntity);
+                        model.setHistoryHabitsState(value);
+                        mHistoryRepository.getMHistoryDataSource().update(HistoryMapper.getInstance().mapToEntity(model))
+                                .subscribe(() -> {
+                                            Log.i(TAG, "updateHistory onComplete");
+                                            //callback.onUpdateHistorySuccess(mCompositeDisposable);
+                                        }, throwable -> {
+                                            Log.e(TAG, "updateHistory onError", throwable);
+                                            //callback.onUpdateHistoryFailure(mCompositeDisposable);
+                                        }
+                                );
+                    }
+                });
     }
 
 }

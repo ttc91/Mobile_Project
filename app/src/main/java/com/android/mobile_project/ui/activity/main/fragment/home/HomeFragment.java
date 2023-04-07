@@ -30,24 +30,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import com.android.mobile_project.R;
-import com.android.mobile_project.data.remote.model.HabitInWeekModel;
 import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.data.remote.model.HistoryModel;
 import com.android.mobile_project.databinding.FragmentHomeBinding;
 import com.android.mobile_project.ui.activity.create.CreateHabitActivity;
 import com.android.mobile_project.ui.activity.main.MainActivity;
-import com.android.mobile_project.ui.activity.main.fragment.home.service.DbService;
 import com.android.mobile_project.ui.activity.setting.HabitSettingActivity;
 import com.android.mobile_project.utils.dagger.component.sub.main.fragment.HomeComponent;
 import com.android.mobile_project.utils.time.adapter.DailyCalendarAdapter;
 import com.android.mobile_project.utils.time.utils.TimeUtils;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.AfterAdapter;
-import com.android.mobile_project.ui.activity.main.fragment.home.adapter.BeforeAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.DoneHabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.FailedHabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.HabitAdapter;
-import com.android.mobile_project.ui.activity.main.fragment.home.service.InitUIService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -55,8 +51,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class HomeFragment extends Fragment implements InitLayout, View.OnClickListener {
@@ -238,7 +232,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         };
 
-        viewModel.setmHabitAdapter(new HabitAdapter(getContext(), viewModel.getHabitModelList(), viewModel.recyclerViewClickListener));
+        //viewModel.setmHabitAdapter(new HabitAdapter(viewModel.getHabitModelList(), viewModel.recyclerViewClickListener));
         viewModel.getmHabitAdapter().notifyDataSetChanged();
 
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
@@ -263,11 +257,11 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
             return;
         }
         Log.d(TAG, "initHabitDoneModeList: " + viewModel.getHabitModelDoneList().size());
-        viewModel.setDoneHabitAdapter(new DoneHabitAdapter(getContext(), viewModel.getHabitModelDoneList()));
-        viewModel.getDoneHabitAdapter().notifyDataSetChanged();
+        //viewModel.setmDoneHabitAdapter(new DoneHabitAdapter(viewModel.getHabitModelDoneList()));
+        viewModel.getmDoneHabitAdapter().notifyDataSetChanged();
 
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-        binding.rcvHabitDoneList.setAdapter(viewModel.getDoneHabitAdapter());
+        binding.rcvHabitDoneList.setAdapter(viewModel.getmDoneHabitAdapter());
         binding.rcvHabitDoneList.setLayoutManager(manager);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallbackHabitDoneList);
@@ -288,11 +282,11 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
             return;
         }
         Log.d(TAG, "initHabitFailedModelList: " + viewModel.getHabitModelFailedList().size());
-        viewModel.setFailedHabitAdapter(new FailedHabitAdapter(viewModel.getHabitModelFailedList(), getContext()));
-        viewModel.getFailedHabitAdapter().notifyDataSetChanged();
+        //viewModel.setmFailedHabitAdapter(new FailedHabitAdapter(viewModel.getHabitModelFailedList()));
+        viewModel.getmFailedHabitAdapter().notifyDataSetChanged();
 
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-        binding.rcvHabitFailedList.setAdapter(viewModel.getFailedHabitAdapter());
+        binding.rcvHabitFailedList.setAdapter(viewModel.getmFailedHabitAdapter());
         binding.rcvHabitFailedList.setLayoutManager(manager);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallbackHabitFailedList);
@@ -369,32 +363,37 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         int id = view.getId();
 
-        if (id == R.id.btn_ch) {
-            clickCreateHabit();
-        } else if (id == R.id.t_todo) {
-            if (!viewModel.isHideToDo()) {
-                viewModel.setHideToDo(true);
-                binding.rcvHabitList.setVisibility(View.GONE);
-            } else {
-                viewModel.setHideToDo(false);
-                binding.rcvHabitList.setVisibility(View.VISIBLE);
-            }
-        } else if (id == R.id.t_done) {
-            if (!viewModel.isHideDone()) {
-                viewModel.setHideDone(true);
-                binding.rcvHabitDoneList.setVisibility(View.GONE);
-            } else {
-                viewModel.setHideDone(false);
-                binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
-            }
-        } else if (id == R.id.t_failed) {
-            if (!viewModel.isHideFailed()) {
-                viewModel.setHideFailed(true);
-                binding.rcvHabitFailedList.setVisibility(View.GONE);
-            } else {
-                viewModel.setHideFailed(false);
-                binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
-            }
+        switch (id) {
+            case R.id.btn_ch:
+                clickCreateHabit();
+                break;
+            case R.id.t_todo:
+                if (!viewModel.isHideToDo()) {
+                    viewModel.setHideToDo(true);
+                    binding.rcvHabitList.setVisibility(View.GONE);
+                } else {
+                    viewModel.setHideToDo(false);
+                    binding.rcvHabitList.setVisibility(View.VISIBLE);
+                }
+                break;
+            case R.id.t_done:
+                if (!viewModel.isHideDone()) {
+                    viewModel.setHideDone(true);
+                    binding.rcvHabitDoneList.setVisibility(View.GONE);
+                } else {
+                    viewModel.setHideDone(false);
+                    binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
+                }
+                break;
+            case R.id.t_failed:
+                if (!viewModel.isHideFailed()) {
+                    viewModel.setHideFailed(true);
+                    binding.rcvHabitFailedList.setVisibility(View.GONE);
+                } else {
+                    viewModel.setHideFailed(false);
+                    binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
+                }
+                break;
         }
 
     }
