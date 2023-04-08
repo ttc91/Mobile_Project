@@ -18,7 +18,7 @@ import com.android.mobile_project.data.local.sqlite.dao.RemainderDAO;
 import com.android.mobile_project.data.local.sqlite.dao.UserDAO;
 
 @androidx.room.Database(entities = {UserEntity.class, HabitEntity.class, DayOfWeekEntity.class, DayOfTimeEntity.class,
-        HabitInWeekEntity.class, HistoryEntity.class, RemainderEntity.class}, version = 15)
+        HabitInWeekEntity.class, HistoryEntity.class, RemainderEntity.class}, version = 16)
 public abstract class HabitTrackerDatabase extends RoomDatabase {
 
     public abstract UserDAO userDao();
