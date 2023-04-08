@@ -66,7 +66,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
 
     private boolean checkHabitValidName = false;
 
-    private DbService.InsertHabitInWeekResult insertHabitInWeekCallback = new DbService.InsertHabitInWeekResult() {
+    private final DbService.InsertHabitInWeekResult insertHabitInWeekCallback = new DbService.InsertHabitInWeekResult() {
         @SuppressLint("LongLogTag")
         @Override
         public void onInsertHabitInWeekSuccess(CompositeDisposable disposable) {
@@ -207,6 +207,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                     @Override
                     public void onGetHabitByUserIdAndHabitIdSuccess(HabitModel model, CompositeDisposable disposable) {
                         Log.i("HabitSettingActivity-getHabitByUserIdAndHabitId", "onGetHabitByUserIdAndHabitIdSuccess");
+                        viewModel.setHabitModel(model);
                         binding.setHabit(model);
                         disposable.clear();
                     }
@@ -319,9 +320,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                     }
                 };
 
-                isUpdateRemainderModelObserver = integer -> runOnUiThread(() -> {
-                    viewModel.getMRemainderAdapter().notifyItemChanged(integer);
-                });
+                isUpdateRemainderModelObserver = integer -> runOnUiThread(() -> viewModel.getMRemainderAdapter().notifyItemChanged(integer));
             }
 
             @SuppressLint({"SetTextI18n"})
@@ -601,7 +600,21 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
     }
 
     private void onClickDelete(){
-        viewModel.deleteHabit();
+        viewModel.deleteHabit(new DbService.DeleteHabitResult() {
+            @SuppressLint("LongLogTag")
+            @Override
+            public void onDeleteHabitSuccess(CompositeDisposable disposable) {
+                Log.i("HabitSettingActivity-deleteHabit", "onDeleteHabitSuccess");
+                disposable.clear();
+            }
+
+            @SuppressLint("LongLogTag")
+            @Override
+            public void onDeleteHabitFailure(CompositeDisposable disposable) {
+                Log.e("HabitSettingActivity-deleteHabit", "onDeleteHabitFailure");
+                disposable.clear();
+            }
+        });
         onClickBackBtn();
     }
 
