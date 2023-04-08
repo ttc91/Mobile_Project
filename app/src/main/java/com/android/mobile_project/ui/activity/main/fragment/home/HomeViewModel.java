@@ -378,6 +378,7 @@ public class HomeViewModel extends BaseViewModel {
                     list.add(habitInWeekEntities);
                     list.add(historyEntities);
                     habitsOfUser = HabitMapper.getInstance().mapToListModel(habitEntities);
+                    Log.d(TAG, "getHabitAndHistory: " + habitsOfUser.size());
                     habitInWeekModelList = HabitInWeekMapper.getInstance().mapToListModel(habitInWeekEntities);
                     historyModels = HistoryMapper.getInstance().mapToListModel(historyEntities);
                     return list;
@@ -418,11 +419,11 @@ public class HomeViewModel extends BaseViewModel {
         mFailedHabitAdapter.clear();
         for (HistoryModel history : historyModels) {
             if (history.getHistoryHabitsState().equals(VAL_NULL)) {
-                habitModelList.add(getHabitById(habitModelList, history.getHabitId()));
+                habitModelList.add(getHabitById(habitsOfUser, history.getHabitId()));
             } else if (history.getHistoryHabitsState().equals(VAL_TRUE)) {
-                habitModelDoneList.add(getHabitById(habitModelList, history.getHabitId()));
+                habitModelDoneList.add(getHabitById(habitsOfUser, history.getHabitId()));
             } else {
-                habitModelFailedList.add(getHabitById(habitModelList, history.getHabitId()));
+                habitModelFailedList.add(getHabitById(habitsOfUser, history.getHabitId()));
             }
         }
     }
@@ -565,6 +566,7 @@ public class HomeViewModel extends BaseViewModel {
                                     @Override
                                     public void onComplete() {
                                         Log.i(TAG, "updateHistory onComplete");
+                                        mLiveDataIsSuccess.setValue(true);
                                     }
                                 });
                     }

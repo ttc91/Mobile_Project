@@ -124,6 +124,12 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 initHabitToday();
             }
         });
+        viewModel.getLiveDataIsSuccess().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                visibleListHabit();
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -150,14 +156,13 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         viewModel.getHabitTodayLD().observe(getViewLifecycleOwner(), isSuccess -> {
             Log.d(TAG, "onChanged: isToday");
             if (isSuccess) {
-                //Nếu số record History hôm nay nhỏ hơn số record Habit In Week
-                //-> Thực hiện insert số Habit In Week còn thiếu vào History
                 Log.d(TAG, "initHabitToday: " + viewModel.getHistoryModels().size() + " -- "
                         + viewModel.getHabitInWeekModelList().size());
                 viewModel.getHabitListByHistoryStatus();
                 initHabitModelList();
                 initHabitDoneModeList();
                 initHabitFailedModelList();
+                visibleListHabit();
             }
         });
     }
@@ -178,6 +183,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                         initHabitModelList();
                         initHabitDoneModeList();
                         initHabitFailedModelList();
+                        visibleListHabit();
                     }
                 }
             });
@@ -191,6 +197,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                         initHabitModelList();
                         initHabitDoneModeList();
                         initHabitFailedModelList();
+                        visibleListHabit();
                     }
                 }
             });
@@ -232,7 +239,8 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
             startActivity(intent);
 
         };
-        viewModel.setmHabitAdapter(new HabitAdapter(viewModel.getHabitModelList(), viewModel.recyclerViewClickListener));
+        List<HabitModel> habit = viewModel.getHabitModelList();
+        viewModel.setmHabitAdapter(new HabitAdapter(habit, viewModel.recyclerViewClickListener));
         viewModel.getmHabitAdapter().notifyDataSetChanged();
 
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
@@ -241,13 +249,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallbackHabitNullList);
         itemTouchHelper.attachToRecyclerView(binding.rcvHabitList);
-        if (viewModel.getHabitModelList().size() > 0) {
-            binding.tTodo.setVisibility(View.VISIBLE);
-            binding.rcvHabitList.setVisibility(View.VISIBLE);
-        } else {
-            binding.tTodo.setVisibility(View.GONE);
-            binding.rcvHabitList.setVisibility(View.GONE);
-        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -262,13 +263,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallbackHabitDoneList);
         itemTouchHelper.attachToRecyclerView(binding.rcvHabitDoneList);
-        if (viewModel.getHabitModelDoneList().size() > 0) {
-            binding.tDone.setVisibility(View.VISIBLE);
-            binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
-        } else {
-            binding.tDone.setVisibility(View.GONE);
-            binding.rcvHabitDoneList.setVisibility(View.GONE);
-        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -283,15 +277,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallbackHabitFailedList);
         itemTouchHelper.attachToRecyclerView(binding.rcvHabitFailedList);
-
-        if (viewModel.getHabitModelFailedList().size() > 0) {
-            binding.tFailed.setVisibility(View.VISIBLE);
-            binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
-        } else {
-            binding.tFailed.setVisibility(View.GONE);
-            binding.rcvHabitFailedList.setVisibility(View.GONE);
-        }
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -493,4 +478,29 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         }
     };
 
+    private void visibleListHabit() {
+        if (viewModel.getHabitModelList().size() == 0) {
+            binding.tTodo.setVisibility(View.GONE);
+            binding.rcvHabitList.setVisibility(View.GONE);
+        } else {
+            binding.tTodo.setVisibility(View.VISIBLE);
+            binding.rcvHabitList.setVisibility(View.VISIBLE);
+        }
+
+        if (viewModel.getHabitModelDoneList().size() == 0) {
+            binding.tDone.setVisibility(View.GONE);
+            binding.rcvHabitDoneList.setVisibility(View.GONE);
+        } else {
+            binding.tDone.setVisibility(View.VISIBLE);
+            binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
+        }
+
+        if (viewModel.getHabitModelFailedList().size() == 0) {
+            binding.tFailed.setVisibility(View.GONE);
+            binding.rcvHabitFailedList.setVisibility(View.GONE);
+        } else {
+            binding.tFailed.setVisibility(View.VISIBLE);
+            binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
+        }
+    }
 }

@@ -23,9 +23,9 @@ public abstract class BaseViewModel extends ViewModel {
 
     protected CompositeDisposable mMainCompDisposable = new CompositeDisposable();
     protected CompositeDisposable mFlowableCompDisposable = new CompositeDisposable();
-    protected SingleLiveEvent<Boolean> mLiveDataIsLoading = new SingleLiveEvent<>();
-    protected SingleLiveEvent<Boolean> mLiveDataIsSuccess = new SingleLiveEvent<>();
-    protected SingleLiveEvent<Throwable> mLiveDataOnError = new SingleLiveEvent<>();
+    protected MutableLiveData<Boolean> mLiveDataIsLoading = new MutableLiveData<>();
+    protected MutableLiveData<Boolean> mLiveDataIsSuccess = new MutableLiveData<>();
+    protected MutableLiveData<Throwable> mLiveDataOnError = new MutableLiveData<>();
     public LiveData<Boolean> getLiveDataIsLoading() {
         return mLiveDataIsLoading;
     }
@@ -33,10 +33,6 @@ public abstract class BaseViewModel extends ViewModel {
         return mLiveDataIsSuccess;
     }
     public LiveData<Throwable> getLiveDataIsError() { return mLiveDataOnError; }
-
-    public LiveData<Throwable> getLiveDataOnError() {
-        return mLiveDataOnError;
-    }
 
     public abstract class CustomSingleObserver<T> implements SingleObserver<T> {
         @Override
@@ -69,8 +65,6 @@ public abstract class BaseViewModel extends ViewModel {
         public void onSubscribe(@NonNull Disposable d) {
             mMainCompDisposable.add(d);
         }
-
-
 
         @Override
         public void onError(@NonNull Throwable e) {

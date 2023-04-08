@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -494,26 +495,20 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
         );
     }
 
-    protected void deleteHabit() {
-        mHabitRepository.getMHabitDataSource().delete(HabitMapper.getInstance().mapToEntity(habitModel))
-                .observeOn(Schedulers.single())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-                        Log.i("deleteHabit", "onSubscribe");
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        Log.i("deleteHabit", "onComplete");
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        Log.e("deleteHabit", "onError", e);
-                    }
-                });
+    protected void deleteHabit(DbService.DeleteHabitResult callback) {
+        mCompositeDisposable.add(
+                mHabitRepository.getMHabitDataSource().delete(HabitMapper.getInstance().mapToEntity(habitModel))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(() -> {
+                            Log.i("deleteHabit", "onComplete");
+                            callback.onDeleteHabitSuccess(mCompositeDisposable);
+                        }, throwable -> {
+                            Log.e("deleteHabit", "onError", throwable);
+                            callback.onDeleteHabitFailure(mCompositeDisposable);
+                        }
+                )
+        );
     }
 
     @SuppressLint("LongLogTag")

@@ -21,8 +21,6 @@ iapp/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/relati
 Sapp/src/main/java/com/android/mobile_project/data/utils/mapper/base/BaseMapper.java,7\f\7fbefb80d931995d6d632e1a1fa41e1f30caad4a
 É
 Sapp/src/main/java/com/android/mobile_project/data/utils/mapper/RemainderMapper.java,7\f\7f080194240d69c4c12a53255012cfb2ff411cfb
-ç
-]app/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/RemainderEntity.java,3\e\3e3b5f52cf03b69a83c36582d7e2bf130787f6e3
 ò
 happ/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/LocalDayOfWeekDataSource.java,1\1\11bc8602b860ea3ef926de4e2036a8fb3bffa456
 
@@ -41,8 +39,6 @@ oapp/src/main/java/com/android/mobile_project/utils/dagger/component/provider/Ha
 wapp/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/relation/DayOfWeekWithHabitForHabitInWeek.java,f\8\f800f0c6271e8f1feb3d4d598ef4d51eceffbb23
 ô
 iapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/home/adapter/DoneHabitAdapter.java,8\c\8c6af38f5ac70e155f81ed439f901e631213cfd3
-î
-dapp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/LocalHabitDataSource.java,2\d\2d1f1887acf8cd731c518e2e15ae3a6158675ebc
 ã
 [app/src/main/java/com/android/mobile_project/utils/time/adapter/MonthlyCalendarAdapter.java,7\e\7e286d6832697127abced8d94cb7e75e774fddd1
 ï
@@ -57,16 +53,10 @@ fapp/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/relati
 gapp/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/relation/HabitWithHistory.java,f\8\f8a6e526c9abe955af4e02aa95d0ab9e417b7744
 Ö
 Uapp/src/main/java/com/android/mobile_project/data/local/sqlite/entity/BaseEntity.java,b\d\bddd4815b7b48e016b75f51c3579a5d628f4603c
-à
-Xapp/src/main/java/com/android/mobile_project/data/local/sqlite/HabitTrackerDatabase.java,2\0\207f799e043d5725fb9e5069589673d7d854cf8a
 î
 dapp/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/relation/UserWithHabit.java,b\3\b39ef578ebe7c317a263d05b60e8c88a45edf3d9
-ô
-iapp/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/relation/DayOfTimeWithHabit.java,9\9\99950575182211e4dc34406a7000cc658883e0d4
 ¢
 rapp/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/relation/HabitWithUserForHabitInWeek.java,7\e\7eed28c4d5aed7a942346e57f3afd9ec03935590
-à
-Xapp/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/UserEntity.java,2\d\2d5116fbf26b63feb685c947b6f688ca0a3690c9
 ß
 wapp/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/relation/HabitWithDayOfWeekForHabitInWeek.java,b\0\b0cdd81fe43ea56ee3f4e2315c117f997f23d7b6
 ¶
@@ -76,8 +66,11 @@ dapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/setting/
 ë
 aapp/src/main/java/com/android/mobile_project/utils/dagger/component/sub/input/InputComponent.java,5\a\5aef2b5f39371f3bca42882e2fdc5e038cf0422d
 <<<<<<< HEAD
+<<<<<<< HEAD
 P
  app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
+=======
+>>>>>>> ec1d429 (Update monthly calendar in habit setting)
 ì
 capp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/LocalUserDataSource.java,5\9\5923b6056e873841c0f37c16441e5a5c3f889549
 =======
@@ -94,8 +87,6 @@ v
 Fapp/src/main/java/com/android/mobile_project/utils/time/DayOfTime.java,9\1\91149078815fd7ffadca5c47e2899ad739a1a7c7
 Ö
 Uapp/src/main/java/com/android/mobile_project/data/local/pref/MySharedPreferences.java,b\6\b6bfd8d2b1a7e500c343b951202653b9021a847f
-à
-Xapp/src/main/java/com/android/mobile_project/utils/dagger/custom/MyCustomAnnotation.java,2\b\2be76dfd95f4ff32a07d25bb9779d8a4003b16d0
 ò
 happ/src/main/java/com/android/mobile_project/utils/dagger/component/provider/InputComponentProvider.java,1\d\1d0128708c79f49374f15740d455c04f2b15292d
 Ö
@@ -116,8 +107,6 @@ eapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/home/ada
 Yapp/src/main/java/com/android/mobile_project/utils/time/adapter/DailyCalendarAdapter.java,d\3\d33425f865766961ad6c704d88e58091f707f83b
 ñ
 fapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/home/service/UpdateService.java,7\d\7d29ef63b5f133749799f111cf0fea015558ded8
-Ñ
-Tapp/src/main/java/com/android/mobile_project/utils/dagger/module/DatabaseModule.java,2\7\2734667da49a06d827f658b32c1c79a04ee6edc9
 Ä
 Papp/src/main/java/com/android/mobile_project/data/remote/model/HistoryModel.java,f\f\ff424b6d07722b83646a00684152ca906db596ea
 <<<<<<< HEAD
@@ -125,10 +114,13 @@ Papp/src/main/java/com/android/mobile_project/data/remote/model/HistoryModel.jav
 japp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/behavior/HistoryDataSource.java,f\7\f7732044b79139e2df673a7be0aaed97bcb5b39e
 ñ
 fapp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/LocalHistoryDataSource.java,7\e\7eedbff87391994b2a8092c0a8fd7c125e56484d
+<<<<<<< HEAD
 Ö
 Uapp/src/main/java/com/android/mobile_project/ui/activity/count/CountDownActivity.java,e\7\e7c37a6b250a8874814b499f863b4fe4fade6ee9
 =======
 >>>>>>> 80cc98b61851fa4ef706584a3ba95e890bdcb5e7
+=======
+>>>>>>> ec1d429 (Update monthly calendar in habit setting)
 Ü
 Vapp/src/main/java/com/android/mobile_project/ui/activity/count/CountDownViewModel.java,4\a\4a38d91562da916c27b2bac487c14f26520fbb06
 v
@@ -149,8 +141,6 @@ bapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/home/ser
 Napp/src/main/java/com/android/mobile_project/data/remote/model/HabitModel.java,c\3\c30f522c421524d23612e525b92a2bd77afb1e0a
 Ç
 Rapp/src/main/java/com/android/mobile_project/data/remote/model/DayOfWeekModel.java,6\2\624e26ce4671363cbad4a5e87452e88d396a5bf5
-
-Oapp/src/main/java/com/android/mobile_project/ui/activity/main/MainActivity.java,e\d\eda40895d996ca962ce737c72e99ff42c65ebc15
 Ç
 Rapp/src/main/java/com/android/mobile_project/ui/activity/input/InputViewModel.java,7\1\71584837a31553402e455dd81d86d6e8f38ef0e9
 ó
@@ -158,8 +148,6 @@ gapp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/beha
 Ñ
 <<<<<<< HEAD
 Tapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/DayOfWeekDAO.java,b\6\b6ca55ad4cc610d501bd9dedbf2490aea4aa6d92
-ã
-[app/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/HistoryEntity.java,d\5\d52327fbee0e09f2c40a59cef42a91ddba4b6ff1
 Ñ
 Tapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/DayOfTimeDAO.java,3\d\3da70d1286a742d519fa33c9b8b104f49568b07a
 Ñ
@@ -192,8 +180,11 @@ Rapp/src/main/java/com/android/mobile_project/data/remote/model/RemainderModel.j
 happ/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/LocalRemainderDataSource.java,f\6\f69dafdc0f6c1d36a0f590d6723e76de4a09b2f3
 ú
 <<<<<<< HEAD
+<<<<<<< HEAD
 lapp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/behavior/RemainderDataSource.java,2\f\2fc7e8135523ce04b37788c1c53b1eec5e3d9a59
 =======
+=======
+>>>>>>> ec1d429 (Update monthly calendar in habit setting)
 lapp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/behavior/RemainderDataSource.java,2\f\2fc7e8135523ce04b37788c1c53b1eec5e3d9a59
 }
 Mapp/src/main/java/com/android/mobile_project/data/local/DataLocalManager.java,e\4\e402ade484093691270991949b5421c5995340c8
@@ -217,8 +208,31 @@ Mapp/src/main/java/com/android/mobile_project/utils/constant/DateConstant.java,
 Rapp/src/main/java/com/android/mobile_project/utils/constant/DailyCalendarEnum.java,a\b\abebe1e6d6cfcba7bd80f0663894e57d9c635532
 {
 Kapp/src/main/java/com/android/mobile_project/ui/binding/BindingAdapter.java,4\d\4de2f7b6937c54b68ee1b45bd8585d43999d90d0
+<<<<<<< HEAD
 ô
 iapp/src/main/java/com/android/mobile_project/ui/activity/setting/adapter/MonthlyCalendarHabitAdapter.java,a\e\aeee1fdfd3a2c4eecb1fe10c3a8cd10052827f5f
 ~
 Napp/src/main/java/com/android/mobile_project/utils/custom/SingleLiveEvent.java,e\2\e2e68c3c7f2019835dff1070a3e977da13e7eb29
 >>>>>>> 80cc98b61851fa4ef706584a3ba95e890bdcb5e7
+=======
+|
+Lapp/src/main/java/com/android/mobile_project/utils/time/utils/TimeUtils.java,c\b\cbc775a62c2e18cd3958c966fa77e7867b02731d
+ô
+iapp/src/main/java/com/android/mobile_project/ui/activity/setting/adapter/MonthlyCalendarHabitAdapter.java,a\e\aeee1fdfd3a2c4eecb1fe10c3a8cd10052827f5f
+ô
+iapp/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/relation/DayOfTimeWithHabit.java,9\9\99950575182211e4dc34406a7000cc658883e0d4
+à
+Xapp/src/main/java/com/android/mobile_project/utils/dagger/custom/MyCustomAnnotation.java,2\b\2be76dfd95f4ff32a07d25bb9779d8a4003b16d0
+o
+?app/src/main/java/com/android/mobile_project/MyApplication.java,4\4\4491519b89794a868cc0f0381ce259cb39363b5f
+
+Oapp/src/main/java/com/android/mobile_project/utils/dagger/ApplicationGraph.java,5\1\51d2e1eb8562ba50c840cd158296d036c36ea076
+~
+Napp/src/main/java/com/android/mobile_project/utils/custom/SingleLiveEvent.java,e\2\e2e68c3c7f2019835dff1070a3e977da13e7eb29
+Ö
+Uapp/src/main/java/com/android/mobile_project/ui/activity/count/CountDownActivity.java,e\7\e7c37a6b250a8874814b499f863b4fe4fade6ee9
+
+Oapp/src/main/java/com/android/mobile_project/ui/activity/main/MainActivity.java,e\d\eda40895d996ca962ce737c72e99ff42c65ebc15
+ç
+]app/src/main/java/com/android/mobile_project/ui/activity/main/fragment/home/HomeFragment.java,4\0\408bb331b8925889845bd28e8bf300818319cd64
+>>>>>>> ec1d429 (Update monthly calendar in habit setting)
