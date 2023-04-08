@@ -117,12 +117,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 return;
             }
             viewModel.setCalendarBarDate(date);
-            if (LocalDate.parse(date).isBefore(utils.getSelectedDate()) ||
-                    LocalDate.parse(date).isAfter(utils.getSelectedDate())) {
-                initHabitNotToday(date);
-            } else {
-                initHabitToday();
-            }
+            initHabitList(date);
         });
         viewModel.getLiveDataIsSuccess().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
@@ -137,68 +132,51 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     public void onResume() {
         super.onResume();
         if (viewModel.isSelectedToday()) {
-            initHabitToday();
+            initHabitList(utils.getDateTodayString());
             Log.d(TAG, "onResume: isToday");
         } else {
-            initHabitNotToday(viewModel.getCalendarBarDate());
+            initHabitList(viewModel.getCalendarBarDate());
             Log.d(TAG, "onResume: notToday");
         }
     }
 
     /*
-     * Khởi tạo danh sách Habit ngày hôm nay
+     * Khởi tạo danh sách Habit
      * */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void initHabitToday() {
-        String historyTime = LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT));
-        viewModel.clearHabitList();
-        viewModel.getHabitAndHistory(historyTime);
-        viewModel.getHabitTodayLD().observe(getViewLifecycleOwner(), isSuccess -> {
-            Log.d(TAG, "onChanged: isToday");
-            if (isSuccess) {
-                Log.d(TAG, "initHabitToday: " + viewModel.getHistoryModels().size() + " -- "
-                        + viewModel.getHabitInWeekModelList().size());
-                viewModel.getHabitListByHistoryStatus();
-                initHabitModelList();
-                initHabitDoneModeList();
-                initHabitFailedModelList();
-                visibleListHabit();
-            }
-        });
-    }
-
-    /*
-     * Khởi tạo danh sách Habit khi ngày được chọn không phải hôm nay
-     * */
-    private void initHabitNotToday(String date) {
+    private void initHabitList(String date) {
         viewModel.clearHabitList();
         viewModel.getHabitAndHistory(date);
         if (viewModel.isSelectedTheDayBefore()) {
-            viewModel.getHabitBeforeLD().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-                @Override
-                public void onChanged(Boolean aBoolean) {
-                    if (aBoolean) {
-                        Log.d(TAG, "onChanged: isBefore");
-                        viewModel.getHabitListByHistoryStatus();
-                        initHabitModelList();
-                        initHabitDoneModeList();
-                        initHabitFailedModelList();
-                        visibleListHabit();
-                    }
+            viewModel.getHabitBeforeLD().observe(getViewLifecycleOwner(), aBoolean -> {
+                if (aBoolean) {
+                    Log.d(TAG, "onChanged: isBefore");
+                    viewModel.getHabitListByHistoryStatus();
+                    initHabitModelList();
+                    initHabitDoneModeList();
+                    initHabitFailedModelList();
+                    visibleListHabit();
                 }
             });
-        } else {
-            viewModel.getHabitAfterLD().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-                @Override
-                public void onChanged(Boolean aBoolean) {
-                    if (aBoolean) {
-                        Log.d(TAG, "onChanged: isAfter");
-                        viewModel.getHabitListAfterDay(viewModel.getHabitInWeekModelList());
-                        initHabitModelList();
-                        initHabitDoneModeList();
-                        initHabitFailedModelList();
-                        visibleListHabit();
-                    }
+        } else if (viewModel.isSelectedTheDayAfter()) {
+            viewModel.getHabitAfterLD().observe(getViewLifecycleOwner(), aBoolean -> {
+                if (aBoolean) {
+                    Log.d(TAG, "onChanged: isAfter");
+                    viewModel.getHabitListAfterDay(viewModel.getHabitInWeekModelList());
+                    initHabitModelList();
+                    initHabitDoneModeList();
+                    initHabitFailedModelList();
+                    visibleListHabit();
+                }
+            });
+        } else if (viewModel.isSelectedToday()) {
+            viewModel.getHabitTodayLD().observe(getViewLifecycleOwner(), isSuccess -> {
+                Log.d(TAG, "onChanged: isToday");
+                if (isSuccess) {
+                    viewModel.getHabitListByHistoryStatus();
+                    initHabitModelList();
+                    initHabitDoneModeList();
+                    initHabitFailedModelList();
+                    visibleListHabit();
                 }
             });
         }

@@ -48,7 +48,7 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onAttach(@NonNull Context context) {
-        component = ((MainActivity)getActivity()).component.mPlannerComponent().create();
+        component = ((MainActivity) getActivity()).component.mPlannerComponent().create();
         component.inject(this);
         super.onAttach(context);
     }
@@ -70,7 +70,8 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
     }
 
     @Override
-    public void onClick(View view) { }
+    public void onClick(View view) {
+    }
 
     @Override
     public View initContentView() {
@@ -116,14 +117,14 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
 
                 boolean check = false;
 
-                for(HistoryModel model : list){
-                    if (model.getHistoryHabitsState().equals("true")){
+                for (HistoryModel model : list) {
+                    if (model.getHistoryHabitsState().equals("true")) {
                         PlannerViewModel.steak += 1;
                         check = true;
                         break;
                     }
 
-                    if(check){
+                    if (check) {
                         break;
                     }
 
@@ -137,9 +138,11 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
             public void setBestHabit() {
 
                 List<HabitModel> list = viewModel.getHabitListDescByLongestSteak();
-                HabitModel model = list.get(0);
-                binding.record.bestNum.setText(String.valueOf(model.getNumOfLongestSteak()));
-                binding.record.hName.setText(model.getHabitName());
+                if (list.size() > 0) {
+                    HabitModel model = list.get(0);
+                    binding.record.bestNum.setText(String.valueOf(model.getNumOfLongestSteak()));
+                    binding.record.hName.setText(model.getHabitName());
+                }
 
             }
 
@@ -155,30 +158,30 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
 
                 int i;
 
-                if(dayName.equals(R.string.str_monday)){
+                if (dayName.equals(R.string.str_monday)) {
                     dateWeek[0] = date;
                     i = 0;
-                }else if(dayName.equals(R.string.str_tuesday)){
+                } else if (dayName.equals(R.string.str_tuesday)) {
                     dateWeek[1] = date;
                     i = 1;
-                }else if(dayName.equals(R.string.str_wednesday)){
+                } else if (dayName.equals(R.string.str_wednesday)) {
                     dateWeek[2] = date;
                     i = 2;
-                }else if(dayName.equals(R.string.str_thursday)){
+                } else if (dayName.equals(R.string.str_thursday)) {
                     dateWeek[3] = date;
                     i = 3;
-                }else if(dayName.equals(R.string.str_friday)){
+                } else if (dayName.equals(R.string.str_friday)) {
                     dateWeek[4] = date;
                     i = 4;
-                }else if(dayName.equals(R.string.str_saturday)){
+                } else if (dayName.equals(R.string.str_saturday)) {
                     dateWeek[5] = date;
                     i = 5;
-                }else {
+                } else {
                     dateWeek[6] = date;
                     i = 6;
                 }
 
-                if(!dayName.equals("Sunday") && !dayName.equals("Monday")) {
+                if (!dayName.equals("Sunday") && !dayName.equals("Monday")) {
 
                     int currentIndex = i;
 
@@ -197,17 +200,17 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
                         dateWeek[currentIndex] = date;
                     }
 
-                }else if(dayName.equals("Monday")){
+                } else if (dayName.equals("Monday")) {
 
                     int currentIndex = i;
 
-                    while(currentIndex != 6){
+                    while (currentIndex != 6) {
                         currentIndex += 1;
                         date = date.plusDays(1);
                         dateWeek[currentIndex] = date;
                     }
 
-                }else {
+                } else {
                     int currentIndex = i;
 
                     while (currentIndex != 0) {
@@ -218,106 +221,106 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
                 }
 
                 List<HistoryModel> models = viewModel.getHistoryByDate(dateWeek[0].toString());
-                if(models.size() == 0){
+                if (models.size() == 0) {
                     binding.wCar.proMon.gl.setGuidelinePercent(1);
-                }else {
+                } else {
                     int count = 0;
-                    for(HistoryModel model : models){
-                        if(model.getHistoryHabitsState().equals("true")){
+                    for (HistoryModel model : models) {
+                        if (model.getHistoryHabitsState().equals("true")) {
                             count = count + 1;
                         }
                     }
-                    float percent = (float)count/(float)models.size();
+                    float percent = (float) count / (float) models.size();
                     binding.wCar.proMon.gl.setGuidelinePercent(percent);
                 }
 
                 //Tuesday:
                 models = viewModel.getHistoryByDate(dateWeek[1].toString());
-                if(models.size() == 0){
+                if (models.size() == 0) {
                     binding.wCar.proTue.gl.setGuidelinePercent(1);
-                }else {
+                } else {
                     int count = 0;
-                    for(HistoryModel model : models){
-                        if(model.getHistoryHabitsState().equals("true")){
+                    for (HistoryModel model : models) {
+                        if (model.getHistoryHabitsState().equals("true")) {
                             count = count + 1;
                         }
                     }
-                    float percent = (float)count/(float)models.size();
+                    float percent = (float) count / (float) models.size();
                     binding.wCar.proTue.gl.setGuidelinePercent(percent);
                 }
 
                 //Wednesday:
                 models = viewModel.getHistoryByDate(dateWeek[2].toString());
-                if(models.size() == 0){
+                if (models.size() == 0) {
                     binding.wCar.proWeb.gl.setGuidelinePercent(1);
-                }else {
+                } else {
                     int count = 0;
-                    for(HistoryModel model : models){
-                        if(model.getHistoryHabitsState().equals("true")){
+                    for (HistoryModel model : models) {
+                        if (model.getHistoryHabitsState().equals("true")) {
                             count = count + 1;
                         }
                     }
-                    float percent = (float)count/(float)models.size();
+                    float percent = (float) count / (float) models.size();
                     binding.wCar.proWeb.gl.setGuidelinePercent(percent);
                 }
 
                 //Thursday:
                 models = viewModel.getHistoryByDate(dateWeek[3].toString());
-                if(models.size() == 0){
+                if (models.size() == 0) {
                     binding.wCar.proThu.gl.setGuidelinePercent(1);
-                }else {
+                } else {
                     int count = 0;
-                    for(HistoryModel model : models){
-                        if(model.getHistoryHabitsState().equals("true")){
+                    for (HistoryModel model : models) {
+                        if (model.getHistoryHabitsState().equals("true")) {
                             count = count + 1;
                         }
                     }
-                    float percent = (float)count/(float)models.size();
+                    float percent = (float) count / (float) models.size();
                     binding.wCar.proThu.gl.setGuidelinePercent(percent);
                 }
 
                 //Friday:
                 models = viewModel.getHistoryByDate(dateWeek[4].toString());
-                if(models.size() == 0){
+                if (models.size() == 0) {
                     binding.wCar.proFri.gl.setGuidelinePercent(1);
-                }else {
+                } else {
                     int count = 0;
-                    for(HistoryModel model : models){
-                        if(model.getHistoryHabitsState().equals("true")){
+                    for (HistoryModel model : models) {
+                        if (model.getHistoryHabitsState().equals("true")) {
                             count = count + 1;
                         }
                     }
-                    float percent = (float)count/(float)models.size();
+                    float percent = (float) count / (float) models.size();
                     binding.wCar.proFri.gl.setGuidelinePercent(percent);
                 }
 
                 //Saturday:
                 models = viewModel.getHistoryByDate(dateWeek[5].toString());
-                if(models.size() == 0){
+                if (models.size() == 0) {
                     binding.wCar.proSat.gl.setGuidelinePercent(1);
-                }else {
+                } else {
                     int count = 0;
-                    for(HistoryModel model : models){
-                        if(model.getHistoryHabitsState().equals("true")){
+                    for (HistoryModel model : models) {
+                        if (model.getHistoryHabitsState().equals("true")) {
                             count = count + 1;
                         }
                     }
-                    float percent = (float)count/(float)models.size();
+                    float percent = (float) count / (float) models.size();
                     binding.wCar.proSat.gl.setGuidelinePercent(percent);
                 }
 
                 //Sunday:
                 models = viewModel.getHistoryByDate(dateWeek[6].toString());
-                if(models.size() == 0){
+                if (models.size() == 0) {
                     binding.wCar.proSun.gl.setGuidelinePercent(1);
-                }else {
+                } else {
                     int count = 0;
-                    for(HistoryModel model : models){
-                        if(model.getHistoryHabitsState().equals("true")){
+                    for (HistoryModel model : models) {
+                        if (model.getHistoryHabitsState().equals("true")) {
                             count = count + 1;
                         }
                     }
-                    float percent = (float)count/(float)models.size();
+                    float percent = (float) count / (float) models.size();
                     binding.wCar.proSun.gl.setGuidelinePercent(percent);
                 }
 
