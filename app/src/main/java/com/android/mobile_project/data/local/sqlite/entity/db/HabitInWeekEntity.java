@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 
 import com.android.mobile_project.data.local.sqlite.entity.BaseEntity;
 
@@ -19,14 +20,31 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 
-@Entity(primaryKeys = {"user_id", "habit_id", "day_of_week_id"}, tableName = "tbl_habit_in_week")
+@Entity(
+        primaryKeys = {"user_id", "habit_id", "day_of_week_id"},
+        tableName = "tbl_habit_in_week",
+        foreignKeys = {
+                @ForeignKey(
+                        entity = UserEntity.class,
+                        parentColumns = "id",
+                        childColumns = "user_id",
+                        onDelete = ForeignKey.CASCADE
+                ),
+                @ForeignKey(
+                        entity = HabitEntity.class,
+                        parentColumns = "id",
+                        childColumns = "habit_id",
+                        onDelete = ForeignKey.CASCADE
+                )
+        }
+)
 public class HabitInWeekEntity extends BaseEntity implements Serializable {
 
-    @ColumnInfo(name = "user_id")
+    @ColumnInfo(name = "user_id", index = true)
     @NonNull
     public Long userId;
 
-    @ColumnInfo(name = "habit_id")
+    @ColumnInfo(name = "habit_id", index = true)
     @NonNull
     public Long habitId;
 
