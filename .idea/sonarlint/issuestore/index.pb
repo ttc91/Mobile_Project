@@ -126,8 +126,6 @@ Vapp/src/main/java/com/android/mobile_project/ui/activity/count/CountDownViewMod
 v
 Fapp/src/main/java/com/android/mobile_project/utils/time/DayOfWeek.java,b\f\bfb249adc0163ca00b771556a1cd2c8a7405ee30
 ç
-]app/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/DayOfWeekEntity.java,c\8\c8d327021241e8b298b9d5b9423559e59e0fe8ed
-ç
 ]app/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/DayOfTimeEntity.java,4\e\4e090b627aaa3dba34ae0d6f92faafcd714bb620
 ú
 lapp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/behavior/DayOfTimeDataSource.java,6\4\64eb4c76f25fb8cdbfa260d68b18ab83705ecf9c
@@ -231,8 +229,6 @@ Kapp/src/main/java/com/android/mobile_project/ui/binding/BindingAdapter.java,4\
 Lapp/src/main/java/com/android/mobile_project/utils/time/utils/TimeUtils.java,c\b\cbc775a62c2e18cd3958c966fa77e7867b02731d
 ô
 iapp/src/main/java/com/android/mobile_project/ui/activity/setting/adapter/MonthlyCalendarHabitAdapter.java,a\e\aeee1fdfd3a2c4eecb1fe10c3a8cd10052827f5f
-ô
-iapp/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/relation/DayOfTimeWithHabit.java,9\9\99950575182211e4dc34406a7000cc658883e0d4
 à
 Xapp/src/main/java/com/android/mobile_project/utils/dagger/custom/MyCustomAnnotation.java,2\b\2be76dfd95f4ff32a07d25bb9779d8a4003b16d0
 o
