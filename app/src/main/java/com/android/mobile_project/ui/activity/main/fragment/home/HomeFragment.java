@@ -152,22 +152,12 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
             if (isSuccess) {
                 //Nếu số record History hôm nay nhỏ hơn số record Habit In Week
                 //-> Thực hiện insert số Habit In Week còn thiếu vào History
-                if (viewModel.getHistoryModels().size() < viewModel.getHabitInWeekModelList().size()) {
-                    Log.d(TAG, "SIZE NOT EQUAL: ");
-                    viewModel.insertHistoriesList(historyTime);
-                    viewModel.getHistoryInsertLiveData().observe(getViewLifecycleOwner(), historyModels1 -> {
-                        Log.d(TAG, "insertHistoriesList: ");
-                        viewModel.getHabitListByHistoryStatus(historyModels1, viewModel.getHabitsOfUser());
-                        initHabitModelList();
-                        initHabitDoneModeList();
-                        initHabitFailedModelList();
-                    });
-                } else {
-                    viewModel.getHabitListByHistoryStatus(viewModel.getHistoryModels(), viewModel.getHabitsOfUser());
-                    initHabitModelList();
-                    initHabitDoneModeList();
-                    initHabitFailedModelList();
-                }
+                Log.d(TAG, "initHabitToday: " + viewModel.getHistoryModels().size() + " -- "
+                        + viewModel.getHabitInWeekModelList().size());
+                viewModel.getHabitListByHistoryStatus();
+                initHabitModelList();
+                initHabitDoneModeList();
+                initHabitFailedModelList();
             }
         });
     }
@@ -184,6 +174,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 public void onChanged(Boolean aBoolean) {
                     if (aBoolean) {
                         Log.d(TAG, "onChanged: isBefore");
+                        viewModel.getHabitListByHistoryStatus();
                         initHabitModelList();
                         initHabitDoneModeList();
                         initHabitFailedModelList();

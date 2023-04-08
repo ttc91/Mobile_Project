@@ -411,21 +411,18 @@ public class HomeViewModel extends BaseViewModel {
 
     /**
      * Đặt lại danh sách các list Habit (Habit, Habit done, Habit failed)
-     *
-     * @param historyModels
-     * @param habitModels
      */
-    public void getHabitListByHistoryStatus(List<HistoryModel> historyModels, List<HabitModel> habitModels) {
+    public void getHabitListByHistoryStatus() {
         mHabitAdapter.clear();
         mDoneHabitAdapter.clear();
         mFailedHabitAdapter.clear();
         for (HistoryModel history : historyModels) {
             if (history.getHistoryHabitsState().equals(VAL_NULL)) {
-                habitModelList.add(getHabitById(habitModels, history.getHabitId()));
+                habitModelList.add(getHabitById(habitModelList, history.getHabitId()));
             } else if (history.getHistoryHabitsState().equals(VAL_TRUE)) {
-                habitModelDoneList.add(getHabitById(habitModels, history.getHabitId()));
+                habitModelDoneList.add(getHabitById(habitModelList, history.getHabitId()));
             } else {
-                habitModelFailedList.add(getHabitById(habitModels, history.getHabitId()));
+                habitModelFailedList.add(getHabitById(habitModelList, history.getHabitId()));
             }
         }
     }
