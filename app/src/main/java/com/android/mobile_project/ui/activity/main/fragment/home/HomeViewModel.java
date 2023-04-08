@@ -547,9 +547,7 @@ public class HomeViewModel extends BaseViewModel {
         historyInsertMutableLiveData.postValue(historyModelList);
     }
 
-    protected void updateHistory(int position, Class<?> adapterName, String
-            value) {
-
+    public void updateHistory(int position, Class<?> adapterName, String value, String date) {
         HabitModel habitModel = new HabitModel();
 //        Log.d(TAG, "Before updateHistory: " + habitModelList.size()
 //                + " -- " + habitModelDoneList.size() + " -- " + habitModelFailedList.size());
@@ -575,10 +573,9 @@ public class HomeViewModel extends BaseViewModel {
                 mFailedHabitAdapter.notifyItemRemoved(position);
             }
         }
-
-        Log.d(TAG, "After updateHistory: " + mHabitAdapter.getItemCount()
-                + " -- " + mDoneHabitAdapter.getItemCount() + " -- " + mFailedHabitAdapter.getItemCount());
-        updateHistoryStatus(habitModel, LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT)), value);
+//        Log.d(TAG, "After updateHistory: " + mHabitAdapter.getItemCount()
+//                + " -- " + mDoneHabitAdapter.getItemCount() + " -- " + mFailedHabitAdapter.getItemCount());
+        updateHistoryStatus(habitModel, date, value);
     }
 
     private void setHabitStatus(HabitModel habitModel, String status) {

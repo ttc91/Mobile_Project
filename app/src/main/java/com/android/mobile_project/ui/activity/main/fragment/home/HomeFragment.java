@@ -426,14 +426,18 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
             switch (direction) {
                 case ItemTouchHelper.LEFT:
-                    if (!LocalDate.parse(viewModel.getCalendarBarDate()).isAfter(utils.getSelectedDate())) {
-                        viewModel.updateHistory(position, HabitAdapter.class, VAL_FALSE);
+                    if (LocalDate.parse(viewModel.getCalendarBarDate()).isBefore(utils.getSelectedDate())) {
+                        viewModel.updateHistory(position, HabitAdapter.class, VAL_FALSE, viewModel.getCalendarBarDate());
+                    } else if (viewModel.getCalendarBarDate().equalsIgnoreCase(utils.getDateTodayString())){
+                        viewModel.updateHistory(position, HabitAdapter.class, VAL_FALSE, utils.getDateTodayString());
                     }
                     break;
 
                 case ItemTouchHelper.RIGHT:
-                    if (!LocalDate.parse(viewModel.getCalendarBarDate()).isAfter(utils.getSelectedDate())) {
-                        viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE);
+                    if (LocalDate.parse(viewModel.getCalendarBarDate()).isBefore(utils.getSelectedDate())) {
+                        viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE, viewModel.getCalendarBarDate());
+                    } else if (viewModel.getCalendarBarDate().equalsIgnoreCase(utils.getDateTodayString())){
+                        viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE, utils.getDateTodayString());
                     }
                     break;
 
@@ -508,7 +512,11 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 case ItemTouchHelper.LEFT:
                     break;
                 case ItemTouchHelper.RIGHT:
-                    viewModel.updateHistory(position, DoneHabitAdapter.class, VAL_NULL);
+                    if (LocalDate.parse(viewModel.getCalendarBarDate()).isBefore(utils.getSelectedDate())) {
+                        viewModel.updateHistory(position, DoneHabitAdapter.class, VAL_NULL, viewModel.getCalendarBarDate());
+                    } else if (viewModel.getCalendarBarDate().equalsIgnoreCase(utils.getDateTodayString())){
+                        viewModel.updateHistory(position, DoneHabitAdapter.class, VAL_NULL, utils.getDateTodayString());
+                    }
                     break;
             }
 
@@ -539,7 +547,11 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 case ItemTouchHelper.LEFT:
                     break;
                 case ItemTouchHelper.RIGHT:
-                    viewModel.updateHistory(position, FailedHabitAdapter.class, VAL_NULL);
+                    if (LocalDate.parse(viewModel.getCalendarBarDate()).isBefore(utils.getSelectedDate())) {
+                        viewModel.updateHistory(position, FailedHabitAdapter.class, VAL_NULL, viewModel.getCalendarBarDate());
+                    } else if (viewModel.getCalendarBarDate().equalsIgnoreCase(utils.getDateTodayString())){
+                        viewModel.updateHistory(position, FailedHabitAdapter.class, VAL_NULL, utils.getDateTodayString());
+                    }
                     break;
             }
 
