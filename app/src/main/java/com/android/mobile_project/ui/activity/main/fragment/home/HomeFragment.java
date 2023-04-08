@@ -426,11 +426,15 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
             switch (direction) {
                 case ItemTouchHelper.LEFT:
-                    viewModel.updateHistory(position, HabitAdapter.class, VAL_FALSE);
+                    if (!LocalDate.parse(viewModel.getCalendarBarDate()).isAfter(utils.getSelectedDate())) {
+                        viewModel.updateHistory(position, HabitAdapter.class, VAL_FALSE);
+                    }
                     break;
 
                 case ItemTouchHelper.RIGHT:
-                    viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE);
+                    if (!LocalDate.parse(viewModel.getCalendarBarDate()).isAfter(utils.getSelectedDate())) {
+                        viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE);
+                    }
                     break;
 
             }
@@ -441,63 +445,48 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         @Override
         public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX,
                                 float dY, int actionState, boolean isCurrentlyActive) {
+            if (!LocalDate.parse(viewModel.getCalendarBarDate()).isAfter(utils.getSelectedDate())) {
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
 
-            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                    View itemView = viewHolder.itemView;
+                    Paint p = new Paint();
+                    Bitmap icon;
 
-                View itemView = viewHolder.itemView;
-                Paint p = new Paint();
-                Bitmap icon;
-
-                if (dX < 0) {
-                    icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_red_close);
-                    p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
-                    c.drawBitmap(icon,
-                            (float) itemView.getRight() - icon.getWidth() - 10,
-                            (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight()) / 2,
-                            p
-                    );
-                }
-
-                if (dX > 0) {
-                    int position = viewHolder.getAdapterPosition();
-                    if (position != -1) {
-
-//                        HabitModel habitModel = viewModel.getHabitModelList().get(position);
-//                        List<HabitInWeekModel> models = viewModel.getDayOfWeekHabitListByUserAndHabitId(habitModel.getHabitId());
-//
-//                        HabitInWeekModel model = models.get(0);
-//
-//                        if(model.getTimerSecond() == null && model.getTimerMinute() == null && model.getTimerHour() == null){
-//                            icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_green_check);
-//
-//                            p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
-//
-//                            c.drawBitmap(icon,
-//                                    (float) itemView.getLeft() + 10,
-//                                    (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight())/2,
-//                                    p);
-//                        }else {
-                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_purple_clock);
-
+                    if (dX < 0) {
+                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_red_close);
                         p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
-
                         c.drawBitmap(icon,
-                                (float) itemView.getLeft() + 10,
+                                (float) itemView.getRight() - icon.getWidth() - 10,
                                 (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight()) / 2,
-                                p);
+                                p
+                        );
+                    }
+
+                    if (dX > 0) {
+                        int position = viewHolder.getAdapterPosition();
+                        if (position != -1) {
+
+                            icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_purple_clock);
+
+                            p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
+
+                            c.drawBitmap(icon,
+                                    (float) itemView.getLeft() + 10,
+                                    (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight()) / 2,
+                                    p);
 //                        }
 
+                        }
                     }
+
+                    final float alpha = ALPHA_FULL - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
+                    viewHolder.itemView.setAlpha(alpha);
+                    viewHolder.itemView.setTranslationX(dX);
+
+                } else {
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
                 }
-
-                final float alpha = ALPHA_FULL - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
-                viewHolder.itemView.setAlpha(alpha);
-                viewHolder.itemView.setTranslationX(dX);
-
-            } else {
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
-
 
         }
     };
