@@ -253,7 +253,6 @@ public class CreateHabitViewModel extends ViewModel {
     }
 
     protected void checkExistHabitByName(String habitName, DbService.GetHabitByName callback){
-
         mCompositeDisposable.add(
                 mHabitRepository.getMHabitDataSource().getHabitByName(habitName)
                 .subscribeOn(Schedulers.io())

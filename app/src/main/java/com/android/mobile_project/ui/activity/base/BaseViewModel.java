@@ -22,6 +22,7 @@ import io.reactivex.rxjava3.subscribers.DisposableSubscriber;
 public abstract class BaseViewModel extends ViewModel {
 
     protected CompositeDisposable mMainCompDisposable = new CompositeDisposable();
+    protected CompositeDisposable mFlowableCompDisposable = new CompositeDisposable();
     protected SingleLiveEvent<Boolean> mLiveDataIsLoading = new SingleLiveEvent<>();
     protected SingleLiveEvent<Boolean> mLiveDataIsSuccess = new SingleLiveEvent<>();
     protected SingleLiveEvent<Throwable> mLiveDataOnError = new SingleLiveEvent<>();
@@ -107,15 +108,20 @@ public abstract class BaseViewModel extends ViewModel {
     }
 
     protected void addDisposable(Disposable disposable) {
-        if (mMainCompDisposable == null) {
-            mMainCompDisposable = new CompositeDisposable();
+        if (mFlowableCompDisposable == null) {
+            mFlowableCompDisposable = new CompositeDisposable();
         }
-        mMainCompDisposable.add(disposable);
+        mFlowableCompDisposable.add(disposable);
     }
 
     public void unDisposable() {
         if (mMainCompDisposable != null && mMainCompDisposable.isDisposed()) {
+            mMainCompDisposable.dispose();
             mMainCompDisposable.clear();
+        }
+        if (mFlowableCompDisposable != null && mFlowableCompDisposable.isDisposed()) {
+            mFlowableCompDisposable.dispose();
+            mFlowableCompDisposable.clear();
         }
     }
 

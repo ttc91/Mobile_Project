@@ -72,6 +72,8 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/menu/bottom_nav.xml" value="0.22864583333333333" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.206" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1755" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/drawable-v24/bck_transparent.xml" value="0.1" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/drawable/bck_habit.xml" value="0.1" />
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/drawable/bck_splash.xml" value="0.1" />
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/drawable/ic_activity_input_tree.xml" value="0.1" />
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/drawable/ic_add_reminder.xml" value="0.1" />
@@ -96,9 +98,13 @@
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/drawable/ic_item_habit_failed.xml" value="0.1" />
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/drawable/ic_lg_afternoon.xml" value="0.1" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/activity_create_habit.xml" value="0.2046875" />
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/activity_habit_setting.xml" value="0.2046875" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/activity_input.xml" value="0.2046875" />
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/activity_main.xml" value="0.209375" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/activity_process_time.xml" value="0.2046875" />
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/fragment_home.xml" value="0.22" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/fragment_planner.xml" value="0.2046875" />
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/fragment_setting.xml" value="0.209375" />
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/habit_listview_item_habits.xml" value="0.209375" />
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/layout_habit_item_swipe.xml" value="0.209375" />
