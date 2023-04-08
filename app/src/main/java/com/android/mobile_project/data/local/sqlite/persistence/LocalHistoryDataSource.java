@@ -58,4 +58,9 @@ public class LocalHistoryDataSource extends BaseDataSource implements HistoryDat
     public Flowable<List<HistoryEntity>> getHistoryByDate(Long uId, String date) {
         return subscribeFlowable(dao.getHistoryByDate(uId, date));
     }
+
+    @Override
+    public Single<List<HistoryEntity>> getHistoryByDateSingle(Long uId, String date) {
+        return subscribeSingle(dao.getHistoryByDateSingle(uId, date));
+    }
 }

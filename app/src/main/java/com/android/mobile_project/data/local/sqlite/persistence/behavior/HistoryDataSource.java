@@ -17,4 +17,6 @@ public interface HistoryDataSource extends BaseDataSource<HistoryEntity> {
 
     Flowable<List<HistoryEntity>> getHistoryByDate(Long uId, String date);
 
+    Single<List<HistoryEntity>> getHistoryByDateSingle(Long uId, String date);
+
 }

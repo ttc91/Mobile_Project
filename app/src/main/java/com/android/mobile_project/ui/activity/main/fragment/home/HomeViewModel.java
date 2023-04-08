@@ -446,10 +446,11 @@ public class HomeViewModel extends BaseViewModel {
         } else {
             Log.d(TAG, "getHabitsWhenClickDailyCalendar: else");
             if (LocalDate.parse(date).isBefore(timeUtils.getSelectedDate())) {
-                mHistoryRepository.getMHistoryDataSource().getHistoryByDate(DataLocalManager.getInstance().getUserId(), date)
-                        .subscribe(new CustomSubscriber<List<HistoryEntity>>() {
+                mHistoryRepository.getMHistoryDataSource().getHistoryByDateSingle(DataLocalManager.getInstance().getUserId(), date)
+                        .subscribe(new CustomSingleObserver<List<HistoryEntity>>() {
                             @Override
-                            public void onNext(List<HistoryEntity> historyEntities) {
+                            public void onSuccess(@NonNull List<HistoryEntity> historyEntities) {
+                                Log.d(TAG, "getHistoryByDate: " + historyEntities.size());
                                 getHabitListByHistoryStatus(HistoryMapper.getInstance().mapToListModel(historyEntities), habitsOfUser);
                                 historyBeforeListMutableLiveData.postValue(HistoryMapper.getInstance().mapToListModel(historyEntities));
                             }
@@ -466,6 +467,9 @@ public class HomeViewModel extends BaseViewModel {
         habitModelList.clear();
         habitModelDoneList.clear();
         habitModelFailedList.clear();
+        mHabitAdapter.clear();
+        mDoneHabitAdapter.clear();
+        mFailedHabitAdapter.clear();
         Log.d(TAG, "getHabitListByHistoryStatus: " + historyModels.size() + " - " + habitModels.size());
         for (HistoryModel history : historyModels) {
             if (history.getHistoryHabitsState().equals(VAL_NULL)) {
@@ -547,8 +551,8 @@ public class HomeViewModel extends BaseViewModel {
             value) {
 
         HabitModel habitModel = new HabitModel();
-        Log.d(TAG, "Before updateHistory: " + habitModelList.size()
-                + " -- " + habitModelDoneList.size() + " -- " + habitModelFailedList.size());
+//        Log.d(TAG, "Before updateHistory: " + habitModelList.size()
+//                + " -- " + habitModelDoneList.size() + " -- " + habitModelFailedList.size());
         if (HabitAdapter.class.equals(adapterName)) {
             if (habitModelList.size() != 0) {
                 habitModel = habitModelList.get(position);
@@ -572,8 +576,8 @@ public class HomeViewModel extends BaseViewModel {
             }
         }
 
-        Log.d(TAG, "After updateHistory: " + habitModelList.size()
-                + " -- " + habitModelDoneList.size() + " -- " + habitModelFailedList.size());
+        Log.d(TAG, "After updateHistory: " + mHabitAdapter.getItemCount()
+                + " -- " + mDoneHabitAdapter.getItemCount() + " -- " + mFailedHabitAdapter.getItemCount());
         updateHistoryStatus(habitModel, LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT)), value);
     }
 

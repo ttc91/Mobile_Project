@@ -21,6 +21,11 @@ public class FailedHabitAdapter extends RecyclerView.Adapter<FailedHabitAdapter.
         this.habitModelList = habitModelList;
     }
 
+    public void clear() {
+        this.habitModelList.clear();
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

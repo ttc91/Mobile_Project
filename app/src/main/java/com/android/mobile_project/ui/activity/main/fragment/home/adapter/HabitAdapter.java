@@ -41,6 +41,11 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder>{
         vm = iHomeViewModel;
     }
 
+    public void clear() {
+        this.habitModelList.clear();
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

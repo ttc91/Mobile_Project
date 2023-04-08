@@ -25,4 +25,7 @@ public interface HistoryDAO extends BaseDAO<HistoryEntity>{
     @Query("SELECT * FROM tbl_history WHERE user_id = :uId AND date = :date")
     Flowable<List<HistoryEntity>> getHistoryByDate(Long uId, String date);
 
+    @Query("SELECT * FROM tbl_history WHERE user_id = :uId AND date = :date")
+    Single<List<HistoryEntity>> getHistoryByDateSingle(Long uId, String date);
+
 }

@@ -165,10 +165,13 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     }
 
     private void initHabitNotToday(String date) {
+        Log.d(TAG, "initHabitNotToday: " + date);
         viewModel.getHabitsWhenClickDailyCalendar(date);
         //Before
         viewModel.getHistoryBeforeLD().observe(getViewLifecycleOwner(), historyModels -> {
-            if (historyModels.size() > 0) {
+            if (historyModels.size() > 0
+                    && !viewModel.getCalendarBarDate().equalsIgnoreCase(utils.getDateTodayString())) {
+                Log.d(TAG, "initHabitNotToday: BeforeLD " + viewModel.getCalendarBarDate() + " -- " + utils.getDateTodayString());
                 initHabitModelList();
                 initHabitDoneModeList();
                 initHabitFailedModelList();
@@ -176,6 +179,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         });
         //After
         viewModel.getHabitAfterLD().observe(getViewLifecycleOwner(), habitInWeekModels -> {
+            Log.d(TAG, "initHabitNotToday: AfterLD");
             if (habitInWeekModels.size() > 0) {
                 viewModel.getHabitListAfterDay(habitInWeekModels);
                 initHabitModelList();
@@ -232,7 +236,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
             startActivity(intent);
 
         };
-
         viewModel.setmHabitAdapter(new HabitAdapter(viewModel.getHabitModelList(), viewModel.recyclerViewClickListener));
         viewModel.getmHabitAdapter().notifyDataSetChanged();
 
@@ -287,6 +290,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         Log.d(TAG, "initHabitFailedModelList: " + viewModel.getHabitModelFailedList().size());
         viewModel.setmFailedHabitAdapter(new FailedHabitAdapter(viewModel.getHabitModelFailedList()));
         viewModel.getmFailedHabitAdapter().notifyDataSetChanged();
+
 
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         binding.rcvHabitFailedList.setAdapter(viewModel.getmFailedHabitAdapter());
