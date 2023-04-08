@@ -24,4 +24,14 @@ public interface HabitInWeekDAO extends BaseDAO<HabitInWeekEntity>{
     @Query("DELETE FROM tbl_habit_in_week WHERE habit_id = :habitId")
     Completable deleteHabitInWeekByHabitId(Long habitId);
 
+    /**
+     * Query do in background
+     */
+
+    @Query("SELECT * FROM tbl_habit_in_week WHERE user_id = :userId AND day_of_week_id = :id")
+    List<HabitInWeekEntity> getHabitInWeekEntityByDayOfWeekIdInBackground(Long userId, Long id);
+
+    @Query("SELECT * FROM tbl_habit_in_week WHERE user_id = :userId AND habit_id = :habitId AND day_of_week_id = :id")
+    HabitInWeekEntity getDayOfWeekHabitListByUserAndHabitIdAndId(Long userId, Long habitId, Long id);
+
 }

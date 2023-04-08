@@ -71,4 +71,13 @@ public interface HabitDAO extends BaseDAO<HabitEntity>{
     @Query("SELECT * FROM tbl_habit ORDER BY longest_steak DESC")
     Flowable<List<HabitEntity>> getHabitListDescByLongestSteak();
 
+    /**
+     * Query do in background
+     */
+    @Query("SELECT * FROM tbl_habit WHERE user_id = :userId AND id = :habitId")
+    HabitEntity getHabitByUserIdAndHabitIdInBackground(Long userId, Long habitId);
+
+    @Query("SELECT * FROM tbl_habit WHERE user_id = :userId ORDER BY id DESC LIMIT 1")
+    HabitEntity getFinalHabitByUserIdInBackground(Long userId);
+
 }

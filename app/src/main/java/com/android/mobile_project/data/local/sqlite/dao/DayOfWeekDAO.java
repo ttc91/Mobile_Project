@@ -40,6 +40,10 @@ public interface DayOfWeekDAO extends BaseDAO<DayOfWeekEntity>{
     @Query("SELECT * FROM tbl_day_of_week WHERE id = :id")
     Single<DayOfWeekEntity> getDayOfWeekById(Long id);
 
+    /**
+     * Query do in background
+     */
+
     @Insert
     void insertInBackgroundDb(DayOfWeekEntity e);
 

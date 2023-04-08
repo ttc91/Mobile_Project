@@ -15,4 +15,8 @@ public interface HabitInWeekDataSource extends BaseDataSource<HabitInWeekEntity>
 
     Completable deleteHabitInWeekByHabitId(Long habitId);
 
+    List<HabitInWeekEntity> getHabitInWeekEntityByDayOfWeekIdInBackground(Long userId, Long id);
+
+    HabitInWeekEntity getDayOfWeekHabitListByUserAndHabitIdAndId(Long userId, Long habitId, Long id);
+
 }

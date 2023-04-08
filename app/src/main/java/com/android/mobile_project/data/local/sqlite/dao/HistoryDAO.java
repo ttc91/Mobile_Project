@@ -1,6 +1,7 @@
 package com.android.mobile_project.data.local.sqlite.dao;
 
 import androidx.room.Dao;
+import androidx.room.Insert;
 import androidx.room.Query;
 
 import com.android.mobile_project.data.local.sqlite.entity.db.HistoryEntity;
@@ -27,5 +28,12 @@ public interface HistoryDAO extends BaseDAO<HistoryEntity>{
 
     @Query("SELECT * FROM tbl_history WHERE user_id = :uId AND date = :date")
     Single<List<HistoryEntity>> getHistoryByDateSingle(Long uId, String date);
+
+    /**
+     * Query do in background
+     */
+
+    @Insert
+    void insertInBackground(HistoryEntity entity);
 
 }

@@ -19,4 +19,6 @@ public interface HistoryDataSource extends BaseDataSource<HistoryEntity> {
 
     Single<List<HistoryEntity>> getHistoryByDateSingle(Long uId, String date);
 
+    void insertInBackground(HistoryEntity entity);
+
 }

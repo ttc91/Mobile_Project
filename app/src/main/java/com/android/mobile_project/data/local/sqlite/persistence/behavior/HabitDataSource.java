@@ -26,4 +26,8 @@ public interface HabitDataSource extends BaseDataSource<HabitEntity>{
 
     Flowable<List<HabitEntity>> getHabitListDescByLongestSteak();
 
+    HabitEntity getHabitByUserIdAndHabitIdInBackground(Long userId, Long habitId);
+
+    HabitEntity getFinalHabitByUserIdInBackground(Long userId);
+
 }

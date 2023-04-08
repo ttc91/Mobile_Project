@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/SplashTheme">
 
-        <receiver android:name=".channel.AlarmReceiver"/>
+        <receiver android:name=".receiver.AlarmReceiver"/>
 
         <activity android:name=".ui.activity.main.MainActivity"
             android:exported="false"/>
@@ -34,6 +34,12 @@
             </intent-filter>
 
         </activity>
+
+        <receiver android:name=".receiver.system.DayChangedReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.DATE_CHANGED"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 

@@ -6,7 +6,9 @@ import com.android.mobile_project.utils.dagger.module.activity.create.CreateHabi
 
 import dagger.Subcomponent;
 
-@Subcomponent(modules = CreateHabitModule.class)
+@Subcomponent(modules = {
+        CreateHabitModule.class
+})
 @MyCustomAnnotation.MyScope.ActivityScope
 public interface CreateHabitComponent {
 

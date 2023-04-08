@@ -51,4 +51,15 @@ public class LocalHabitInWeekDataSource extends BaseDataSource implements HabitI
     public Completable deleteHabitInWeekByHabitId(Long habitId) {
         return dao.deleteHabitInWeekByHabitId(habitId);
     }
+
+    @Override
+    public List<HabitInWeekEntity> getHabitInWeekEntityByDayOfWeekIdInBackground(Long userId, Long id) {
+        return dao.getHabitInWeekEntityByDayOfWeekIdInBackground(userId, id);
+    }
+
+    @Override
+    public HabitInWeekEntity getDayOfWeekHabitListByUserAndHabitIdAndId(Long userId, Long habitId, Long id) {
+        return dao.getDayOfWeekHabitListByUserAndHabitIdAndId(userId, habitId, id);
+    }
+
 }

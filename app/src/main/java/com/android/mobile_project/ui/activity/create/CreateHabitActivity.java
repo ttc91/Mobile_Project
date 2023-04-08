@@ -1,6 +1,8 @@
 package com.android.mobile_project.ui.activity.create;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,9 +11,11 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 
 import com.android.mobile_project.R;
 import com.android.mobile_project.databinding.ActivityCreateHabitBinding;
+import com.android.mobile_project.receiver.local.CreateHistoryReceiver;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.create.service.DbService;
 import com.android.mobile_project.ui.activity.create.service.InitService;
@@ -25,19 +29,25 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
 
     private ActivityCreateHabitBinding binding;
 
+    private final CreateHistoryReceiver receiver = new CreateHistoryReceiver();
+
+    private static final String MY_ACTION = "com.android.project.CREATE_HISTORY";
+
     public CreateHabitComponent component;
 
-    private static CreateHabitActivity INSTANCE;
-
-    public static CreateHabitActivity newInstance(){
-        if(INSTANCE == null){
-            INSTANCE = new CreateHabitActivity();
-        }
-        return INSTANCE;
-    }
+    private Observer<Boolean> habitModelInsertedObserver = aBoolean -> {
+        sendBroadcast(new Intent(MY_ACTION));
+    };
 
     @Inject
     CreateHabitViewModel viewModel;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(receiver, new IntentFilter(MY_ACTION));
+        viewModel.getHabitModelInsertedMutableLiveData().observe(this, habitModelInsertedObserver);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -338,6 +348,7 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
         Log.i("CreateHabitActivity", "onDestroy");
         super.onDestroy();
         viewModel.disposeCompositeDisposable();
+        unregisterReceiver(receiver);
     }
 
     @Override

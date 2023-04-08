@@ -57,7 +57,7 @@ public class CreateHabitViewModel extends ViewModel {
     private boolean selectMorning = false;
     private boolean selectAfternoon = false;
 
-    private final MutableLiveData<HabitModel> habitModelMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> habitModelInsertedMutableLiveData = new MutableLiveData<>();
 
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
 
@@ -65,8 +65,8 @@ public class CreateHabitViewModel extends ViewModel {
         mCompositeDisposable.dispose();
     }
 
-    protected LiveData<HabitModel> getHabitModelMutableLiveData(){
-        return habitModelMutableLiveData;
+    protected LiveData<Boolean> getHabitModelInsertedMutableLiveData(){
+        return habitModelInsertedMutableLiveData;
     }
 
     public boolean isSelectSunDate() {
@@ -204,7 +204,6 @@ public class CreateHabitViewModel extends ViewModel {
                         .subscribeOn(Schedulers.io())
                         .subscribe(() -> {
                                     Log.i("insertHabit", "onComplete");
-                                    callback.onInsertHabitSuccess();
                                     checkExistHabitByName(habitName, new DbService.GetHabitByName() {
                                         @Override
                                         public void onGetHabitByNameSuccess(Long id) {
@@ -236,13 +235,14 @@ public class CreateHabitViewModel extends ViewModel {
                                             if (selectSatDate) {
                                                 insertHabitInWeek(id, DayOfWeek.SAT.getId(), insertHabitInWeekCallBack);
                                             }
+                                            habitModelInsertedMutableLiveData.postValue(true);
                                         }
-
                                         @Override
                                         public void onGetHabitByNameFailure() {
                                             Log.e("CreateHabitViewModel", "onGetHabitByNameFailure");
                                         }
                                     });
+                                    callback.onInsertHabitSuccess();
                                 }, throwable -> {
                                     Log.e("insertHabit", "onError", throwable);
                                     callback.onInsertHabitFailure();
