@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_15sdp"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_28sdp"
             android:layout_marginEnd="@dimen/_15sdp">
 
             <TextView
@@ -106,10 +106,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginVertical="@dimen/_8sdp"
                 android:gravity="center"
                 android:text="@string/title_habit"
-                android:textSize="@dimen/_13ssp"
+                android:textSize="@dimen/_14ssp"
                 android:textStyle="bold" />
 
             <androidx.core.widget.NestedScrollView
@@ -127,9 +127,8 @@
                         android:id="@+id/t_todo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_8sdp"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:layout_marginEnd="@dimen/_8sdp"
+                        android:layout_marginHorizontal="@dimen/_12sdp"
+                        android:layout_marginTop="@dimen/_4sdp"
                         android:background="#E0E0E0"
                         android:gravity="center"
                         android:onClick="@{(v) -> a.onClick(v)}"
@@ -142,9 +141,9 @@
                         android:id="@+id/rcv_habit_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_10sdp"
-                        android:layout_marginTop="@dimen/_10sdp"
-                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:layout_marginBottom="@dimen/_8sdp"
+                        android:layout_marginHorizontal="@dimen/_8sdp"
                         android:visibility="gone" />
 
                     <LinearLayout
@@ -156,9 +155,8 @@
                             android:id="@+id/t_done"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_8sdp"
-                            android:layout_marginTop="@dimen/_10sdp"
-                            android:layout_marginEnd="@dimen/_8sdp"
+                            android:layout_marginHorizontal="@dimen/_12sdp"
+                            android:layout_marginTop="@dimen/_4sdp"
                             android:background="#E0E0E0"
                             android:gravity="center"
                             android:onClick="@{(v) -> a.onClick(v)}"
@@ -171,9 +169,9 @@
                             android:id="@+id/rcv_habit_done_list"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_10sdp"
-                            android:layout_marginTop="@dimen/_10sdp"
-                            android:layout_marginEnd="@dimen/_10sdp"
+                            android:layout_marginHorizontal="@dimen/_8sdp"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:layout_marginBottom="@dimen/_8sdp"
                             android:visibility="gone" />
 
                         <LinearLayout
@@ -185,9 +183,8 @@
                                 android:id="@+id/t_failed"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_8sdp"
-                                android:layout_marginTop="@dimen/_10sdp"
-                                android:layout_marginEnd="@dimen/_8sdp"
+                                android:layout_marginHorizontal="@dimen/_12sdp"
+                                android:layout_marginTop="@dimen/_4sdp"
                                 android:background="#E0E0E0"
                                 android:gravity="center"
                                 android:onClick="@{(v) -> a.onClick(v)}"
@@ -200,27 +197,27 @@
                                 android:id="@+id/rcv_habit_failed_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_10sdp"
-                                android:layout_marginTop="@dimen/_10sdp"
-                                android:layout_marginEnd="@dimen/_10sdp"
+                                android:layout_marginHorizontal="@dimen/_8sdp"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:layout_marginBottom="@dimen/_8sdp"
                                 android:visibility="gone" />
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rcv_before"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_10sdp"
-                                android:layout_marginTop="@dimen/_10sdp"
-                                android:layout_marginEnd="@dimen/_10sdp"
+                                android:layout_marginHorizontal="@dimen/_8sdp"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:layout_marginBottom="@dimen/_8sdp"
                                 android:visibility="gone" />
 
                             <androidx.recyclerview.widget.RecyclerView
                                 android:id="@+id/rcv_after"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/_10sdp"
-                                android:layout_marginTop="@dimen/_10sdp"
-                                android:layout_marginEnd="@dimen/_10sdp"
+                                android:layout_marginHorizontal="@dimen/_8sdp"
+                                android:layout_marginTop="@dimen/_2sdp"
+                                android:layout_marginBottom="@dimen/_8sdp"
                                 android:visibility="gone" />
 
 

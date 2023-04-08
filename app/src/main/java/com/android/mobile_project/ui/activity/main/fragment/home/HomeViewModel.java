@@ -586,11 +586,11 @@ public class HomeViewModel extends BaseViewModel {
                 break;
             case VAL_TRUE:
                 habitModelDoneList.add(habitModel);
-                mDoneHabitAdapter.notifyItemInserted(habitModelList.size() - 1);
+                mDoneHabitAdapter.notifyItemInserted(habitModelDoneList.size() - 1);
                 break;
             case VAL_FALSE:
                 habitModelFailedList.add(habitModel);
-                mFailedHabitAdapter.notifyItemInserted(habitModelList.size() - 1);
+                mFailedHabitAdapter.notifyItemInserted(habitModelFailedList.size() - 1);
                 break;
             default:
                 break;

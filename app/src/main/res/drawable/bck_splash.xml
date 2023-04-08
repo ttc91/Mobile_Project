@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list android:opacity="opaque"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/bck_ground" />
+    <item android:gravity="center"
+        android:drawable="@drawable/ic_launcher_foreground"/>
+    <!-- <bitmap android:gravity="center" android:src="@drawable/splash" />
+ </item>-->
+</layer-list>

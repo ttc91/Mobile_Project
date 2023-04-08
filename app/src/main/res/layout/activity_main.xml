@@ -33,7 +33,7 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/btm_nav"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_48sdp"
+            android:layout_height="@dimen/_42sdp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
