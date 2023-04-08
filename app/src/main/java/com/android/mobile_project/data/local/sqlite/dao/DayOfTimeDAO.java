@@ -32,6 +32,10 @@ public interface DayOfTimeDAO extends BaseDAO<DayOfTimeEntity>{
     @Query("SELECT * FROM tbl_day_of_time WHERE id = :id")
     Single<DayOfTimeEntity> getDayOfTimeById(Long id);
 
+    /**
+     * Query do in Background
+     */
+
     @Insert
     void insertInBackgroundDb(DayOfTimeEntity e);
 

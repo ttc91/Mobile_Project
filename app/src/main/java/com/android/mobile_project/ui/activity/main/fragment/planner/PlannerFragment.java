@@ -45,6 +45,7 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
 
     private FragmentPlannerBinding binding;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onAttach(@NonNull Context context) {
         component = ((MainActivity)getActivity()).component.mPlannerComponent().create();

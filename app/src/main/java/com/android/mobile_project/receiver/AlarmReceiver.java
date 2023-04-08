@@ -1,4 +1,4 @@
-package com.android.mobile_project.channel;
+package com.android.mobile_project.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

@@ -63,4 +63,9 @@ public class LocalHistoryDataSource extends BaseDataSource implements HistoryDat
     public Single<List<HistoryEntity>> getHistoryByDateSingle(Long uId, String date) {
         return subscribeSingle(dao.getHistoryByDateSingle(uId, date));
     }
+
+    @Override
+    public void insertInBackground(HistoryEntity entity) {
+        dao.insertInBackground(entity);
+    }
 }

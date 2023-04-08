@@ -18,6 +18,10 @@ public final class MyCustomAnnotation {
         @Retention(RetentionPolicy.RUNTIME)
         @interface FragmentScope{}
 
+        @Scope
+        @Retention(RetentionPolicy.RUNTIME)
+        @interface ReceiverScope{}
+
     }
 
     public interface MyQualifier{
@@ -27,5 +31,7 @@ public final class MyCustomAnnotation {
         @interface ApplicationContext{}
 
     }
+
+
 
 }

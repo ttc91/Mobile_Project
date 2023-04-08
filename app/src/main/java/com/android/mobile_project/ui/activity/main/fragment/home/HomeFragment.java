@@ -105,8 +105,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Log.i("HomeFragment", "onViewCreated");
-
         viewModel.setDate(binding.tvDate);
         viewModel.setMonth(binding.titleMonth);
         viewModel.getCurrentDayOfWeek();

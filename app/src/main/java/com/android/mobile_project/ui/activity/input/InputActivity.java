@@ -1,12 +1,14 @@
 package com.android.mobile_project.ui.activity.input;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 
@@ -34,6 +36,7 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
 
     private Observer<Long> mUserIdObserver;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
@@ -63,6 +66,7 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
         return binding.getRoot();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void initViewModel() {
 
@@ -178,6 +182,7 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
         viewModel = null;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void redirectToNextActivity(){
         Log.i("InputActivity", "can redirect to MainActivity");
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
