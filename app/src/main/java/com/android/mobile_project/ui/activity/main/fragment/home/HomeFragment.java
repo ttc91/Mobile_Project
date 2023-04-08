@@ -143,11 +143,10 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         viewModel.dailyCalendarAdapter = new DailyCalendarAdapter(getContext(), viewModel.getDays(), viewModel.getOnClickItem());
         viewModel.dailyCalendarAdapter.notifyDataSetChanged();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
-
+        layoutManager.scrollToPosition(utils.getPositionOfTodayInArray());
         binding.rvHorCalendar.setLayoutManager(layoutManager);
         binding.rvHorCalendar.setAdapter(viewModel.dailyCalendarAdapter);
-        binding.rvHorCalendar.smoothScrollToPosition(viewModel.getDays().size() / 2 + 1);
-
+        //binding.rvHorCalendar.smoothScrollToPosition(viewModel.getDays().size() / 2 + 1);
         SnapHelper helper = new LinearSnapHelper();
         helper.attachToRecyclerView(binding.rvHorCalendar);
     }

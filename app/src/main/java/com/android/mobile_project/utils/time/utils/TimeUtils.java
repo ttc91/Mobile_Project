@@ -11,12 +11,15 @@ import com.android.mobile_project.utils.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.Locale;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class TimeUtils {
 
     private static TimeUtils mInstance;
+    private final LocalDate selectedDate = LocalDate.now();
 
     public TimeUtils() {
     }
@@ -27,8 +30,6 @@ public class TimeUtils {
         }
         return mInstance;
     }
-
-    private final LocalDate selectedDate = LocalDate.now();
 
     public LocalDate getSelectedDate() {
         return selectedDate;
@@ -107,6 +108,34 @@ public class TimeUtils {
         }
 
         return days;
+    }
+
+    public int getPositionOfTodayInArray() {
+        ArrayList<LocalDate> days = getSixtyDaysArray();
+        int position = 0;
+        for (int i = 0; i < days.size(); i++) {
+            if (days.get(i).compareTo(getSelectedDate()) == 0) {
+                position = i;
+                break;
+            }
+        }
+        String dayName = days.get(position).getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.US);
+        if (dayName.equals(DayOfWeek.MON.getDayName())) {
+            return position - 1;
+        } else if (dayName.equals(DayOfWeek.TUE.getDayName())) {
+            return position - 2;
+        } else if (dayName.equals(DayOfWeek.WED.getDayName())) {
+            return position - 3;
+        } else if (dayName.equals(DayOfWeek.THU.getDayName())) {
+            return position - 4;
+        } else if (dayName.equals(DayOfWeek.FRI.getDayName())) {
+            return position - 5;
+        } else if (dayName.equals(DayOfWeek.SAT.getDayName())) {
+            return position - 6;
+        } else if (dayName.equals(DayOfWeek.SUN.getDayName())) {
+            return position;
+        }
+        return 0;
     }
 
     public Long getDayOfWeekId(String date) {
