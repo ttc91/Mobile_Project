@@ -31,23 +31,19 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import com.android.mobile_project.R;
 import com.android.mobile_project.data.remote.model.HabitModel;
-import com.android.mobile_project.data.remote.model.HistoryModel;
 import com.android.mobile_project.databinding.FragmentHomeBinding;
+import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.create.CreateHabitActivity;
 import com.android.mobile_project.ui.activity.main.MainActivity;
+import com.android.mobile_project.ui.activity.main.fragment.home.adapter.DoneHabitAdapter;
+import com.android.mobile_project.ui.activity.main.fragment.home.adapter.FailedHabitAdapter;
+import com.android.mobile_project.ui.activity.main.fragment.home.adapter.HabitAdapter;
 import com.android.mobile_project.ui.activity.setting.HabitSettingActivity;
 import com.android.mobile_project.utils.dagger.component.sub.main.fragment.HomeComponent;
 import com.android.mobile_project.utils.time.adapter.DailyCalendarAdapter;
 import com.android.mobile_project.utils.time.utils.TimeUtils;
-import com.android.mobile_project.ui.InitLayout;
-import com.android.mobile_project.ui.activity.main.fragment.home.adapter.AfterAdapter;
-import com.android.mobile_project.ui.activity.main.fragment.home.adapter.DoneHabitAdapter;
-import com.android.mobile_project.ui.activity.main.fragment.home.adapter.FailedHabitAdapter;
-import com.android.mobile_project.ui.activity.main.fragment.home.adapter.HabitAdapter;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -61,12 +57,10 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
     public HomeComponent component;
 
-    private TimeUtils utils = TimeUtils.getInstance();
+    private final TimeUtils utils = TimeUtils.getInstance();
 
     @Inject
     HomeViewModel viewModel;
-
-    private static final String DAY_FORMAT = "yyyy-MM-dd";
 
     private static final String VAL_TRUE = "true";
 
@@ -87,47 +81,36 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         super.onCreate(savedInstanceState);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: ");
         View v = initContentView();
         initViewModel();
         return v;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        viewModel.setDate(binding.tvDate);
-        viewModel.setMonth(binding.titleMonth);
-        viewModel.getCurrentDayOfWeek();
-        viewModel.setCalendarBarDate(utils.getDateTodayString());
+        Log.d(TAG, "onViewCreated: ");
+        initView();
         initDailyCalendar();
+        initObserve();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart: ");
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void initViewModel() {
         binding.setVm(viewModel);
-        viewModel.setOnClickItem((view, date) -> {
-            if (date.equalsIgnoreCase(viewModel.getCalendarBarDate())) {
-                return;
-            }
-            viewModel.setCalendarBarDate(date);
-            initHabitList(date);
-        });
-        viewModel.getLiveDataIsSuccess().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                visibleListHabit();
-            }
-        });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onResume() {
         super.onResume();
@@ -140,49 +123,20 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         }
     }
 
-    /*
-     * Khởi tạo danh sách Habit
-     * */
-    private void initHabitList(String date) {
-        viewModel.clearHabitList();
-        viewModel.getHabitAndHistory(date);
-        if (viewModel.isSelectedTheDayBefore()) {
-            viewModel.getHabitBeforeLD().observe(getViewLifecycleOwner(), aBoolean -> {
-                if (aBoolean) {
-                    Log.d(TAG, "onChanged: isBefore");
-                    viewModel.getHabitListByHistoryStatus();
-                    initHabitModelList();
-                    initHabitDoneModeList();
-                    initHabitFailedModelList();
-                    visibleListHabit();
-                }
-            });
-        } else if (viewModel.isSelectedTheDayAfter()) {
-            viewModel.getHabitAfterLD().observe(getViewLifecycleOwner(), aBoolean -> {
-                if (aBoolean) {
-                    Log.d(TAG, "onChanged: isAfter");
-                    viewModel.getHabitListAfterDay(viewModel.getHabitInWeekModelList());
-                    initHabitModelList();
-                    initHabitDoneModeList();
-                    initHabitFailedModelList();
-                    visibleListHabit();
-                }
-            });
-        } else if (viewModel.isSelectedToday()) {
-            viewModel.getHabitTodayLD().observe(getViewLifecycleOwner(), isSuccess -> {
-                Log.d(TAG, "onChanged: isToday");
-                if (isSuccess) {
-                    viewModel.getHabitListByHistoryStatus();
-                    initHabitModelList();
-                    initHabitDoneModeList();
-                    initHabitFailedModelList();
-                    visibleListHabit();
-                }
-            });
-        }
+    private void initView() {
+        viewModel.setDate(binding.tvDate);
+        viewModel.setMonth(binding.titleMonth);
+        viewModel.getCurrentDayOfWeek();
+        viewModel.setCalendarBarDate(utils.getDateTodayString());
+        viewModel.setOnClickItem((view, date) -> {
+            if (date.equalsIgnoreCase(viewModel.getCalendarBarDate())) {
+                return;
+            }
+            viewModel.setCalendarBarDate(date);
+            initHabitList(date);
+        });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initDailyCalendar() {
         viewModel.setDays(utils.getSixtyDaysArray());
 
@@ -198,6 +152,49 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         helper.attachToRecyclerView(binding.rvHorCalendar);
     }
 
+    private void initObserve() {
+        viewModel.getHabitBeforeLD().observe(getViewLifecycleOwner(), aBoolean -> {
+            if (aBoolean) {
+                Log.d(TAG, "onChanged: isBefore");
+                viewModel.getHabitListByHistoryStatus();
+                initHabitModelList();
+                initHabitDoneModeList();
+                initHabitFailedModelList();
+                visibleListHabit();
+            }
+        });
+        viewModel.getHabitAfterLD().observe(getViewLifecycleOwner(), aBoolean -> {
+            if (aBoolean) {
+                Log.d(TAG, "onChanged: isAfter");
+                viewModel.getHabitListAfterDay(viewModel.getHabitInWeekModelList());
+                initHabitModelList();
+                initHabitDoneModeList();
+                initHabitFailedModelList();
+                visibleListHabit();
+            }
+        });
+        viewModel.getHabitTodayLD().observe(getViewLifecycleOwner(), isSuccess -> {
+            Log.d(TAG, "onChanged: isToday");
+            if (isSuccess) {
+                viewModel.getHabitListByHistoryStatus();
+                initHabitModelList();
+                initHabitDoneModeList();
+                initHabitFailedModelList();
+                visibleListHabit();
+            }
+        });
+        viewModel.getLiveDataIsSuccess().observe(getViewLifecycleOwner(), aBoolean -> {
+            if (aBoolean) {
+                visibleListHabit();
+            }
+        });
+    }
+
+    private void initHabitList(String date) {
+        viewModel.clearHabitList();
+        viewModel.getHabitAndHistory(date);
+    }
+
     @Override
     public View initContentView() {
         binding = FragmentHomeBinding.inflate(getLayoutInflater());
@@ -206,7 +203,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initHabitModelList() {
         viewModel.recyclerViewClickListener = (v, habitModelList, position) -> {
 
@@ -230,7 +226,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initHabitDoneModeList() {
         viewModel.setmDoneHabitAdapter(new DoneHabitAdapter(viewModel.getHabitModelDoneList()));
         viewModel.getmDoneHabitAdapter().notifyDataSetChanged();
@@ -244,7 +239,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initHabitFailedModelList() {
         viewModel.setmFailedHabitAdapter(new FailedHabitAdapter(viewModel.getHabitModelFailedList()));
         viewModel.getmFailedHabitAdapter().notifyDataSetChanged();
@@ -257,7 +251,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         itemTouchHelper.attachToRecyclerView(binding.rcvHabitFailedList);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onClick(View view) {
 
@@ -311,7 +304,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         }
 
         @SuppressLint("NotifyDataSetChanged")
-        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
@@ -338,7 +330,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX,
                                 float dY, int actionState, boolean isCurrentlyActive) {
@@ -371,7 +362,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                                     (float) itemView.getLeft() + 10,
                                     (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight()) / 2,
                                     p);
-//                        }
 
                         }
                     }
@@ -395,7 +385,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         }
 
         @SuppressLint("NotifyDataSetChanged")
-        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
@@ -430,7 +419,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         }
 
         @SuppressLint("NotifyDataSetChanged")
-        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
