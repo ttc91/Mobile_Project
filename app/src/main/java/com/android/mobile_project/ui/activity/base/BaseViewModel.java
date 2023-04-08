@@ -69,6 +69,8 @@ public abstract class BaseViewModel extends ViewModel {
             mMainCompDisposable.add(d);
         }
 
+
+
         @Override
         public void onError(@NonNull Throwable e) {
             mLiveDataOnError.postValue(e);

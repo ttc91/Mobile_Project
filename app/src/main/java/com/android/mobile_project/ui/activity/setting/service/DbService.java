@@ -72,9 +72,4 @@ public interface DbService {
         void onGetHistoryByHabitAndDateFailure(CompositeDisposable disposable);
     }
 
-    interface DeleteHabitResult{
-        void onDeleteHabitSuccess(CompositeDisposable disposable);
-        void onDeleteHabitFailure(CompositeDisposable disposable);
-    }
-
 }
