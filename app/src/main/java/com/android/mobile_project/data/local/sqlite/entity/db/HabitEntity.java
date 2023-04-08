@@ -3,7 +3,6 @@ package com.android.mobile_project.data.local.sqlite.entity.db;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
 import com.android.mobile_project.data.local.sqlite.entity.BaseEntity;
@@ -20,13 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 
-@Entity(tableName = "tbl_habit",
-    foreignKeys = @ForeignKey(
-            onDelete = ForeignKey.CASCADE,
-            entity = UserEntity.class,
-            parentColumns = "id",
-            childColumns = "user_id"
-    ))
+@Entity(tableName = "tbl_habit")
 public class HabitEntity extends BaseEntity implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
@@ -47,7 +40,7 @@ public class HabitEntity extends BaseEntity implements Serializable {
     /**
      * <b>Foreign key</b>
      */
-    @ColumnInfo(name = "user_id", index = true)
+    @ColumnInfo(name = "user_id")
     public Long userId;
 
     @ColumnInfo(name = "day_of_time_id")
