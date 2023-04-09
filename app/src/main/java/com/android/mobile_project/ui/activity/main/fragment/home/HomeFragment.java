@@ -182,6 +182,16 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 visibleListHabit();
             }
         });
+        viewModel.getInsertHistoryLD().observe(getViewLifecycleOwner(), isSuccess -> {
+            Log.d(TAG, "onChanged: insertHistory");
+            if (isSuccess) {
+                viewModel.getHabitListByHistoryStatus();
+                initHabitModelList();
+                initHabitDoneModeList();
+                initHabitFailedModelList();
+                visibleListHabit();
+            }
+        });
         viewModel.getLiveDataIsSuccess().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean) {
                 visibleListHabit();
@@ -212,8 +222,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
             startActivity(intent);
 
         };
-        List<HabitModel> habit = viewModel.getHabitModelList();
-        viewModel.setmHabitAdapter(new HabitAdapter(habit, viewModel.recyclerViewClickListener));
+        viewModel.setmHabitAdapter(new HabitAdapter(viewModel.getHabitModelList(), viewModel.getHabitInWeekModelList(), viewModel.recyclerViewClickListener));
         viewModel.getmHabitAdapter().notifyDataSetChanged();
 
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);

@@ -94,6 +94,12 @@ public class HomeViewModel extends BaseViewModel {
     private final MutableLiveData<Boolean> habitBeforeLD = new MutableLiveData<>();
     private final MutableLiveData<Boolean> habitAfterLD = new MutableLiveData<>();
 
+    //Xoá đoạn này khi fix insert history sau 12h
+    private final MutableLiveData<Boolean> insertHistoryLD = new MutableLiveData<>();
+    public LiveData<Boolean> getInsertHistoryLD() {
+        return insertHistoryLD;
+    }
+
     public LiveData<Boolean> getHabitTodayLD() {
         return habitTodayLD;
     }
@@ -106,8 +112,10 @@ public class HomeViewModel extends BaseViewModel {
         return habitAfterLD;
     }
 
+
+
     private List<HabitModel> habitModelList = new ArrayList<>();
-    private HabitAdapter mHabitAdapter = new HabitAdapter(habitModelList, recyclerViewClickListener);
+    private HabitAdapter mHabitAdapter = new HabitAdapter(habitModelList, habitInWeekModelList, recyclerViewClickListener);
 
     private List<HabitModel> habitModelBeforeList = new ArrayList<>();
 
@@ -311,6 +319,10 @@ public class HomeViewModel extends BaseViewModel {
                     habitsOfUser = HabitMapper.getInstance().mapToListModel(habitEntities);
                     habitInWeekModelList = HabitInWeekMapper.getInstance().mapToListModel(habitInWeekEntities);
                     historyModels = HistoryMapper.getInstance().mapToListModel(historyEntities);
+                    //Xoá đoạn này khi fix được thêm History mới sau 12h
+                    /*if (historyModels.size() == 0 && habitInWeekEntities.size() != 0) {
+                        insertHistoriesList(date);
+                    }*/
                     return list;
                 });
         addDisposable(result
@@ -351,6 +363,43 @@ public class HomeViewModel extends BaseViewModel {
         habitModelList.clear();
         habitModelDoneList.clear();
         habitModelFailedList.clear();
+    }
+
+    /**
+     * Thêm mới history cho ngày hôm nay
+     *
+     * @param historyTime
+     */
+    public void insertHistoriesList(String historyTime) {
+        Log.d(TAG, "insertHistoriesList: ");
+        if (historyModels.isEmpty() && habitInWeekModelList.isEmpty()) {
+            return;
+        }
+        if (historyModels.size() == habitInWeekModelList.size()) {
+            return;
+        }
+        if (historyModels.isEmpty() && !habitInWeekModelList.isEmpty()) {
+            for (HabitInWeekModel habitInWeek : habitInWeekModelList) {
+                HistoryModel model = new HistoryModel();
+                model.setHistoryDate(historyTime);
+                model.setUserId(DataLocalManager.getInstance().getUserId());
+                model.setHistoryHabitsState(VAL_NULL);
+                model.setHabitId(habitInWeek.getHabitId());
+                insertHistory(model);
+                this.historyModels.add(model);
+            }
+        }
+        insertHistoryLD.postValue(true);
+    }
+
+    public void insertHistory(HistoryModel historyModel) {
+        mHistoryRepository.getMHistoryDataSource().insert(HistoryMapper.getInstance().mapToEntity(historyModel))
+                .subscribe(new CustomCompletableObserver() {
+                    @Override
+                    public void onComplete() {
+                        Log.i("insertHistory", "onComplete");
+                    }
+                });
     }
 
     public void getHabitListAfterDay(List<HabitInWeekModel> habitInWeekModels) {

@@ -3,12 +3,14 @@ package com.android.mobile_project.ui.activity.create;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
@@ -25,6 +27,7 @@ import com.android.mobile_project.utils.dagger.component.sub.create.CreateHabitC
 
 import javax.inject.Inject;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class CreateHabitActivity extends AppCompatActivity implements InitLayout, View.OnClickListener {
 
     private ActivityCreateHabitBinding binding;

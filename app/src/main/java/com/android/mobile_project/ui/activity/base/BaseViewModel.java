@@ -1,15 +1,8 @@
 package com.android.mobile_project.ui.activity.base;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
-import com.android.mobile_project.utils.custom.SingleLiveEvent;
-
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.CompletableObserver;
@@ -26,13 +19,18 @@ public abstract class BaseViewModel extends ViewModel {
     protected MutableLiveData<Boolean> mLiveDataIsLoading = new MutableLiveData<>();
     protected MutableLiveData<Boolean> mLiveDataIsSuccess = new MutableLiveData<>();
     protected MutableLiveData<Throwable> mLiveDataOnError = new MutableLiveData<>();
+
     public LiveData<Boolean> getLiveDataIsLoading() {
         return mLiveDataIsLoading;
     }
+
     public LiveData<Boolean> getLiveDataIsSuccess() {
         return mLiveDataIsSuccess;
     }
-    public LiveData<Throwable> getLiveDataIsError() { return mLiveDataOnError; }
+
+    public LiveData<Throwable> getLiveDataIsError() {
+        return mLiveDataOnError;
+    }
 
     public abstract class CustomSingleObserver<T> implements SingleObserver<T> {
         @Override

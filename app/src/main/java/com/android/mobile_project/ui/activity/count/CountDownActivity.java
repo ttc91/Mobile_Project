@@ -152,6 +152,7 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void onClickBack(){
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
