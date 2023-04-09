@@ -420,11 +420,22 @@ public class HomeViewModel extends BaseViewModel {
         return null;
     }
 
+    private HabitInWeekModel getHabitInWeekById(List<HabitInWeekModel> habitModels, Long id) {
+        for (HabitInWeekModel habit : habitModels) {
+            if (habit.getHabitId().equals(id)) {
+                return habit;
+            }
+        }
+        return null;
+    }
+
     public void updateHistory(int position, Class<?> adapterName, String value, String date) {
         HabitModel habitModel = new HabitModel();
+        HabitInWeekModel habitInWeekModel = new HabitInWeekModel();
         if (HabitAdapter.class.equals(adapterName)) {
             if (habitModelList.size() != 0) {
                 habitModel = habitModelList.get(position);
+                habitInWeekModel = getHabitInWeekById(habitInWeekModelList, habitModel.getHabitId());
                 habitModelList.remove(position);
                 setHabitStatus(habitModel, value);
                 mHabitAdapter.notifyItemRemoved(position);
@@ -432,6 +443,7 @@ public class HomeViewModel extends BaseViewModel {
         } else if (DoneHabitAdapter.class.equals(adapterName)) {
             if (habitModelDoneList.size() != 0) {
                 habitModel = habitModelDoneList.get(position);
+                habitInWeekModel = getHabitInWeekById(habitInWeekModelList, habitModel.getHabitId());
                 habitModelDoneList.remove(position);
                 setHabitStatus(habitModel, value);
                 mDoneHabitAdapter.notifyItemRemoved(position);
@@ -439,12 +451,17 @@ public class HomeViewModel extends BaseViewModel {
         } else {
             if (habitModelFailedList.size() != 0) {
                 habitModel = habitModelFailedList.get(position);
+                habitInWeekModel = getHabitInWeekById(habitInWeekModelList, habitModel.getHabitId());
                 habitModelFailedList.remove(position);
                 setHabitStatus(habitModel, value);
                 mFailedHabitAdapter.notifyItemRemoved(position);
             }
         }
-        updateHistoryStatus(habitModel, date, value);
+        if (habitInWeekModel.isTimerHabit()) {
+            mLiveDataIsSuccess.postValue(false);
+        } else {
+            updateHistoryStatus(habitModel, date, value);
+        }
     }
 
     private void setHabitStatus(HabitModel habitModel, String status) {

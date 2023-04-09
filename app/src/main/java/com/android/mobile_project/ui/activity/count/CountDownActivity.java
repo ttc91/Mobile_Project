@@ -71,16 +71,17 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
         viewModel.initService = () -> {
             Bundle extras = getIntent().getExtras();
 
-            Long habitId = extras.getLong("habitId");
+            //Long habitId = extras.getLong("habitId");
+            Long habitId = 1L;
 
             viewModel.setHabitModel(viewModel.getHabitByUserIdAndHabitId(habitId));
 
             List<HabitInWeekModel> list = new ArrayList<>();
-            list = viewModel.getDayOfWeekHabitListByUserAndHabitId(habitId);
-            HabitInWeekModel habitInWeekModel = list.get(0);
+            //list = viewModel.getDayOfWeekHabitListByUserAndHabitId(habitId);
+            //HabitInWeekModel habitInWeekModel = list.get(0);
 
-            viewModel.setStartTimeInMillis(TimeUnit.HOURS.toMillis(habitInWeekModel.getTimerHour()) + TimeUnit.MINUTES.toMillis(habitInWeekModel.getTimerMinute()) + TimeUnit.SECONDS.toMillis(habitInWeekModel.getTimerSecond()));
-            mTimeLeftInMillis = viewModel.getStartTimeInMillis();
+            //viewModel.setStartTimeInMillis(TimeUnit.HOURS.toMillis(habitInWeekModel.getTimerHour()) + TimeUnit.MINUTES.toMillis(habitInWeekModel.getTimerMinute()) + TimeUnit.SECONDS.toMillis(habitInWeekModel.getTimerSecond()));
+            //mTimeLeftInMillis = viewModel.getStartTimeInMillis();
 
         };
 

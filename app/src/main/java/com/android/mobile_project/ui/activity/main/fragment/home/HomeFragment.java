@@ -32,6 +32,7 @@ import com.android.mobile_project.R;
 import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.databinding.FragmentHomeBinding;
 import com.android.mobile_project.ui.InitLayout;
+import com.android.mobile_project.ui.activity.count.CountDownActivity;
 import com.android.mobile_project.ui.activity.create.CreateHabitActivity;
 import com.android.mobile_project.ui.activity.main.MainActivity;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.DoneHabitAdapter;
@@ -208,6 +209,8 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         viewModel.getLiveDataIsSuccess().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean) {
                 visibleListHabit();
+            } else {
+                transitionCountDownActivity();
             }
         });
     }
@@ -314,6 +317,11 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
     private void clickCreateHabit() {
         Intent intent = new Intent(getContext(), CreateHabitActivity.class);
+        startActivity(intent);
+    }
+
+    private void transitionCountDownActivity() {
+        Intent intent = new Intent(getContext(), CountDownActivity.class);
         startActivity(intent);
     }
 
