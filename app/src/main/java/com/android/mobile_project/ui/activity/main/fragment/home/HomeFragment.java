@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
@@ -29,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import com.android.mobile_project.R;
+import com.android.mobile_project.data.remote.model.HabitInWeekModel;
 import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.databinding.FragmentHomeBinding;
 import com.android.mobile_project.ui.InitLayout;
@@ -151,17 +153,14 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         //binding.rvHorCalendar.smoothScrollToPosition(viewModel.getDays().size() / 2 + 1);
         SnapHelper helper = new LinearSnapHelper();
         helper.attachToRecyclerView(binding.rvHorCalendar);
-        binding.titleDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                binding.rvHorCalendar.smoothScrollToPosition(utils.getPositionOfTodayInArray());
-                if (utils.getDateTodayString().equalsIgnoreCase(viewModel.getCalendarBarDate())) {
-                    return;
-                }
-                viewModel.dailyCalendarAdapter.resetDaySelected();
-                viewModel.setCalendarBarDate(utils.getDateTodayString());
-                initHabitList(utils.getDateTodayString());
+        binding.titleDate.setOnClickListener(view -> {
+            binding.rvHorCalendar.smoothScrollToPosition(utils.getPositionOfTodayInArray());
+            if (utils.getDateTodayString().equalsIgnoreCase(viewModel.getCalendarBarDate())) {
+                return;
             }
+            viewModel.dailyCalendarAdapter.resetDaySelected();
+            viewModel.setCalendarBarDate(utils.getDateTodayString());
+            initHabitList(utils.getDateTodayString());
         });
     }
 
@@ -209,8 +208,12 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         viewModel.getLiveDataIsSuccess().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean) {
                 visibleListHabit();
-            } else {
-                transitionCountDownActivity();
+            }
+        });
+        viewModel.getCountDownTimerLD().observe(getViewLifecycleOwner(), new Observer<HabitInWeekModel>() {
+            @Override
+            public void onChanged(HabitInWeekModel habitInWeekModel) {
+                transitionCountDownActivity(habitInWeekModel);
             }
         });
     }
@@ -320,8 +323,9 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         startActivity(intent);
     }
 
-    private void transitionCountDownActivity() {
+    private void transitionCountDownActivity(HabitInWeekModel habitInWeekModel) {
         Intent intent = new Intent(getContext(), CountDownActivity.class);
+        intent.putExtra("habitInWeek", habitInWeekModel);
         startActivity(intent);
     }
 
@@ -341,17 +345,17 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
             switch (direction) {
                 case ItemTouchHelper.LEFT:
                     if (viewModel.isSelectedTheDayBefore()) {
-                        viewModel.updateHistory(position, HabitAdapter.class, VAL_FALSE, viewModel.getCalendarBarDate());
+                        viewModel.updateHistory(position, HabitAdapter.class, VAL_FALSE, viewModel.getCalendarBarDate(), true);
                     } else if (viewModel.isSelectedToday()) {
-                        viewModel.updateHistory(position, HabitAdapter.class, VAL_FALSE, utils.getDateTodayString());
+                        viewModel.updateHistory(position, HabitAdapter.class, VAL_FALSE, utils.getDateTodayString(), true);
                     }
                     break;
 
                 case ItemTouchHelper.RIGHT:
                     if (viewModel.isSelectedTheDayBefore()) {
-                        viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE, viewModel.getCalendarBarDate());
+                        viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE, viewModel.getCalendarBarDate(), true);
                     } else if (viewModel.isSelectedToday()) {
-                        viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE, utils.getDateTodayString());
+                        viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE, utils.getDateTodayString(), true);
                     }
                     break;
 
@@ -424,9 +428,9 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                     break;
                 case ItemTouchHelper.RIGHT:
                     if (viewModel.isSelectedTheDayBefore()) {
-                        viewModel.updateHistory(position, DoneHabitAdapter.class, VAL_NULL, viewModel.getCalendarBarDate());
+                        viewModel.updateHistory(position, DoneHabitAdapter.class, VAL_NULL, viewModel.getCalendarBarDate(), false);
                     } else if (viewModel.isSelectedToday()) {
-                        viewModel.updateHistory(position, DoneHabitAdapter.class, VAL_NULL, utils.getDateTodayString());
+                        viewModel.updateHistory(position, DoneHabitAdapter.class, VAL_NULL, utils.getDateTodayString(), false);
                     }
                     break;
             }
@@ -458,9 +462,9 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                     break;
                 case ItemTouchHelper.RIGHT:
                     if (viewModel.isSelectedTheDayBefore()) {
-                        viewModel.updateHistory(position, FailedHabitAdapter.class, VAL_NULL, viewModel.getCalendarBarDate());
+                        viewModel.updateHistory(position, FailedHabitAdapter.class, VAL_NULL, viewModel.getCalendarBarDate(), false);
                     } else if (viewModel.isSelectedToday()) {
-                        viewModel.updateHistory(position, FailedHabitAdapter.class, VAL_NULL, utils.getDateTodayString());
+                        viewModel.updateHistory(position, FailedHabitAdapter.class, VAL_NULL, utils.getDateTodayString(), false);
                     }
                     break;
             }

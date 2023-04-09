@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
 
 import com.android.mobile_project.MyApplication;
 import com.android.mobile_project.R;
@@ -35,6 +36,8 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
     private ActivityProcessTimeBinding binding;
 
     private CountDownComponent component;
+
+    private Long habitId;
 
     @Inject
     CountDownViewModel viewModel;
@@ -71,17 +74,17 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
         viewModel.initService = () -> {
             Bundle extras = getIntent().getExtras();
 
-            //Long habitId = extras.getLong("habitId");
-            Long habitId = 1L;
+            HabitInWeekModel habitInWeekModel = (HabitInWeekModel) extras.getSerializable("habitInWeek");
+            habitId = habitInWeekModel.getHabitId();
 
             viewModel.setHabitModel(viewModel.getHabitByUserIdAndHabitId(habitId));
 
-            List<HabitInWeekModel> list = new ArrayList<>();
+            //List<HabitInWeekModel> list = new ArrayList<>();
             //list = viewModel.getDayOfWeekHabitListByUserAndHabitId(habitId);
             //HabitInWeekModel habitInWeekModel = list.get(0);
 
-            //viewModel.setStartTimeInMillis(TimeUnit.HOURS.toMillis(habitInWeekModel.getTimerHour()) + TimeUnit.MINUTES.toMillis(habitInWeekModel.getTimerMinute()) + TimeUnit.SECONDS.toMillis(habitInWeekModel.getTimerSecond()));
-            //mTimeLeftInMillis = viewModel.getStartTimeInMillis();
+            viewModel.setStartTimeInMillis(TimeUnit.HOURS.toMillis(habitInWeekModel.getTimerHour()) + TimeUnit.MINUTES.toMillis(habitInWeekModel.getTimerMinute()) + TimeUnit.SECONDS.toMillis(habitInWeekModel.getTimerSecond()));
+            mTimeLeftInMillis = viewModel.getStartTimeInMillis();
 
         };
 
@@ -139,6 +142,13 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
             }
 
         };
+
+        viewModel.getLiveDataIsSuccess().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                finish();
+            }
+        });
     }
 
     public void updateCountDownText() {
@@ -151,12 +161,6 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
 
         binding.tvTime.setText(timeLeftFormatted);
 
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void onClickBack(){
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
     }
 
     public void onClickPlayTimer(){
@@ -173,12 +177,7 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
     public void onClickFinish(){
 
         String historyTime = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-        HistoryModel model = viewModel.getHistoryByHabitIdAndDate(viewModel.getHabitModel().getHabitId(), historyTime);
-        model.setHistoryHabitsState("true");
-        viewModel.updateHistory(model);
-
-        onClickBack();
+        viewModel.updateHistoryStatus(habitId, historyTime, "true");
 
     }
 
@@ -188,7 +187,7 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
         int id = view.getId();
 
         if(id == R.id.btn_back){
-            onClickBack();
+            finish();
         }else if(id == R.id.btn_play){
             onClickPlayTimer();
         }else if(id == R.id.btn_reset){

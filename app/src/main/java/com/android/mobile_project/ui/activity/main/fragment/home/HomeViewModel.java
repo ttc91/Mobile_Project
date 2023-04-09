@@ -100,6 +100,12 @@ public class HomeViewModel extends BaseViewModel {
         return insertHistoryLD;
     }
 
+    //Transition sang count down activity
+    private final MutableLiveData<HabitInWeekModel> countDownTimerLD = new MutableLiveData<>();
+    public LiveData<HabitInWeekModel> getCountDownTimerLD() {
+        return countDownTimerLD;
+    }
+
     public LiveData<Boolean> getHabitTodayLD() {
         return habitTodayLD;
     }
@@ -429,7 +435,7 @@ public class HomeViewModel extends BaseViewModel {
         return null;
     }
 
-    public void updateHistory(int position, Class<?> adapterName, String value, String date) {
+    public void updateHistory(int position, Class<?> adapterName, String value, String date, boolean isCountDown) {
         HabitModel habitModel = new HabitModel();
         HabitInWeekModel habitInWeekModel = new HabitInWeekModel();
         if (HabitAdapter.class.equals(adapterName)) {
@@ -457,8 +463,8 @@ public class HomeViewModel extends BaseViewModel {
                 mFailedHabitAdapter.notifyItemRemoved(position);
             }
         }
-        if (habitInWeekModel.isTimerHabit()) {
-            mLiveDataIsSuccess.postValue(false);
+        if (habitInWeekModel.isTimerHabit() && isCountDown) {
+            countDownTimerLD.postValue(habitInWeekModel);
         } else {
             updateHistoryStatus(habitModel, date, value);
         }

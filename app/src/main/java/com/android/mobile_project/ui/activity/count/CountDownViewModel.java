@@ -21,6 +21,7 @@ import com.android.mobile_project.data.repository.HistoryRepository;
 import com.android.mobile_project.data.utils.mapper.HabitInWeekMapper;
 import com.android.mobile_project.data.utils.mapper.HabitMapper;
 import com.android.mobile_project.data.utils.mapper.HistoryMapper;
+import com.android.mobile_project.ui.activity.base.BaseViewModel;
 import com.android.mobile_project.ui.activity.count.service.InitService;
 import com.android.mobile_project.ui.activity.count.service.TimerService;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
@@ -39,7 +40,9 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
 
 @MyCustomAnnotation.MyScope.ActivityScope
-public class CountDownViewModel extends ViewModel {
+public class CountDownViewModel extends BaseViewModel {
+
+    private static final String TAG = CountDownViewModel.class.getSimpleName();
 
     private final HabitRepository mHabitRepository;
     private final HabitInWeekRepository mHabitInWeekRepository;
@@ -214,6 +217,28 @@ public class CountDownViewModel extends ViewModel {
                     @Override
                     public void onError(@NonNull Throwable e) {
                         Log.e("updateHistory", "onError", e);
+                    }
+                });
+    }
+
+    /**
+     * Cập nhật trạng thái History
+     */
+    public void updateHistoryStatus(Long id, String date, String value) {
+        mHistoryRepository.getMHistoryDataSource().getHistoryByHabitIdAndDate(id, date)
+                .subscribe(new CustomSingleObserver<HistoryEntity>() {
+                    @Override
+                    public void onSuccess(@NonNull HistoryEntity historyEntity) {
+                        HistoryModel model = HistoryMapper.getInstance().mapToModel(historyEntity);
+                        model.setHistoryHabitsState(value);
+                        mHistoryRepository.getMHistoryDataSource().update(HistoryMapper.getInstance().mapToEntity(model))
+                                .subscribe(new CustomCompletableObserver() {
+                                    @Override
+                                    public void onComplete() {
+                                        Log.i(TAG, "updateHistory onComplete");
+                                        mLiveDataIsSuccess.postValue(true);
+                                    }
+                                });
                     }
                 });
     }
