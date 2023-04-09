@@ -35,12 +35,6 @@
 
         </activity>
 
-        <receiver android:name=".receiver.system.DayChangedReceiver" android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.DATE_CHANGED"/>
-            </intent-filter>
-        </receiver>
-
     </application>
 
 </manifest>

@@ -21,4 +21,6 @@ public interface HistoryDataSource extends BaseDataSource<HistoryEntity> {
 
     void insertInBackground(HistoryEntity entity);
 
+    HistoryEntity getHistoryByHabitIdAndDateInBackground(Long hId, String date);
+
 }

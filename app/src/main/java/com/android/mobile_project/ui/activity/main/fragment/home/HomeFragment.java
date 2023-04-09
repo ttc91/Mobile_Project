@@ -121,9 +121,9 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         super.onResume();
         if (LocalDate.parse(viewModel.getCalendarBarDate()).isBefore(utils.getSelectedDate()) ||
                 LocalDate.parse(viewModel.getCalendarBarDate()).isAfter(utils.getSelectedDate())) {
-            initHabitNotToday(viewModel.getCalendarBarDate());
+            //initHabitNotToday(viewModel.getCalendarBarDate());
         } else {
-            initHabitToday();
+            //initHabitToday();
         }
 
     }

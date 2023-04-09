@@ -87,4 +87,9 @@ public class LocalHabitDataSource extends BaseDataSource implements HabitDataSou
     public HabitEntity getFinalHabitByUserIdInBackground(Long userId) {
         return dao.getFinalHabitByUserIdInBackground(userId);
     }
+
+    @Override
+    public void updateHabitInBackground(HabitEntity entity) {
+        dao.updateHabitInBackground(entity);
+    }
 }
