@@ -22,7 +22,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
@@ -44,7 +43,6 @@ import com.android.mobile_project.utils.time.adapter.DailyCalendarAdapter;
 import com.android.mobile_project.utils.time.utils.TimeUtils;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -128,12 +126,15 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         viewModel.setMonth(binding.titleMonth);
         viewModel.getCurrentDayOfWeek();
         viewModel.setCalendarBarDate(utils.getDateTodayString());
-        viewModel.setOnClickItem((view, date) -> {
-            if (date.equalsIgnoreCase(viewModel.getCalendarBarDate())) {
-                return;
+        viewModel.setOnClickItem(new DailyCalendarAdapter.OnClickItem() {
+            @Override
+            public void onClick(View view, String date) {
+                if (date.equalsIgnoreCase(viewModel.getCalendarBarDate())) {
+                    return;
+                }
+                viewModel.setCalendarBarDate(date);
+                HomeFragment.this.initHabitList(date);
             }
-            viewModel.setCalendarBarDate(date);
-            initHabitList(date);
         });
     }
 
@@ -149,6 +150,18 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         //binding.rvHorCalendar.smoothScrollToPosition(viewModel.getDays().size() / 2 + 1);
         SnapHelper helper = new LinearSnapHelper();
         helper.attachToRecyclerView(binding.rvHorCalendar);
+        binding.titleDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                binding.rvHorCalendar.smoothScrollToPosition(utils.getPositionOfTodayInArray());
+                if (utils.getDateTodayString().equalsIgnoreCase(viewModel.getCalendarBarDate())) {
+                    return;
+                }
+                viewModel.dailyCalendarAdapter.resetDaySelected();
+                viewModel.setCalendarBarDate(utils.getDateTodayString());
+                initHabitList(utils.getDateTodayString());
+            }
+        });
     }
 
     private void initObserve() {
