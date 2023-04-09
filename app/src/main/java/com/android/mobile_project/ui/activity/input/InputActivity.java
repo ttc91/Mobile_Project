@@ -1,6 +1,7 @@
 package com.android.mobile_project.ui.activity.input;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.android.mobile_project.R;
 import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.data.remote.model.UserModel;
 import com.android.mobile_project.databinding.ActivityInputBinding;
+import com.android.mobile_project.receiver.system.DayChangedReceiver;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.input.service.DbService;
 import com.android.mobile_project.ui.activity.input.service.ToastService;
@@ -35,6 +37,8 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
     public InputComponent component;
 
     private Observer<Long> mUserIdObserver;
+
+    private final DayChangedReceiver mDayChangedReceiver = new DayChangedReceiver();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -57,6 +61,9 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
         viewModel.getUserIdMutableLiveData().observe(this, mUserIdObserver);
 
         viewModel.initService.initCheckingUI();
+
+        registerReceiver(mDayChangedReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
+
     }
 
     @Override
@@ -189,5 +196,6 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
         startActivity(intent);
         finish();
     }
+
 
 }

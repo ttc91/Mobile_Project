@@ -3,6 +3,7 @@ package com.android.mobile_project.data.local.sqlite.dao;
 import androidx.room.Dao;
 import androidx.room.Query;
 import androidx.room.Transaction;
+import androidx.room.Update;
 
 import com.android.mobile_project.data.local.sqlite.entity.db.HabitEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.relation.HabitWithDayOfWeekForHabitInWeek;
@@ -79,5 +80,8 @@ public interface HabitDAO extends BaseDAO<HabitEntity>{
 
     @Query("SELECT * FROM tbl_habit WHERE user_id = :userId ORDER BY id DESC LIMIT 1")
     HabitEntity getFinalHabitByUserIdInBackground(Long userId);
+
+    @Update
+    void updateHabitInBackground(HabitEntity entity);
 
 }
