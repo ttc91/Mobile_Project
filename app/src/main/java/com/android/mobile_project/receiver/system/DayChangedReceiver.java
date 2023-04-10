@@ -21,7 +21,6 @@ import com.android.mobile_project.utils.dagger.component.sub.receiver.DayChanged
 import com.android.mobile_project.utils.time.utils.TimeUtils;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -35,8 +34,6 @@ public class DayChangedReceiver extends BroadcastReceiver {
     private static final String VAL_NULL = "null";
 
     private static final String VAL_TRUE = "true";
-
-    private static final String DAY_TO_UPDATE = "23:59";
 
     public DayChangedReceiverComponent component;
 
@@ -59,49 +56,44 @@ public class DayChangedReceiver extends BroadcastReceiver {
         component = ((MyApplication) context.getApplicationContext()).provideDayChangedReceiverComponent();
         component.inject(this);
 
-        if(intent.getAction().equals(Intent.ACTION_TIME_TICK)){
-            LocalTime localTime = LocalTime.now();
-            if((localTime.getHour()+":"+localTime.getMinute()).equals(DAY_TO_UPDATE)){
-                String todayFormat = LocalDate.now().plus(Period.ofDays(1)).format(DateTimeFormatter.ofPattern(DAY_FORMAT));
-                String yesterdayFormat = LocalDate.now().minus(Period.ofDays(1)).format(DateTimeFormatter.ofPattern(DAY_FORMAT));
-                Long dayOfWeekTodayId = TimeUtils.getInstance().getDayOfWeekId(todayFormat);
-                Long dayOfWeekYesterdayId = TimeUtils.getInstance().getDayOfWeekId(yesterdayFormat);
+        String todayFormat = LocalDate.now().plus(Period.ofDays(1)).format(DateTimeFormatter.ofPattern(DAY_FORMAT));
+        String yesterdayFormat = LocalDate.now().minus(Period.ofDays(1)).format(DateTimeFormatter.ofPattern(DAY_FORMAT));
+        Long dayOfWeekTodayId = TimeUtils.getInstance().getDayOfWeekId(todayFormat);
+        Long dayOfWeekYesterdayId = TimeUtils.getInstance().getDayOfWeekId(yesterdayFormat);
 
-                List<HabitInWeekEntity> habitInWeekToDayEntities = mHabitInWeekDAO.getHabitInWeekEntityByDayOfWeekIdInBackground(
-                        DataLocalManager.getInstance().getUserId(), dayOfWeekTodayId);
+        List<HabitInWeekEntity> habitInWeekToDayEntities = mHabitInWeekDAO.getHabitInWeekEntityByDayOfWeekIdInBackground(
+                DataLocalManager.getInstance().getUserId(), dayOfWeekTodayId);
 
-                List<HabitInWeekEntity> habitInWeekYesterdayEntities = mHabitInWeekDAO.getHabitInWeekEntityByDayOfWeekIdInBackground(
-                        DataLocalManager.getInstance().getUserId(), dayOfWeekYesterdayId);
+        List<HabitInWeekEntity> habitInWeekYesterdayEntities = mHabitInWeekDAO.getHabitInWeekEntityByDayOfWeekIdInBackground(
+                DataLocalManager.getInstance().getUserId(), dayOfWeekYesterdayId);
 
-                //insert history for next day
-                for(HabitInWeekEntity entity : habitInWeekToDayEntities){
-                    HabitEntity habitEntity = mHabitDAO.getHabitByUserIdAndHabitIdInBackground(DataLocalManager.getInstance().getUserId(), entity.getDayOfWeekId());
-                    HistoryEntity historyEntity = new HistoryEntity();
-                    historyEntity.setHabitId(habitEntity.getHabitId());
-                    historyEntity.setHistoryDate(todayFormat);
-                    historyEntity.setHistoryHabitsState(VAL_NULL);
-                    historyEntity.setUserId(DataLocalManager.getInstance().getUserId());
-                    mHistoryDAO.insertInBackground(historyEntity);
-                }
-
-                //Update longest steak for habit
-                for(HabitInWeekEntity entity : habitInWeekYesterdayEntities){
-                    HabitEntity habitEntity = mHabitDAO.getHabitByUserIdAndHabitIdInBackground(DataLocalManager.getInstance().getUserId(), entity.getDayOfWeekId());
-                    try {
-                        HistoryEntity historyEntity = mHistoryDAO.getHistoryByHabitIdAndDateInBackground(habitEntity.getHabitId(), yesterdayFormat);
-                        if(historyEntity.getHistoryHabitsState().equals(VAL_TRUE)){
-                            habitEntity.setNumOfLongestSteak(Long.sum(habitEntity.getNumOfLongestSteak(), 1L));
-                        }else {
-                            habitEntity.setNumOfLongestSteak(0L);
-                        }
-                        mHabitDAO.updateHabitInBackground(habitEntity);
-                    }catch (NullPointerException ignored){
-                        Log.e("DayChangedReceiver", String.valueOf(ignored));
-                    }
-                }
-            }
-
+        //insert history for next day
+        for (HabitInWeekEntity entity : habitInWeekToDayEntities) {
+            HabitEntity habitEntity = mHabitDAO.getHabitByUserIdAndHabitIdInBackground(DataLocalManager.getInstance().getUserId(), entity.getHabitId());
+            HistoryEntity historyEntity = new HistoryEntity();
+            historyEntity.setHabitId(habitEntity.getHabitId());
+            historyEntity.setHistoryDate(todayFormat);
+            historyEntity.setHistoryHabitsState(VAL_NULL);
+            historyEntity.setUserId(DataLocalManager.getInstance().getUserId());
+            mHistoryDAO.insertInBackground(historyEntity);
         }
+
+        //Update longest steak for habit
+        for (HabitInWeekEntity entity : habitInWeekYesterdayEntities) {
+            HabitEntity habitEntity = mHabitDAO.getHabitByUserIdAndHabitIdInBackground(DataLocalManager.getInstance().getUserId(), entity.getDayOfWeekId());
+            try {
+                HistoryEntity historyEntity = mHistoryDAO.getHistoryByHabitIdAndDateInBackground(habitEntity.getHabitId(), yesterdayFormat);
+                if (historyEntity.getHistoryHabitsState().equals(VAL_TRUE)) {
+                    habitEntity.setNumOfLongestSteak(Long.sum(habitEntity.getNumOfLongestSteak(), 1L));
+                } else {
+                    habitEntity.setNumOfLongestSteak(0L);
+                }
+                mHabitDAO.updateHabitInBackground(habitEntity);
+            } catch (NullPointerException e) {
+                Log.e("DayChangedReceiver", String.valueOf(e));
+            }
+        }
+
 
     }
 
