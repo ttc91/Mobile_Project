@@ -1,5 +1,9 @@
 package com.android.mobile_project.ui.activity.input;
 
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
@@ -25,6 +29,8 @@ import com.android.mobile_project.ui.activity.main.MainActivity;
 import com.android.mobile_project.utils.dagger.component.provider.InputComponentProvider;
 import com.android.mobile_project.utils.dagger.component.sub.input.InputComponent;
 
+import java.util.Calendar;
+
 import javax.inject.Inject;
 
 public class InputActivity extends AppCompatActivity implements InitLayout, View.OnClickListener {
@@ -38,7 +44,11 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
 
     private Observer<Long> mUserIdObserver;
 
-    private final DayChangedReceiver mDayChangedReceiver = new DayChangedReceiver();
+    //private final DayChangedReceiver mDayChangedReceiver = new DayChangedReceiver();
+
+    private AlarmManager mAlarmManager;
+
+    private PendingIntent mPendingIntent;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -62,7 +72,9 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
 
         viewModel.initService.initCheckingUI();
 
-        registerReceiver(mDayChangedReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
+        //registerReceiver(mDayChangedReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
+
+        startInsertHistoryAlarm();
 
     }
 
@@ -195,6 +207,24 @@ public class InputActivity extends AppCompatActivity implements InitLayout, View
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @SuppressLint("UnspecifiedImmutableFlag")
+    private void startInsertHistoryAlarm(){
+
+        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), DayChangedReceiver.class);
+        mPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 0);
+
+        mAlarmManager.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, mPendingIntent);
+
     }
 
 
