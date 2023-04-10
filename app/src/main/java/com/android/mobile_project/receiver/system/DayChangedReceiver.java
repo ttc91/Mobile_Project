@@ -36,7 +36,7 @@ public class DayChangedReceiver extends BroadcastReceiver {
 
     private static final String VAL_TRUE = "true";
 
-    private static final String DAY_TO_UPDATE = "23:59";
+    private static final String DAY_TO_UPDATE = "19:17";
 
     public DayChangedReceiverComponent component;
 
