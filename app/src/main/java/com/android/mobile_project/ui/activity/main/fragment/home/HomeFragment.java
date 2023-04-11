@@ -34,6 +34,7 @@ import com.android.mobile_project.data.remote.model.HabitInWeekModel;
 import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.databinding.FragmentHomeBinding;
 import com.android.mobile_project.ui.InitLayout;
+import com.android.mobile_project.ui.activity.count.CountDownActivity;
 import com.android.mobile_project.ui.activity.create.CreateHabitActivity;
 import com.android.mobile_project.ui.activity.main.MainActivity;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.DoneHabitAdapter;
@@ -330,10 +331,21 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                     break;
 
                 case ItemTouchHelper.RIGHT:
-                    if (viewModel.isSelectedTheDayBefore()) {
-                        viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE, viewModel.getCalendarBarDate());
-                    } else if (viewModel.isSelectedToday()) {
-                        viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE, utils.getDateTodayString());
+
+                    HabitModel habitModel = viewModel.getHabitModelList().get(position);
+                    Optional<HabitInWeekModel> habitInWeekModel = viewModel.getHabitInWeekModelList().stream()
+                            .filter(model -> model.getHabitId().equals(habitModel.getHabitId())).findFirst();
+                    if(habitInWeekModel.isPresent() && habitInWeekModel.get().getTimerHour() == 0L &&
+                            habitInWeekModel.get().getTimerMinute() == 0L && habitInWeekModel.get().getTimerSecond() == 0L){
+                        if (viewModel.isSelectedTheDayBefore()) {
+                            viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE, viewModel.getCalendarBarDate());
+                        } else if (viewModel.isSelectedToday()) {
+                            viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE, utils.getDateTodayString());
+                        }
+                    }else{
+                        Intent intent = new Intent(getContext(), CountDownActivity.class);
+                        intent.putExtra("habitId", habitModel.getHabitId());
+                        startActivity(intent);
                     }
                     break;
 
@@ -364,20 +376,22 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                     if (dX > 0) {
                         int position = viewHolder.getAdapterPosition();
                         if (position != -1) {
-                            HabitModel habitModel = viewModel.getHabitModelList().get(position);
-                            Optional<HabitInWeekModel> habitInWeekModel = viewModel.getHabitInWeekModelList().stream()
-                                    .filter(model -> model.getHabitId().equals(habitModel.getHabitId())).findFirst();
-                            if(habitInWeekModel.isPresent() && habitInWeekModel.get().getTimerHour() == 0L &&
-                                habitInWeekModel.get().getTimerMinute() == 0L && habitInWeekModel.get().getTimerSecond() == 0L){
-                                icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_green_check);
-                            }else{
-                                icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_purple_clock);
+                            if(viewModel.getHabitModelList().size() > 0){
+                                HabitModel habitModel = viewModel.getHabitModelList().get(position);
+                                Optional<HabitInWeekModel> habitInWeekModel = viewModel.getHabitInWeekModelList().stream()
+                                        .filter(model -> model.getHabitId().equals(habitModel.getHabitId())).findFirst();
+                                if(habitInWeekModel.isPresent() && habitInWeekModel.get().getTimerHour() == 0L &&
+                                        habitInWeekModel.get().getTimerMinute() == 0L && habitInWeekModel.get().getTimerSecond() == 0L){
+                                    icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_green_check);
+                                }else{
+                                    icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_purple_clock);
+                                }
+                                p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
+                                c.drawBitmap(icon,
+                                        (float) itemView.getLeft() + 10,
+                                        (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight()) / 2,
+                                        p);
                             }
-                            p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
-                            c.drawBitmap(icon,
-                                    (float) itemView.getLeft() + 10,
-                                    (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight()) / 2,
-                                    p);
                         }
                     }
 

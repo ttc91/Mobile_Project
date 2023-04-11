@@ -65,6 +65,11 @@ public class LocalHistoryDataSource extends BaseDataSource implements HistoryDat
     }
 
     @Override
+    public Completable updateHistoryStatusTrueWithUserIdAndHabitIdAndDate(Long userId, Long habitId, String date) {
+        return dao.updateHistoryStatusTrueWithUserIdAndHabitIdAndDate(userId, habitId, date);
+    }
+
+    @Override
     public void insertInBackground(HistoryEntity entity) {
         dao.insertInBackground(entity);
     }

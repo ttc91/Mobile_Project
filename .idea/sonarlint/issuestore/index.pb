@@ -19,8 +19,6 @@ napp/src/main/java/com/android/mobile_project/utils/dagger/component/provider/Cr
 Uapp/src/main/java/com/android/mobile_project/data/local/pref/MySharedPreferences.java,b\6\b6bfd8d2b1a7e500c343b951202653b9021a847f
 |
 Lapp/src/main/java/com/android/mobile_project/utils/time/utils/TimeUtils.java,c\b\cbc775a62c2e18cd3958c966fa77e7867b02731d
-†
-Vapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/HabitInWeekDAO.java,3\a\3a123d4eb263dc789e02eebaa1bf2c0773d2a93e
 @
 app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 „
