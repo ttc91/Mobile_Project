@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import com.android.mobile_project.R;
+import com.android.mobile_project.data.remote.model.HabitInWeekModel;
 import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.databinding.FragmentHomeBinding;
 import com.android.mobile_project.ui.InitLayout;
@@ -45,6 +46,8 @@ import com.android.mobile_project.utils.time.utils.TimeUtils;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -361,16 +364,20 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                     if (dX > 0) {
                         int position = viewHolder.getAdapterPosition();
                         if (position != -1) {
-
-                            icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_purple_clock);
-
+                            HabitModel habitModel = viewModel.getHabitModelList().get(position);
+                            Optional<HabitInWeekModel> habitInWeekModel = viewModel.getHabitInWeekModelList().stream()
+                                    .filter(model -> model.getHabitId().equals(habitModel.getHabitId())).findFirst();
+                            if(habitInWeekModel.isPresent() && habitInWeekModel.get().getTimerHour() == 0L &&
+                                habitInWeekModel.get().getTimerMinute() == 0L && habitInWeekModel.get().getTimerSecond() == 0L){
+                                icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_green_check);
+                            }else{
+                                icon = BitmapFactory.decodeResource(getResources(), R.drawable.btn_purple_clock);
+                            }
                             p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OVER));
-
                             c.drawBitmap(icon,
                                     (float) itemView.getLeft() + 10,
                                     (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight()) / 2,
                                     p);
-
                         }
                     }
 

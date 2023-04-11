@@ -31,10 +31,7 @@ public class HabitInWeekModel extends BaseModel{
     }
 
     public boolean isTimerHabit() {
-        if (timerHour == 0 && timerMinute == 0 && timerSecond == 0) {
-            return true;
-        }
-        return false;
+        return timerHour != 0 || timerMinute != 0 || timerSecond != 0;
     }
 
 }
