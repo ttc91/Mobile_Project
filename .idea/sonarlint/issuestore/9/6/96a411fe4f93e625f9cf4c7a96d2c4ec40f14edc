@@ -1,0 +1,13 @@
+
+U
+java:S1117Œ">Rename "habitModel" which hides the field declared at line 78.(ü³«ò
+V
+java:S1128";Remove this unused import 'androidx.annotation.MainThread'.(ÚÔíêÿÿÿÿÿ
+v
+java:S1128"[Remove this unused import 'com.android.mobile_project.data.repository.DayOfTimeRepository'.(ºòÇ×ÿÿÿÿÿ
+Z
+java:S1128("ERemove this unused import 'io.reactivex.rxjava3.annotations.NonNull'.(Œû›
+e
+java:S1128)"JRemove this unused import 'io.reactivex.rxjava3.core.CompletableObserver'.( ¬µ©ûÿÿÿÿ
+c
+java:S1128+"HRemove this unused import 'io.reactivex.rxjava3.disposables.Disposable'.(ÜÍØüÿÿÿÿ
