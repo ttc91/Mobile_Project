@@ -30,4 +30,6 @@ public interface HabitDataSource extends BaseDataSource<HabitEntity>{
 
     HabitEntity getFinalHabitByUserIdInBackground(Long userId);
 
+    void updateHabitInBackground(HabitEntity entity);
+
 }

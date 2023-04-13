@@ -42,4 +42,7 @@ public interface HistoryDAO extends BaseDAO<HistoryEntity>{
     @Insert
     void insertInBackground(HistoryEntity entity);
 
+    @Query("SELECT * FROM tbl_history WHERE habit_id = :hId AND date = :date")
+    HistoryEntity getHistoryByHabitIdAndDateInBackground(Long hId, String date);
+
 }

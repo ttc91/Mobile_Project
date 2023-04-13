@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.mobile_project">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -35,9 +37,12 @@
 
         </activity>
 
-        <receiver android:name=".receiver.system.DayChangedReceiver" android:exported="false">
+        <receiver android:name=".receiver.system.DayChangedReceiver" android:exported="false"/>
+        <receiver android:name=".receiver.system.RebootReceiver"
+            android:enabled="true"
+            android:exported="false">
             <intent-filter>
-                <action android:name="android.intent.action.DATE_CHANGED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 

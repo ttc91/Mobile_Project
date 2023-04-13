@@ -20,12 +20,10 @@ import com.android.mobile_project.data.local.sqlite.entity.db.HistoryEntity;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.DayChangedReceiverComponent;
 import com.android.mobile_project.utils.time.utils.TimeUtils;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -34,6 +32,8 @@ public class DayChangedReceiver extends BroadcastReceiver {
     private static final String DAY_FORMAT = "yyyy-MM-dd";
 
     private static final String VAL_NULL = "null";
+
+    private static final String VAL_TRUE = "true";
 
     public DayChangedReceiverComponent component;
 
@@ -56,20 +56,42 @@ public class DayChangedReceiver extends BroadcastReceiver {
         component = ((MyApplication) context.getApplicationContext()).provideDayChangedReceiverComponent();
         component.inject(this);
 
-        String todayFormat = LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT));
-        Long dayOfWeekId = TimeUtils.getInstance().getDayOfWeekId(todayFormat);
+        String todayFormat = LocalDate.now().plus(Period.ofDays(1)).format(DateTimeFormatter.ofPattern(DAY_FORMAT));
+        String yesterdayFormat = LocalDate.now().minus(Period.ofDays(1)).format(DateTimeFormatter.ofPattern(DAY_FORMAT));
+        Long dayOfWeekTodayId = TimeUtils.getInstance().getDayOfWeekId(todayFormat);
+        Long dayOfWeekYesterdayId = TimeUtils.getInstance().getDayOfWeekId(yesterdayFormat);
 
-        List<HabitInWeekEntity> habitInWeekEntities = mHabitInWeekDAO.getHabitInWeekEntityByDayOfWeekIdInBackground(
-                DataLocalManager.getInstance().getUserId(), dayOfWeekId);
+        List<HabitInWeekEntity> habitInWeekToDayEntities = mHabitInWeekDAO.getHabitInWeekEntityByDayOfWeekIdInBackground(
+                DataLocalManager.getInstance().getUserId(), dayOfWeekTodayId);
 
-        for(HabitInWeekEntity entity : habitInWeekEntities){
-            HabitEntity habitEntity = mHabitDAO.getHabitByUserIdAndHabitIdInBackground(DataLocalManager.getInstance().getUserId(), entity.getDayOfWeekId());
+        List<HabitInWeekEntity> habitInWeekYesterdayEntities = mHabitInWeekDAO.getHabitInWeekEntityByDayOfWeekIdInBackground(
+                DataLocalManager.getInstance().getUserId(), dayOfWeekYesterdayId);
+
+        //insert history for next day
+        for (HabitInWeekEntity entity : habitInWeekToDayEntities) {
+            HabitEntity habitEntity = mHabitDAO.getHabitByUserIdAndHabitIdInBackground(DataLocalManager.getInstance().getUserId(), entity.getHabitId());
             HistoryEntity historyEntity = new HistoryEntity();
             historyEntity.setHabitId(habitEntity.getHabitId());
             historyEntity.setHistoryDate(todayFormat);
             historyEntity.setHistoryHabitsState(VAL_NULL);
             historyEntity.setUserId(DataLocalManager.getInstance().getUserId());
             mHistoryDAO.insertInBackground(historyEntity);
+        }
+
+        //Update longest steak for habit
+        for (HabitInWeekEntity entity : habitInWeekYesterdayEntities) {
+            HabitEntity habitEntity = mHabitDAO.getHabitByUserIdAndHabitIdInBackground(DataLocalManager.getInstance().getUserId(), entity.getDayOfWeekId());
+            try {
+                HistoryEntity historyEntity = mHistoryDAO.getHistoryByHabitIdAndDateInBackground(habitEntity.getHabitId(), yesterdayFormat);
+                if (historyEntity.getHistoryHabitsState().equals(VAL_TRUE)) {
+                    habitEntity.setNumOfLongestSteak(Long.sum(habitEntity.getNumOfLongestSteak(), 1L));
+                } else {
+                    habitEntity.setNumOfLongestSteak(0L);
+                }
+                mHabitDAO.updateHabitInBackground(habitEntity);
+            } catch (NullPointerException e) {
+                Log.e("DayChangedReceiver", String.valueOf(e));
+            }
         }
 
 

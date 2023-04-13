@@ -73,4 +73,9 @@ public class LocalHistoryDataSource extends BaseDataSource implements HistoryDat
     public void insertInBackground(HistoryEntity entity) {
         dao.insertInBackground(entity);
     }
+
+    @Override
+    public HistoryEntity getHistoryByHabitIdAndDateInBackground(Long hId, String date) {
+        return dao.getHistoryByHabitIdAndDateInBackground(hId, date);
+    }
 }
