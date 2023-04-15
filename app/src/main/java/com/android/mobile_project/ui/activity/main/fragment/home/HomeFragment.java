@@ -201,12 +201,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 visibleListHabit();
             }
         });
-        binding.tTodo.setVisibility(View.GONE);
-        binding.tFailed.setVisibility(View.GONE);
-        binding.tDone.setVisibility(View.GONE);
-        binding.rcvHabitList.setVisibility(View.GONE);
-        binding.rcvHabitFailedList.setVisibility(View.GONE);
-        binding.rcvHabitDoneList.setVisibility(View.GONE);
     }
 
     private void initHabitList(String date) {
@@ -222,14 +216,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initHabitModelList() {
-//        if (viewModel.getHabitModelList() == null || viewModel.getHabitModelList().isEmpty()) {
-//            viewModel.getmHabitAdapter().notifyDataSetChanged();
-//            return;
-//        }
-        Log.d(TAG, "initHabitModelList: " + viewModel.getHabitModelList().size());
-
         viewModel.recyclerViewClickListener = (v, habitModelList, position) -> {
 
             HabitModel model = habitModelList.get(position);
@@ -248,23 +235,10 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallbackHabitNullList);
         itemTouchHelper.attachToRecyclerView(binding.rcvHabitList);
-        if (viewModel.getHabitModelList().size() > 0) {
-            binding.tTodo.setVisibility(View.VISIBLE);
-            binding.rcvHabitList.setVisibility(View.VISIBLE);
-        } else {
-            binding.tTodo.setVisibility(View.GONE);
-            binding.rcvHabitList.setVisibility(View.GONE);
-        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initHabitDoneModeList() {
-//        if (viewModel.getHabitModelDoneList() == null || viewModel.getHabitModelDoneList().isEmpty()) {
-//            viewModel.getmDoneHabitAdapter().notifyDataSetChanged();
-//            return;
-//        }
-        Log.d(TAG, "initHabitDoneModeList: " + viewModel.getHabitModelDoneList().size());
         viewModel.setmDoneHabitAdapter(new DoneHabitAdapter(viewModel.getHabitModelDoneList()));
         viewModel.getmDoneHabitAdapter().notifyDataSetChanged();
 
@@ -274,26 +248,12 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallbackHabitDoneList);
         itemTouchHelper.attachToRecyclerView(binding.rcvHabitDoneList);
-        if (viewModel.getHabitModelDoneList().size() > 0) {
-            binding.tDone.setVisibility(View.VISIBLE);
-            binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
-        } else {
-            binding.tDone.setVisibility(View.GONE);
-            binding.rcvHabitDoneList.setVisibility(View.GONE);
-        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void initHabitFailedModelList() {
-//        if (viewModel.getHabitModelFailedList() == null || viewModel.getHabitModelFailedList().isEmpty()) {
-//            viewModel.getmFailedHabitAdapter().notifyDataSetChanged();
-//            return;
-//        }
-        Log.d(TAG, "initHabitFailedModelList: " + viewModel.getHabitModelFailedList().size());
         viewModel.setmFailedHabitAdapter(new FailedHabitAdapter(viewModel.getHabitModelFailedList()));
         viewModel.getmFailedHabitAdapter().notifyDataSetChanged();
-
 
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
         binding.rcvHabitFailedList.setAdapter(viewModel.getmFailedHabitAdapter());
@@ -301,73 +261,8 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallbackHabitFailedList);
         itemTouchHelper.attachToRecyclerView(binding.rcvHabitFailedList);
-
-        if (viewModel.getHabitModelFailedList().size() > 0) {
-            binding.tFailed.setVisibility(View.VISIBLE);
-            binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
-        } else {
-            binding.tFailed.setVisibility(View.GONE);
-            binding.rcvHabitFailedList.setVisibility(View.GONE);
-        }
-
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void initHabitBeforeModelList() {
-        viewModel.setHabitModelBeforeList(new ArrayList<>());
-        //viewModel.setBeforeAdapter(new BeforeAdapter(viewModel.getHabitModelBeforeList(), null));
-        viewModel.getBeforeAdapter().notifyDataSetChanged();
-
-        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-        binding.rcvBefore.setAdapter(viewModel.getBeforeAdapter());
-        binding.rcvBefore.setLayoutManager(manager);
-
-        if (viewModel.getHabitModelBeforeList().size() > 0) {
-            binding.rcvBefore.setVisibility(View.VISIBLE);
-        } else {
-            binding.rcvBefore.setVisibility(View.GONE);
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void initHabitAfterModelList(List<HabitModel> habitModels) {
-        //viewModel.setHabitModelAfterList(new ArrayList<>());
-        viewModel.setAfterAdapter(new AfterAdapter(habitModels));
-        viewModel.getAfterAdapter().notifyDataSetChanged();
-
-        RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
-        binding.rcvAfter.setAdapter(viewModel.getAfterAdapter());
-        binding.rcvAfter.setLayoutManager(manager);
-
-        if (habitModels.size() > 0) {
-            binding.rcvAfter.setVisibility(View.VISIBLE);
-        } else {
-            binding.rcvAfter.setVisibility(View.GONE);
-        }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public void initViewModel() {
-
-        binding.setVm(viewModel);
-
-        viewModel.setOnClickItem((view, date) -> {
-            Log.d(TAG, "calender day: " + date);
-            viewModel.setCalendarBarDate(date);
-            if (LocalDate.parse(date).isBefore(utils.getSelectedDate()) ||
-                    LocalDate.parse(date).isAfter(utils.getSelectedDate())) {
-                initHabitNotToday(date);
-            } else {
-                initHabitToday();
-            }
-        });
-
-
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onClick(View view) {
 
@@ -519,7 +414,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         }
 
         @SuppressLint("NotifyDataSetChanged")
-        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
@@ -554,7 +448,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         }
 
         @SuppressLint("NotifyDataSetChanged")
-        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
 
@@ -564,9 +457,9 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 case ItemTouchHelper.LEFT:
                     break;
                 case ItemTouchHelper.RIGHT:
-                    if (LocalDate.parse(viewModel.getCalendarBarDate()).isBefore(utils.getSelectedDate())) {
+                    if (viewModel.isSelectedTheDayBefore()) {
                         viewModel.updateHistory(position, FailedHabitAdapter.class, VAL_NULL, viewModel.getCalendarBarDate());
-                    } else if (viewModel.getCalendarBarDate().equalsIgnoreCase(utils.getDateTodayString())){
+                    } else if (viewModel.isSelectedToday()) {
                         viewModel.updateHistory(position, FailedHabitAdapter.class, VAL_NULL, utils.getDateTodayString());
                     }
                     break;

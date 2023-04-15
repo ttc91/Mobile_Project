@@ -74,8 +74,8 @@ public class LocalHabitDataSource extends BaseDataSource implements HabitDataSou
     }
 
     @Override
-    public Flowable<List<HabitEntity>> getHabitListDescByLongestSteak() {
-        return subscribeFlowable(dao.getHabitListDescByLongestSteak());
+    public Single<HabitEntity> getHabitByMostLongestSteak() {
+        return dao.getHabitByMostLongestSteak();
     }
 
     @Override

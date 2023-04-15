@@ -26,4 +26,8 @@ public interface HistoryDataSource extends BaseDataSource<HistoryEntity> {
 
     HistoryEntity getHistoryByHabitIdAndDateInBackground(Long hId, String date);
 
+    Single<Long> countTrueStateByHistoryDate(String historyDate);
+
+    Single<Long> countHistoriesByDate(String historyDate);
+
 }

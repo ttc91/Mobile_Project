@@ -35,6 +35,12 @@ public interface HistoryDAO extends BaseDAO<HistoryEntity>{
     @Query("UPDATE tbl_history SET state = 'true' WHERE user_id = :userId AND habit_id = :habitId AND date = :date")
     Completable updateHistoryStatusTrueWithUserIdAndHabitIdAndDate(Long userId, Long habitId, String date);
 
+    @Query("SELECT COUNT(habit_id) FROM tbl_history WHERE state = 'true' AND date = :historyDate")
+    Single<Long> countTrueStateByHistoryDate(String historyDate);
+
+    @Query("SELECT COUNT(habit_id) FROM tbl_history WHERE date = :historyDate")
+    Single<Long> countHistoriesByDate(String historyDate);
+
     /**
      * Query do in background
      */
