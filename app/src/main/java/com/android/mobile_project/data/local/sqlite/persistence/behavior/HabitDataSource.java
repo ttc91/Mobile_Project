@@ -24,7 +24,7 @@ public interface HabitDataSource extends BaseDataSource<HabitEntity>{
 
     Completable updateNameOfHabit(String hName, Long habitId);
 
-    Flowable<List<HabitEntity>> getHabitListDescByLongestSteak();
+    Single<HabitEntity> getHabitByMostLongestSteak();
 
     HabitEntity getHabitByUserIdAndHabitIdInBackground(Long userId, Long habitId);
 

@@ -33,9 +33,6 @@ public class HabitInWeekModel extends BaseModel implements Serializable {
     }
 
     public boolean isTimerHabit() {
-        if (timerHour == 0 && timerMinute == 0 && timerSecond == 0) {
-            return false;
-        }
-        return true;
+        return timerHour != 0 || timerMinute != 0 || timerSecond != 0;
     }
 }

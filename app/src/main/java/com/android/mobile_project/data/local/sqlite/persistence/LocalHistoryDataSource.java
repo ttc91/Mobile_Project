@@ -3,7 +3,6 @@ package com.android.mobile_project.data.local.sqlite.persistence;
 import com.android.mobile_project.data.local.sqlite.entity.db.HistoryEntity;
 import com.android.mobile_project.data.local.sqlite.dao.HistoryDAO;
 import com.android.mobile_project.data.local.sqlite.persistence.behavior.HistoryDataSource;
-import com.android.mobile_project.ui.activity.base.BaseViewModel;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
 
 import java.util.List;
@@ -65,6 +64,11 @@ public class LocalHistoryDataSource extends BaseDataSource implements HistoryDat
     }
 
     @Override
+    public Completable updateHistoryStatusTrueWithUserIdAndHabitIdAndDate(Long userId, Long habitId, String date) {
+        return dao.updateHistoryStatusTrueWithUserIdAndHabitIdAndDate(userId, habitId, date);
+    }
+
+    @Override
     public void insertInBackground(HistoryEntity entity) {
         dao.insertInBackground(entity);
     }
@@ -72,5 +76,15 @@ public class LocalHistoryDataSource extends BaseDataSource implements HistoryDat
     @Override
     public HistoryEntity getHistoryByHabitIdAndDateInBackground(Long hId, String date) {
         return dao.getHistoryByHabitIdAndDateInBackground(hId, date);
+    }
+
+    @Override
+    public Single<Long> countTrueStateByHistoryDate(String historyDate) {
+        return dao.countTrueStateByHistoryDate(historyDate);
+    }
+
+    @Override
+    public Single<Long> countHistoriesByDate(String historyDate) {
+        return dao.countHistoriesByDate(historyDate);
     }
 }

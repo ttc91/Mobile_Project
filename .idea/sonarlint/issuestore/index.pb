@@ -1,4 +1,5 @@
 
+<<<<<<< HEAD
 ñ
 fapp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/LocalHistoryDataSource.java,7\e\7eedbff87391994b2a8092c0a8fd7c125e56484d
 ò
@@ -161,22 +162,19 @@ Rapp/src/main/java/com/android/mobile_project/utils/constant/DailyCalendarEnum.j
 Kapp/src/main/java/com/android/mobile_project/ui/binding/BindingAdapter.java,4\d\4de2f7b6937c54b68ee1b45bd8585d43999d90d0
 <<<<<<< HEAD
 <<<<<<< HEAD
-ô
-iapp/src/main/java/com/android/mobile_project/ui/activity/setting/adapter/MonthlyCalendarHabitAdapter.java,a\e\aeee1fdfd3a2c4eecb1fe10c3a8cd10052827f5f
-~
-Napp/src/main/java/com/android/mobile_project/utils/custom/SingleLiveEvent.java,e\2\e2e68c3c7f2019835dff1070a3e977da13e7eb29
->>>>>>> 80cc98b61851fa4ef706584a3ba95e890bdcb5e7
 =======
-|
-Lapp/src/main/java/com/android/mobile_project/utils/time/utils/TimeUtils.java,c\b\cbc775a62c2e18cd3958c966fa77e7867b02731d
+ã
+[app/src/main/java/com/android/mobile_project/utils/time/adapter/MonthlyCalendarAdapter.java,7\e\7e286d6832697127abced8d94cb7e75e774fddd1
+>>>>>>> a46931bdaa285a8dfe0a45dd206a3c6ec45afcfe
 ô
 iapp/src/main/java/com/android/mobile_project/ui/activity/setting/adapter/MonthlyCalendarHabitAdapter.java,a\e\aeee1fdfd3a2c4eecb1fe10c3a8cd10052827f5f
-ô
-iapp/src/main/java/com/android/mobile_project/data/local/sqlite/entity/db/relation/DayOfTimeWithHabit.java,9\9\99950575182211e4dc34406a7000cc658883e0d4
-à
-Xapp/src/main/java/com/android/mobile_project/utils/dagger/custom/MyCustomAnnotation.java,2\b\2be76dfd95f4ff32a07d25bb9779d8a4003b16d0
+°
+qapp/src/main/java/com/android/mobile_project/utils/dagger/component/sub/receiver/DayChangedReceiverComponent.java,b\6\b6a26a4941267fac0091641bb0e3b8cc9422500e
+•
+uapp/src/main/java/com/android/mobile_project/utils/dagger/component/provider/DayChangedReceiverComponentProvider.java,b\3\b3a19e9904c1f4aa64095eb1ab21c02a6cfd6145
 o
 ?app/src/main/java/com/android/mobile_project/MyApplication.java,4\4\4491519b89794a868cc0f0381ce259cb39363b5f
+<<<<<<< HEAD
 
 Oapp/src/main/java/com/android/mobile_project/utils/dagger/ApplicationGraph.java,5\1\51d2e1eb8562ba50c840cd158296d036c36ea076
 ~
@@ -242,45 +240,28 @@ Oapp/src/main/java/com/android/mobile_project/ui/activity/main/MainActivity.java
 aapp/src/main/java/com/android/mobile_project/utils/dagger/module/activity/main/SettingModule.java,5\5\5508e3ee2a0544fa371a8b9a1496fdbf6216548c
 É
 Sapp/src/main/java/com/android/mobile_project/data/repository/HistoryRepository.java,9\3\93ae17621232317b31987bb851b5b9f670997f1d
+=======
+ó
+gapp/src/main/java/com/android/mobile_project/utils/dagger/component/provider/MainComponentProvider.java,2\2\220fb37fb276bdf251ef86836ef65fa2e493aa8b
+®
+xapp/src/main/java/com/android/mobile_project/utils/dagger/component/provider/CreateHistoryReceiverComponentProvider.java,b\7\b7575c477d3f66280c64b2a16ab93a07424b3d0a
+û
+napp/src/main/java/com/android/mobile_project/utils/dagger/component/provider/CreateHabitComponentProvider.java,b\6\b62a50ee75080efc425d96641eaad6a65ac91120
+Ö
+Uapp/src/main/java/com/android/mobile_project/data/local/pref/MySharedPreferences.java,b\6\b6bfd8d2b1a7e500c343b951202653b9021a847f
+>>>>>>> a46931bdaa285a8dfe0a45dd206a3c6ec45afcfe
 |
 Lapp/src/main/java/com/android/mobile_project/utils/time/utils/TimeUtils.java,c\b\cbc775a62c2e18cd3958c966fa77e7867b02731d
-ò
-happ/src/main/java/com/android/mobile_project/utils/dagger/component/sub/main/fragment/HomeComponent.java,6\b\6bf0039dd54c34dd30f1baead5531966300fa869
-è
-_app/src/main/java/com/android/mobile_project/utils/dagger/component/sub/main/MainComponent.java,2\8\287c39feb23df59a61246bef229c2bb64d4a882f
-Ñ
-Tapp/src/main/java/com/android/mobile_project/utils/dagger/module/DatabaseModule.java,2\7\2734667da49a06d827f658b32c1c79a04ee6edc9
-û
-napp/src/main/java/com/android/mobile_project/utils/dagger/module/activity/main/sub/MainSubComponentModule.java,6\c\6c82f0eb476727fb98581c5cbb35f9eedd025b17
+@
+app/build.gradle,f\4\f4a01d6a4fcb971362ec00a83903fd3902f52164
 Ü
-Vapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/HabitInWeekDAO.java,3\a\3a123d4eb263dc789e02eebaa1bf2c0773d2a93e
-Ñ
-Tapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/DayOfWeekDAO.java,b\6\b6ca55ad4cc610d501bd9dedbf2490aea4aa6d92
-û
-napp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/behavior/HabitInWeekDataSource.java,3\8\3869d8942ff2080622b2cdbc83d74e338c1b3163
-ò
-happ/src/main/java/com/android/mobile_project/utils/dagger/component/sub/create/CreateHabitComponent.java,a\b\ab946586f7468590d25327bfa3a862e71b46dc14
-à
-Xapp/src/main/java/com/android/mobile_project/utils/dagger/module/SubComponentModule.java,d\8\d82c05dd8c22f064284ab1bca14e5c1e8af366fc
-â
-Yapp/src/main/java/com/android/mobile_project/ui/activity/create/CreateHabitViewModel.java,4\9\49b007e57c56aacf79d5e7ac884762f342053d08
-ö
-japp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/LocalHabitInWeekDataSource.java,c\5\c53761f9064471aad51b0fc10f3bb499656a22f5
-ì
-capp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/planner/PlannerFragment.java,f\2\f256bdfd999b8252ff8ff82878e2c8e02501e1d8
-ì
-capp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/setting/SettingFragment.java,9\c\9c035b01219191a498110df442c167bc78f025b2
-Ñ
-Tapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/DayOfTimeDAO.java,3\d\3da70d1286a742d519fa33c9b8b104f49568b07a
-à
-Xapp/src/main/java/com/android/mobile_project/utils/dagger/custom/MyCustomAnnotation.java,2\b\2be76dfd95f4ff32a07d25bb9779d8a4003b16d0
-§
-tapp/src/main/java/com/android/mobile_project/utils/dagger/component/sub/receiver/CreateHistoryReceiverComponent.java,4\5\452e118a2ec21d52e3b8266dd47eb0da6aeca66a
-ä
-Zapp/src/main/java/com/android/mobile_project/ui/activity/setting/HabitSettingActivity.java,c\f\cfbc2cd1f1f778eaa0128357e60d0a76b1e48ddb
+Vapp/src/main/java/com/android/mobile_project/ui/activity/count/CountDownViewModel.java,4\a\4a38d91562da916c27b2bac487c14f26520fbb06
 á
-Wapp/src/main/java/com/android/mobile_project/utils/dagger/module/ApplicationModule.java,2\e\2e8008aed6c4af03f8493a636c4c0378791d586a
+Wapp/src/main/java/com/android/mobile_project/ui/activity/count/service/InitService.java,c\b\cb3906ec166e704132bb0ec620955a3e7edd7def
+o
+?app/src/main/java/com/android/mobile_project/ui/InitLayout.java,9\c\9c0a14b3d21d93046c1c269388c9d5cda965fe49
 
+<<<<<<< HEAD
 Oapp/src/main/java/com/android/mobile_project/utils/dagger/ApplicationGraph.java,5\1\51d2e1eb8562ba50c840cd158296d036c36ea076
 à
 Xapp/src/main/java/com/android/mobile_project/ui/activity/create/CreateHabitActivity.java,7\e\7ea7b6c6db07398aaefa67d00a21fff053ac5232
@@ -300,3 +281,18 @@ japp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/beha
 Ç
 Rapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/HistoryDAO.java,c\0\c09700092eaaa52863fb36f5978c94f6fd7810f5
 >>>>>>> 5f7a82a (Update insert History by system by alarm manager completly)
+=======
+Oapp/src/main/java/com/android/mobile_project/ui/activity/main/MainActivity.java,e\d\eda40895d996ca962ce737c72e99ff42c65ebc15
+Ñ
+Tapp/src/main/java/com/android/mobile_project/receiver/system/DayChangedReceiver.java,4\6\46163ca789bf027cf109c9d5bf814638b7b48ea5
+Å
+Qapp/src/main/java/com/android/mobile_project/ui/activity/input/InputActivity.java,e\2\e23e3c5ffd532214b4555895bd1ca1925f400763
+Ä
+Papp/src/main/java/com/android/mobile_project/ui/activity/main/MainViewModel.java,3\c\3c17e34a4aaef1a1d47643287d0119cee76e5c28
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
+v
+Fapp/src/main/java/com/android/mobile_project/utils/time/DayOfWeek.java,b\f\bfb249adc0163ca00b771556a1cd2c8a7405ee30
+ó
+gapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/planner/service/InitService.java,8\0\80f541035d2d4ae7ea8f152f7cb629a1575e3e97
+>>>>>>> a46931bdaa285a8dfe0a45dd206a3c6ec45afcfe

@@ -1,0 +1,11 @@
+
+P
+java:S1610":Convert the abstract class "BaseMapper" into an interface.(ò¯°½
+Q
+java:S1172"/Remove this unused method parameter "entities".(¦™Ôğüÿÿÿÿ8¿›ü’ê0
+H
+java:S1168"+Return an empty collection instead of null.(¥¹ï8Ğ÷“ê0
+C
+java:S1172"-Remove this unused method parameter "models".(·Ê°
+H
+java:S1168"+Return an empty collection instead of null.(¥¹ï8…˜‚“ê0

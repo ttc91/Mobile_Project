@@ -69,8 +69,8 @@ public interface HabitDAO extends BaseDAO<HabitEntity>{
     @Query("UPDATE tbl_habit SET habit_name = :hName WHERE id = :habitId")
     Completable updateNameOfHabit(String hName, Long habitId);
 
-    @Query("SELECT * FROM tbl_habit ORDER BY longest_steak DESC")
-    Flowable<List<HabitEntity>> getHabitListDescByLongestSteak();
+    @Query("SELECT * FROM tbl_habit ORDER BY longest_steak DESC LIMIT 1")
+    Single<HabitEntity> getHabitByMostLongestSteak();
 
     /**
      * Query do in background
