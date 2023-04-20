@@ -353,23 +353,11 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                         viewModel.updateHistory(position, HabitAdapter.class, VAL_FALSE, utils.getDateTodayString(), true);
                     }
                     break;
-
                 case ItemTouchHelper.RIGHT:
-
-                    HabitModel habitModel = viewModel.getHabitModelList().get(position);
-                    Optional<HabitInWeekModel> habitInWeekModel = viewModel.getHabitInWeekModelList().stream()
-                            .filter(model -> model.getHabitId().equals(habitModel.getHabitId())).findFirst();
-                    if(habitInWeekModel.isPresent() && habitInWeekModel.get().getTimerHour() == 0L &&
-                            habitInWeekModel.get().getTimerMinute() == 0L && habitInWeekModel.get().getTimerSecond() == 0L){
-                        if (viewModel.isSelectedTheDayBefore()) {
-                            viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE, viewModel.getCalendarBarDate());
-                        } else if (viewModel.isSelectedToday()) {
-                            viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE, utils.getDateTodayString());
-                        }
-                    }else{
-                        Intent intent = new Intent(getContext(), CountDownActivity.class);
-                        intent.putExtra("habitId", habitModel.getHabitId());
-                        startActivity(intent);
+                    if (viewModel.isSelectedTheDayBefore()) {
+                        viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE, viewModel.getCalendarBarDate(), true);
+                    } else if (viewModel.isSelectedToday()) {
+                        viewModel.updateHistory(position, HabitAdapter.class, VAL_TRUE, utils.getDateTodayString(), true);
                     }
                     break;
 

@@ -1,10 +1,9 @@
 package com.android.mobile_project.ui.activity.count;
 
-import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -15,27 +14,26 @@ import androidx.lifecycle.Observer;
 
 import com.android.mobile_project.MyApplication;
 import com.android.mobile_project.R;
+import com.android.mobile_project.data.remote.model.HabitInWeekModel;
 import com.android.mobile_project.data.remote.model.HistoryModel;
 import com.android.mobile_project.databinding.ActivityProcessTimeBinding;
 import com.android.mobile_project.ui.InitLayout;
-import com.android.mobile_project.ui.activity.count.service.DbService;
 import com.android.mobile_project.ui.activity.count.service.TimerService;
+import com.android.mobile_project.ui.activity.main.MainActivity;
 import com.android.mobile_project.utils.dagger.component.sub.count.CountDownComponent;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import io.reactivex.rxjava3.disposables.CompositeDisposable;
-
 public class CountDownActivity extends AppCompatActivity implements InitLayout, View.OnClickListener{
 
     private ActivityProcessTimeBinding binding;
-
-    private Long mStartTimeInMillis;
 
     private CountDownComponent component;
 
@@ -44,7 +42,8 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
     @Inject
     CountDownViewModel viewModel;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    long mTimeLeftInMillis;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
@@ -56,6 +55,7 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
         initViewModel();
 
         viewModel.initService.init();
+        updateCountDownText();
     }
 
     @Override
@@ -66,7 +66,6 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
         return binding.getRoot();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void initViewModel() {
 
@@ -74,40 +73,39 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
 
         viewModel.initService = () -> {
             Bundle extras = getIntent().getExtras();
-            viewModel.setHabitId(extras.getLong("habitId"));
-            viewModel.getDayOfWeekHabitListByUserAndHabitId(viewModel.getHabitId(), new DbService.GetDayOfWeekHabitListByUserAndHabitIdResult() {
-                @SuppressLint("LongLogTag")
-                @Override
-                public void onGetDayOfWeekHabitListByUserAndHabitIdSuccess(Long startTimeInMillis, CompositeDisposable disposable) {
-                    Log.i("CountDownActivity-getDayOfWeekHabitListByUserAndHabitId", "onGetDayOfWeekHabitListByUserAndHabitIdSuccess");
-                    mStartTimeInMillis = startTimeInMillis;
-                    updateCountDownText();
-                    disposable.clear();
-                }
 
-                @SuppressLint("LongLogTag")
-                @Override
-                public void onGetDayOfWeekHabitListByUserAndHabitIdFailure(CompositeDisposable disposable) {
-                    Log.i("CountDownActivity-getDayOfWeekHabitListByUserAndHabitId", "onGetDayOfWeekHabitListByUserAndHabitIdSuccess");
-                    disposable.clear();
-                }
-            });
+            HabitInWeekModel habitInWeekModel = (HabitInWeekModel) extras.getSerializable("habitInWeek");
+            habitId = habitInWeekModel.getHabitId();
+
+            viewModel.setHabitModel(viewModel.getHabitByUserIdAndHabitId(habitId));
+
+            //List<HabitInWeekModel> list = new ArrayList<>();
+            //list = viewModel.getDayOfWeekHabitListByUserAndHabitId(habitId);
+            //HabitInWeekModel habitInWeekModel = list.get(0);
+
+            viewModel.setStartTimeInMillis(TimeUnit.HOURS.toMillis(habitInWeekModel.getTimerHour()) + TimeUnit.MINUTES.toMillis(habitInWeekModel.getTimerMinute()) + TimeUnit.SECONDS.toMillis(habitInWeekModel.getTimerSecond()));
+            mTimeLeftInMillis = viewModel.getStartTimeInMillis();
+
         };
 
         viewModel.timerService = new TimerService() {
             @Override
             public void startTimer() {
 
-                viewModel.setMCountDownTimer(new CountDownTimer(mStartTimeInMillis, 1000) {
+                viewModel.setMCountDownTimer(new CountDownTimer(mTimeLeftInMillis, 1000) {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onTick(long l) {
+                        mTimeLeftInMillis = l;
                         updateCountDownText();
-                        mStartTimeInMillis = l;
-                        int value = (int) l;
+
+                        int value = (int) mTimeLeftInMillis;
                         int total = Math.toIntExact(viewModel.getStartTimeInMillis());
+
                         viewModel.setPercent(100 - ((float)value/total) * 100);
+
                         binding.cirBar.setProgress(viewModel.getPercent());
+
                     }
 
                     @Override
@@ -136,7 +134,7 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
 
                 viewModel.getMCountDownTimer().cancel();
                 viewModel.setMTimerRunning(false);
-                mStartTimeInMillis = viewModel.getStartTimeInMillis();
+                mTimeLeftInMillis = viewModel.getStartTimeInMillis();
                 updateCountDownText();
                 binding.btnPlay.setBackground(ContextCompat.getDrawable(getApplicationContext(),R.drawable.btn_process_play));
                 binding.cirBar.setProgress(0);
@@ -155,19 +153,14 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
 
     public void updateCountDownText() {
 
-        int h = (int) TimeUnit.MILLISECONDS.toHours(mStartTimeInMillis);
-        int m = (int) (TimeUnit.MILLISECONDS.toMinutes(mStartTimeInMillis) % TimeUnit.HOURS.toMinutes(1));
-        int s = (int) (TimeUnit.MILLISECONDS.toSeconds(mStartTimeInMillis) % TimeUnit.MINUTES.toSeconds(1));
+        int h = (int) TimeUnit.MILLISECONDS.toHours(mTimeLeftInMillis);
+        int m = (int) (TimeUnit.MILLISECONDS.toMinutes(mTimeLeftInMillis) % TimeUnit.HOURS.toMinutes(1));
+        int s = (int) (TimeUnit.MILLISECONDS.toSeconds(mTimeLeftInMillis) % TimeUnit.MINUTES.toSeconds(1));
 
         String timeLeftFormatted = String.format(Locale.US, "%02d:%02d:%02d", h, m, s);
 
         binding.tvTime.setText(timeLeftFormatted);
 
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void onClickBack(){
-        finish();
     }
 
     public void onClickPlayTimer(){
@@ -184,26 +177,7 @@ public class CountDownActivity extends AppCompatActivity implements InitLayout, 
     public void onClickFinish(){
 
         String historyTime = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-        viewModel.updateHistoryStatusTrueWithUserIdAndHabitIdAndDate(viewModel.getHabitId(), historyTime, new DbService.UpdateHistoryStatusTrueWithUserIdAndHabitIdAndDateResult() {
-            @SuppressLint("LongLogTag")
-            @Override
-            public void onUpdateHistoryStatusTrueWithUserIdAndHabitIdAndDateSuccess(CompositeDisposable disposable) {
-                Log.i("CountDownActivity-onUpdateHistoryStatusTrueWithUserIdAndHabitIdAndDateSuccess",
-                        "onUpdateHistoryStatusTrueWithUserIdAndHabitIdAndDateSuccess");
-                disposable.clear();
-            }
-
-            @SuppressLint("LongLogTag")
-            @Override
-            public void onUpdateHistoryStatusTrueWithUserIdAndHabitIdAndDateFailure(CompositeDisposable disposable) {
-                Log.e("CountDownActivity-onUpdateHistoryStatusTrueWithUserIdAndHabitIdAndDateFailure",
-                        "onUpdateHistoryStatusTrueWithUserIdAndHabitIdAndDateSuccess");
-                disposable.clear();
-            }
-        });
-
-        onClickBack();
+        viewModel.updateHistoryStatus(habitId, historyTime, "true");
 
     }
 
