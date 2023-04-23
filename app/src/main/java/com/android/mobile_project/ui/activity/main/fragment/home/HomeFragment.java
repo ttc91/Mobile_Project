@@ -46,9 +46,7 @@ import com.android.mobile_project.utils.time.adapter.DailyCalendarAdapter;
 import com.android.mobile_project.utils.time.utils.TimeUtils;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -181,7 +179,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
         viewModel.getHabitAfterLD().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean) {
                 Log.d(TAG, "onChanged: isAfter");
-                viewModel.getHabitListAfterDay(viewModel.getHabitInWeekModelList());
+                viewModel.getHabitListAfterDay(viewModel.getmHabitInWeekModelList());
                 initHabitModelList();
                 initHabitDoneModeList();
                 initHabitFailedModelList();
@@ -244,7 +242,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
             startActivity(intent);
 
         };
-        viewModel.setmHabitAdapter(new HabitAdapter(viewModel.getHabitModelList(), viewModel.getHabitInWeekModelList(), viewModel.recyclerViewClickListener));
+        viewModel.setmHabitAdapter(new HabitAdapter(viewModel.getmHabitModelList(), viewModel.getmHabitInWeekModelList(), viewModel.recyclerViewClickListener));
         viewModel.getmHabitAdapter().notifyDataSetChanged();
 
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
@@ -257,7 +255,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
     @SuppressLint("NotifyDataSetChanged")
     private void initHabitDoneModeList() {
-        viewModel.setmDoneHabitAdapter(new DoneHabitAdapter(viewModel.getHabitModelDoneList()));
+        viewModel.setmDoneHabitAdapter(new DoneHabitAdapter(viewModel.getmHabitModelDoneList()));
         viewModel.getmDoneHabitAdapter().notifyDataSetChanged();
 
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
@@ -270,7 +268,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
 
     @SuppressLint("NotifyDataSetChanged")
     private void initHabitFailedModelList() {
-        viewModel.setmFailedHabitAdapter(new FailedHabitAdapter(viewModel.getHabitModelFailedList()));
+        viewModel.setmFailedHabitAdapter(new FailedHabitAdapter(viewModel.getmHabitModelFailedList()));
         viewModel.getmFailedHabitAdapter().notifyDataSetChanged();
 
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
@@ -388,9 +386,9 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                     if (dX > 0) {
                         int position = viewHolder.getAdapterPosition();
                         if (position != -1) {
-                            if(viewModel.getHabitModelList().size() > 0){
-                                HabitModel habitModel = viewModel.getHabitModelList().get(position);
-                                Optional<HabitInWeekModel> habitInWeekModel = viewModel.getHabitInWeekModelList().stream()
+                            if(viewModel.getmHabitModelList().size() > 0){
+                                HabitModel habitModel = viewModel.getmHabitModelList().get(position);
+                                Optional<HabitInWeekModel> habitInWeekModel = viewModel.getmHabitInWeekModelList().stream()
                                         .filter(model -> model.getHabitId().equals(habitModel.getHabitId())).findFirst();
                                 if(habitInWeekModel.isPresent() && habitInWeekModel.get().getTimerHour() == 0L &&
                                         habitInWeekModel.get().getTimerMinute() == 0L && habitInWeekModel.get().getTimerSecond() == 0L){
@@ -486,7 +484,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     };
 
     private void visibleListHabit() {
-        if (viewModel.getHabitModelList().size() == 0) {
+        if (viewModel.getmHabitModelList().size() == 0) {
             binding.tTodo.setVisibility(View.GONE);
             binding.rcvHabitList.setVisibility(View.GONE);
         } else {
@@ -494,7 +492,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
             binding.rcvHabitList.setVisibility(View.VISIBLE);
         }
 
-        if (viewModel.getHabitModelDoneList().size() == 0) {
+        if (viewModel.getmHabitModelDoneList().size() == 0) {
             binding.tDone.setVisibility(View.GONE);
             binding.rcvHabitDoneList.setVisibility(View.GONE);
         } else {
@@ -502,7 +500,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
             binding.rcvHabitDoneList.setVisibility(View.VISIBLE);
         }
 
-        if (viewModel.getHabitModelFailedList().size() == 0) {
+        if (viewModel.getmHabitModelFailedList().size() == 0) {
             binding.tFailed.setVisibility(View.GONE);
             binding.rcvHabitFailedList.setVisibility(View.GONE);
         } else {
