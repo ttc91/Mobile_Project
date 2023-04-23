@@ -3,7 +3,6 @@ package com.android.mobile_project;
 import android.app.Application;
 
 import com.android.mobile_project.utils.dagger.ApplicationGraph;
-import com.android.mobile_project.utils.dagger.DaggerApplicationGraph;
 import com.android.mobile_project.utils.dagger.component.provider.CountDownComponentProvider;
 import com.android.mobile_project.utils.dagger.component.provider.CreateHabitComponentProvider;
 import com.android.mobile_project.utils.dagger.component.provider.CreateHistoryReceiverComponentProvider;
@@ -20,6 +19,7 @@ import com.android.mobile_project.utils.dagger.component.sub.input.InputComponen
 import com.android.mobile_project.utils.dagger.component.sub.main.MainComponent;
 import com.android.mobile_project.utils.dagger.module.ApplicationModule;
 import com.android.mobile_project.utils.dagger.module.DatabaseModule;
+import com.android.mobile_project.utils.dagger.DaggerApplicationGraph;
 
 public class MyApplication extends Application
         implements MainComponentProvider, HabitSettingComponentProvider,

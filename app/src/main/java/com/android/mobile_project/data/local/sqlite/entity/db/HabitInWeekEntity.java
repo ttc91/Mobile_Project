@@ -10,16 +10,6 @@ import com.android.mobile_project.data.local.sqlite.entity.BaseEntity;
 
 import java.io.Serializable;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-
-@EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-
 @Entity(
         primaryKeys = {"user_id", "habit_id", "day_of_week_id"},
         tableName = "tbl_habit_in_week",
@@ -64,4 +54,66 @@ public class HabitInWeekEntity extends BaseEntity implements Serializable {
     @Nullable
     public Long timerSecond;
 
+    public HabitInWeekEntity(@NonNull Long userId, @NonNull Long habitId, @NonNull Long dayOfWeekId, @Nullable Long timerHour, @Nullable Long timerMinute, @Nullable Long timerSecond) {
+        this.userId = userId;
+        this.habitId = habitId;
+        this.dayOfWeekId = dayOfWeekId;
+        this.timerHour = timerHour;
+        this.timerMinute = timerMinute;
+        this.timerSecond = timerSecond;
+    }
+
+    @NonNull
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(@NonNull Long userId) {
+        this.userId = userId;
+    }
+
+    @NonNull
+    public Long getHabitId() {
+        return habitId;
+    }
+
+    public void setHabitId(@NonNull Long habitId) {
+        this.habitId = habitId;
+    }
+
+    @NonNull
+    public Long getDayOfWeekId() {
+        return dayOfWeekId;
+    }
+
+    public void setDayOfWeekId(@NonNull Long dayOfWeekId) {
+        this.dayOfWeekId = dayOfWeekId;
+    }
+
+    @Nullable
+    public Long getTimerHour() {
+        return timerHour;
+    }
+
+    public void setTimerHour(@Nullable Long timerHour) {
+        this.timerHour = timerHour;
+    }
+
+    @Nullable
+    public Long getTimerMinute() {
+        return timerMinute;
+    }
+
+    public void setTimerMinute(@Nullable Long timerMinute) {
+        this.timerMinute = timerMinute;
+    }
+
+    @Nullable
+    public Long getTimerSecond() {
+        return timerSecond;
+    }
+
+    public void setTimerSecond(@Nullable Long timerSecond) {
+        this.timerSecond = timerSecond;
+    }
 }

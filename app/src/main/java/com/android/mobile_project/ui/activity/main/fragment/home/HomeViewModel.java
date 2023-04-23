@@ -96,12 +96,14 @@ public class HomeViewModel extends BaseViewModel {
 
     //Xoá đoạn này khi fix insert history sau 12h
     private final MutableLiveData<Boolean> insertHistoryLD = new MutableLiveData<>();
+
     public LiveData<Boolean> getInsertHistoryLD() {
         return insertHistoryLD;
     }
 
     //Transition sang count down activity
     private final MutableLiveData<HabitInWeekModel> countDownTimerLD = new MutableLiveData<>();
+
     public LiveData<HabitInWeekModel> getCountDownTimerLD() {
         return countDownTimerLD;
     }
@@ -117,7 +119,6 @@ public class HomeViewModel extends BaseViewModel {
     public LiveData<Boolean> getHabitAfterLD() {
         return habitAfterLD;
     }
-
 
 
     private List<HabitModel> habitModelList = new ArrayList<>();

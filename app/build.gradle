@@ -61,11 +61,11 @@ dependencies {
     // optional - Paging 3 Integration
     implementation "androidx.room:room-paging:2.5.0-alpha01"
 
-    //Lombok
-    compileOnly 'org.projectlombok:lombok:1.18.16'
-    annotationProcessor 'org.projectlombok:lombok:1.18.16'
-    testCompileOnly 'org.projectlombok:lombok:1.18.16'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
+//    //Lombok
+//    compileOnly 'org.projectlombok:lombok:1.18.16'
+//    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+//    testCompileOnly 'org.projectlombok:lombok:1.18.16'
+//    testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
 
     //RxJava
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.2'

@@ -21,4 +21,28 @@ public class UserEntity extends BaseEntity implements Serializable {
     @NonNull
     public String userName;
 
+    public UserEntity() {
+    }
+
+    public UserEntity(Long userId, @NonNull String userName) {
+        this.userId = userId;
+        this.userName = userName;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    @NonNull
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(@NonNull String userName) {
+        this.userName = userName;
+    }
 }

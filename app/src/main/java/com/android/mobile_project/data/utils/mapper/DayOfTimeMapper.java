@@ -26,7 +26,7 @@ public class DayOfTimeMapper extends BaseMapper<DayOfTimeEntity, DayOfTimeModel>
 
     @Override
     public DayOfTimeModel mapToModel(DayOfTimeEntity e) {
-        return new DayOfTimeModel(e.getDayOfTimeId(), e.getDayOfTimeName());
+        return new DayOfTimeModel(e.dayOfTimeId, e.dayOfTimeName);
     }
 
     @Override

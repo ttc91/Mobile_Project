@@ -38,4 +38,48 @@ public class RemainderEntity implements Serializable {
     @NonNull
     public Long minutesTime;
 
+    public RemainderEntity(Long remainderId, @NonNull Long habitId, @NonNull Long hourTime, @NonNull Long minutesTime) {
+        this.remainderId = remainderId;
+        this.habitId = habitId;
+        this.hourTime = hourTime;
+        this.minutesTime = minutesTime;
+    }
+
+    public RemainderEntity() {
+    }
+
+    public Long getRemainderId() {
+        return remainderId;
+    }
+
+    public void setRemainderId(Long remainderId) {
+        this.remainderId = remainderId;
+    }
+
+    @NonNull
+    public Long getHabitId() {
+        return habitId;
+    }
+
+    public void setHabitId(@NonNull Long habitId) {
+        this.habitId = habitId;
+    }
+
+    @NonNull
+    public Long getHourTime() {
+        return hourTime;
+    }
+
+    public void setHourTime(@NonNull Long hourTime) {
+        this.hourTime = hourTime;
+    }
+
+    @NonNull
+    public Long getMinutesTime() {
+        return minutesTime;
+    }
+
+    public void setMinutesTime(@NonNull Long minutesTime) {
+        this.minutesTime = minutesTime;
+    }
 }
