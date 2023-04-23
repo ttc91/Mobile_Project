@@ -26,7 +26,6 @@ import com.android.mobile_project.ui.activity.base.BaseViewModel;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.DoneHabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.FailedHabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.HabitAdapter;
-import com.android.mobile_project.utils.custom.SingleLiveEvent;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
 import com.android.mobile_project.utils.time.adapter.DailyCalendarAdapter;
 import com.android.mobile_project.utils.time.utils.TimeUtils;
@@ -42,6 +41,7 @@ import javax.inject.Inject;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @MyCustomAnnotation.MyScope.FragmentScope
@@ -117,7 +117,7 @@ public class HomeViewModel extends BaseViewModel {
         return habitBeforeLD;
     }
 
-    public LiveData<Boolean> getHabitAfterLD() {
+    public MutableLiveData<Boolean> getHabitAfterLD() {
         return habitAfterLD;
     }
 
@@ -292,6 +292,7 @@ public class HomeViewModel extends BaseViewModel {
      * @param date
      */
     public void getHabitAndHistory(String date) {
+        Log.d(TAG, "getHabitAndHistory: " + date);
         Long dateOfWeekId = timeUtils.getDayOfWeekId(date);
         Flowable<List<HabitEntity>> observable1 = getHabitsByUserId();
         Flowable<List<HabitInWeekEntity>> observable2 = getHabitInWeekModels(dateOfWeekId);
@@ -313,8 +314,10 @@ public class HomeViewModel extends BaseViewModel {
                     }*/
                     return list;
                 });
+
         addDisposable(result
                 .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
                 .subscribeWith(new CustomSubscriber<List<Object>>() {
                     @Override
                     public void onNext(List<Object> objects) {
@@ -322,8 +325,10 @@ public class HomeViewModel extends BaseViewModel {
                             Log.d(TAG, "habitAfterLD: postValue");
                             habitAfterLD.postValue(true);
                         } else if (isSelectedTheDayBefore()) {
+                            Log.d(TAG, "habitBeforeLD: postValue");
                             habitBeforeLD.postValue(true);
                         } else {
+                            Log.d(TAG, "habitTodayLD: postValue");
                             habitTodayLD.postValue(true);
                         }
                     }

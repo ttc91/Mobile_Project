@@ -174,16 +174,18 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 initHabitDoneModeList();
                 initHabitFailedModelList();
                 visibleListHabit();
+                viewModel.unDisposable();
             }
         });
         viewModel.getHabitAfterLD().observe(getViewLifecycleOwner(), aBoolean -> {
             if (aBoolean) {
-                Log.d(TAG, "onChanged: isAfter");
+                Log.d(TAG, "onChanged: isAfter" + viewModel.getmHabitInWeekModelList().size());
                 viewModel.getHabitListAfterDay(viewModel.getmHabitInWeekModelList());
                 initHabitModelList();
                 initHabitDoneModeList();
                 initHabitFailedModelList();
                 visibleListHabit();
+                viewModel.unDisposable();
             }
         });
         viewModel.getHabitTodayLD().observe(getViewLifecycleOwner(), isSuccess -> {
@@ -194,6 +196,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 initHabitDoneModeList();
                 initHabitFailedModelList();
                 visibleListHabit();
+                viewModel.unDisposable();
             }
         });
         viewModel.getInsertHistoryLD().observe(getViewLifecycleOwner(), isSuccess -> {

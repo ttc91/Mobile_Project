@@ -16,6 +16,7 @@ import io.reactivex.rxjava3.subscribers.DisposableSubscriber;
 
 public abstract class BaseViewModel extends ViewModel {
 
+    public static final String TAG = BaseViewModel.class.getSimpleName();
     protected CompositeDisposable mMainCompDisposable = new CompositeDisposable();
     protected CompositeDisposable mFlowableCompDisposable = new CompositeDisposable();
     protected MutableLiveData<Boolean> mLiveDataIsLoading = new MutableLiveData<>();
@@ -78,7 +79,7 @@ public abstract class BaseViewModel extends ViewModel {
 
     }
 
-    public abstract class CustomSubscriber<T> extends DisposableSubscriber<T> {
+    public abstract static class CustomSubscriber<T> extends DisposableSubscriber<T> {
         public CustomSubscriber() {
             super();
         }
@@ -91,7 +92,6 @@ public abstract class BaseViewModel extends ViewModel {
 
         @Override
         public void onComplete() {
-
         }
 
 
@@ -109,14 +109,8 @@ public abstract class BaseViewModel extends ViewModel {
     }
 
     public void unDisposable() {
-        if (mMainCompDisposable != null && mMainCompDisposable.isDisposed()) {
-            mMainCompDisposable.dispose();
-            mMainCompDisposable.clear();
-        }
-        if (mFlowableCompDisposable != null && mFlowableCompDisposable.isDisposed()) {
-            mFlowableCompDisposable.dispose();
-            mFlowableCompDisposable.clear();
-        }
+        mMainCompDisposable.clear();
+        mFlowableCompDisposable.clear();
     }
 
     @Override
