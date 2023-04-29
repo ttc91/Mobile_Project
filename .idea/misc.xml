@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
@@ -98,6 +99,7 @@
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/drawable/ic_item_habit_failed.xml" value="0.1" />
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/drawable/ic_lg_afternoon.xml" value="0.1" />
+        <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/drawable/ic_remainder.xml" value="0.1215" />
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/activity_create_habit.xml" value="0.2046875" />
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/activity_habit_setting.xml" value="0.2046875" />
         <entry key="..\:/Users/maiph/Desktop/Mobile_Project/app/src/main/res/layout/activity_input.xml" value="0.2046875" />
@@ -124,7 +126,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

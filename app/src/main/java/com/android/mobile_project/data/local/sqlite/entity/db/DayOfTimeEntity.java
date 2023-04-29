@@ -10,6 +10,13 @@ import com.android.mobile_project.data.local.sqlite.entity.BaseEntity;
 
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 
 @Entity(tableName = "tbl_day_of_time")
 public class DayOfTimeEntity extends BaseEntity implements Serializable {
@@ -22,8 +29,4 @@ public class DayOfTimeEntity extends BaseEntity implements Serializable {
     @NonNull
     public String dayOfTimeName;
 
-    public DayOfTimeEntity(Long dayOfTimeId, @NonNull String dayOfTimeName) {
-        this.dayOfTimeId = dayOfTimeId;
-        this.dayOfTimeName = dayOfTimeName;
-    }
 }

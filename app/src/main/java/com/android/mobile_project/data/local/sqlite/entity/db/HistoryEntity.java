@@ -10,6 +10,15 @@ import com.android.mobile_project.data.local.sqlite.entity.BaseEntity;
 
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 
 @Entity(
         tableName = "tbl_history",
@@ -51,56 +60,4 @@ public class HistoryEntity extends BaseEntity implements Serializable {
     @ColumnInfo(name = "habit_id", index = true)
     public Long habitId;
 
-    public HistoryEntity() {
-    }
-
-    public HistoryEntity(Long historyId, @Nullable String historyDate, @Nullable String historyHabitsState, Long userId, Long habitId) {
-        this.historyId = historyId;
-        this.historyDate = historyDate;
-        this.historyHabitsState = historyHabitsState;
-        this.userId = userId;
-        this.habitId = habitId;
-    }
-
-    public Long getHistoryId() {
-        return historyId;
-    }
-
-    public void setHistoryId(Long historyId) {
-        this.historyId = historyId;
-    }
-
-    @Nullable
-    public String getHistoryDate() {
-        return historyDate;
-    }
-
-    public void setHistoryDate(@Nullable String historyDate) {
-        this.historyDate = historyDate;
-    }
-
-    @Nullable
-    public String getHistoryHabitsState() {
-        return historyHabitsState;
-    }
-
-    public void setHistoryHabitsState(@Nullable String historyHabitsState) {
-        this.historyHabitsState = historyHabitsState;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getHabitId() {
-        return habitId;
-    }
-
-    public void setHabitId(Long habitId) {
-        this.habitId = habitId;
-    }
 }

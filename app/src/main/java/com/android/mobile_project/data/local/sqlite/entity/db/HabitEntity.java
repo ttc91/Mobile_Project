@@ -10,6 +10,15 @@ import com.android.mobile_project.data.local.sqlite.entity.BaseEntity;
 
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 
 @Entity(tableName = "tbl_habit",
     foreignKeys = @ForeignKey(
@@ -45,63 +54,4 @@ public class HabitEntity extends BaseEntity implements Serializable {
     @NonNull
     public Long dayOfTimeId;
 
-    public HabitEntity(Long habitId, @NonNull String habitName, String habitLogo, @NonNull Long numOfLongestSteak, Long userId, @NonNull Long dayOfTimeId) {
-        this.habitId = habitId;
-        this.habitName = habitName;
-        this.habitLogo = habitLogo;
-        this.numOfLongestSteak = numOfLongestSteak;
-        this.userId = userId;
-        this.dayOfTimeId = dayOfTimeId;
-    }
-
-    public Long getHabitId() {
-        return habitId;
-    }
-
-    public void setHabitId(Long habitId) {
-        this.habitId = habitId;
-    }
-
-    @NonNull
-    public String getHabitName() {
-        return habitName;
-    }
-
-    public void setHabitName(@NonNull String habitName) {
-        this.habitName = habitName;
-    }
-
-    public String getHabitLogo() {
-        return habitLogo;
-    }
-
-    public void setHabitLogo(String habitLogo) {
-        this.habitLogo = habitLogo;
-    }
-
-    @NonNull
-    public Long getNumOfLongestSteak() {
-        return numOfLongestSteak;
-    }
-
-    public void setNumOfLongestSteak(@NonNull Long numOfLongestSteak) {
-        this.numOfLongestSteak = numOfLongestSteak;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    @NonNull
-    public Long getDayOfTimeId() {
-        return dayOfTimeId;
-    }
-
-    public void setDayOfTimeId(@NonNull Long dayOfTimeId) {
-        this.dayOfTimeId = dayOfTimeId;
-    }
 }
