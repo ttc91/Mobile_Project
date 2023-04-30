@@ -31,6 +31,7 @@ import com.android.mobile_project.databinding.LayoutRemainderDialogBinding;
 import com.android.mobile_project.databinding.LayoutTimePickerDialogBinding;
 import com.android.mobile_project.ui.activity.setting.service.DbService;
 import com.android.mobile_project.ui.activity.setting.service.ToastService;
+import com.android.mobile_project.utils.constant.TimeConstant;
 import com.android.mobile_project.utils.dagger.component.sub.setting.HabitSettingComponent;
 import com.android.mobile_project.utils.time.DayOfWeek;
 import com.android.mobile_project.utils.time.utils.TimeUtils;
@@ -62,6 +63,9 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
 
     private final static int MAX_MINUTES_MAX = 59;
     private final static int MIN_MINUTES_MAX = 0;
+
+    private final static int MAX_HOURS_MAX = 23;
+    private final static int MIN_HOURS_MAX = 0;
     private final static String STRING_HABIT_ID = "habitId";
 
     private boolean checkHabitValidName = false;
@@ -154,6 +158,8 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
     public void initViewModel() {
 
         binding.setVm(viewModel);
+
+        viewModel.setContext(getApplicationContext());
 
         binding.executePendingBindings();
 
@@ -518,10 +524,12 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                 windowAttributes.gravity = gravity;
                 window.setAttributes(windowAttributes);
 
-                remainderBinding.hNumPicker.setMaxValue(MAX_MINUTES_MAX);
-                remainderBinding.hNumPicker.setMinValue(MIN_MINUTES_MAX);
+                remainderBinding.hNumPicker.setMaxValue(MAX_HOURS_MAX);
+                remainderBinding.hNumPicker.setMinValue(MIN_HOURS_MAX);
+                remainderBinding.hNumPicker.setDisplayedValues(TimeConstant.getTimeDisplayValue());
                 remainderBinding.mNumPicker.setMaxValue(MAX_MINUTES_MAX);
                 remainderBinding.mNumPicker.setMinValue(MIN_MINUTES_MAX);
+                remainderBinding.mNumPicker.setDisplayedValues(TimeConstant.getTimeDisplayValue());
 
                 remainderBinding.btnCancel.setOnClickListener(view -> dialog.dismiss());
 

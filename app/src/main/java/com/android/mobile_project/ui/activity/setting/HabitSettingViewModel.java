@@ -1,6 +1,7 @@
 package com.android.mobile_project.ui.activity.setting;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
@@ -28,6 +29,7 @@ import com.android.mobile_project.ui.activity.setting.service.DbService;
 import com.android.mobile_project.ui.activity.setting.service.InitService;
 import com.android.mobile_project.ui.activity.setting.service.ToastService;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
+import com.android.mobile_project.utils.notification.NotificationWorker;
 import com.android.mobile_project.utils.time.DayOfTime;
 import com.android.mobile_project.utils.time.DayOfWeek;
 
@@ -50,6 +52,7 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
     private final RemainderRepository mRemainderRepository;
     private final HabitInWeekRepository mHabitInWeekRepository;
     private final HistoryRepository mHistoryRepository;
+    private Context context;
 
     @Inject
     public HabitSettingViewModel(HabitRepository mHabitRepository, RemainderRepository mRemainderRepository, HabitInWeekRepository mHabitInWeekRepository, HistoryRepository mHistoryRepository) {
@@ -57,6 +60,10 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
         this.mRemainderRepository = mRemainderRepository;
         this.mHabitInWeekRepository = mHabitInWeekRepository;
         this.mHistoryRepository = mHistoryRepository;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     protected InitService initService;
@@ -443,6 +450,7 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
         );
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     protected void checkExistAndInsertRemainder(Long h, Long m, DbService.CheckExistRemainderResult callback){
         mCompositeDisposable.add(
                 mRemainderRepository.getMRemainderDataSource().checkExistRemainder(h, m, mHabitModelMutableLiveData.getValue().getHabitId())
@@ -462,6 +470,7 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
                                 public void onInsertRemainderSuccess(CompositeDisposable disposable) {
                                     Log.i("HabitSettingViewModel-insertRemainder", "onInsertRemainderSuccess");
                                     disposable.clear();
+                                    NotificationWorker.enqueueWorkerWithHabit(context, mHabitModelMutableLiveData.getValue(), model, mHabitInWeekListMutableLiveData.getValue());
                                 }
 
                                 @SuppressLint("LongLogTag")

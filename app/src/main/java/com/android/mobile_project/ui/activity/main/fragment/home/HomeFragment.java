@@ -196,7 +196,6 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                 initHabitDoneModeList();
                 initHabitFailedModelList();
                 visibleListHabit();
-                viewModel.unDisposable();
             }
         });
         viewModel.getInsertHistoryLD().observe(getViewLifecycleOwner(), isSuccess -> {
