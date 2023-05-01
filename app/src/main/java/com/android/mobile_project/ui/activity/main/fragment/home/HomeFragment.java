@@ -348,9 +348,9 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
             switch (direction) {
                 case ItemTouchHelper.LEFT:
                     if (viewModel.isSelectedTheDayBefore()) {
-                        viewModel.updateHistory(position, HabitAdapter.class, VAL_FALSE, viewModel.getCalendarBarDate(), true);
+                        viewModel.updateHistory(position, HabitAdapter.class, VAL_FALSE, viewModel.getCalendarBarDate(), false);
                     } else if (viewModel.isSelectedToday()) {
-                        viewModel.updateHistory(position, HabitAdapter.class, VAL_FALSE, utils.getDateTodayString(), true);
+                        viewModel.updateHistory(position, HabitAdapter.class, VAL_FALSE, utils.getDateTodayString(), false);
                     }
                     break;
                 case ItemTouchHelper.RIGHT:
