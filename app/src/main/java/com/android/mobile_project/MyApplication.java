@@ -28,7 +28,6 @@ public class MyApplication extends Application
         DayChangedReceiverComponentProvider {
 
     private ApplicationGraph graph;
-
     @Override
     public void onCreate() {
         super.onCreate();
