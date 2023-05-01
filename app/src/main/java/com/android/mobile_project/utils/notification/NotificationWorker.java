@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -22,6 +23,7 @@ import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.data.remote.model.RemainderModel;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +36,8 @@ public class NotificationWorker extends Worker {
     public static final String DATA_KEY_HOUR = "habitHour";
     public static final String DATA_KEY_MINUTE = "habitMinute";
 
+    public static final String TAG = NotificationWorker.class.getSimpleName();
+
     public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
     }
@@ -43,7 +47,9 @@ public class NotificationWorker extends Worker {
     NotificationService mService;
     boolean mBound = false;
 
-    /** Defines callbacks for service binding, passed to bindService(). */
+    /**
+     * Defines callbacks for service binding, passed to bindService().
+     */
     private ServiceConnection connection = new ServiceConnection() {
 
         @Override
@@ -53,25 +59,27 @@ public class NotificationWorker extends Worker {
             NotificationService.LocalBinder binder = (NotificationService.LocalBinder) service;
             mService = binder.getService();
             mBound = true;
+            Log.d(TAG, "onServiceConnected: " + mBound);
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             mBound = false;
+            Log.d(TAG, "onServiceDisconnected: " + mBound);
         }
     };
-
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @NonNull
     @Override
     public Result doWork() {
+        Log.d(TAG, "doWork: ");
         Data data = getInputData();
         boolean[] days = data.getBooleanArray(DATA_KEY_DAYS);
         java.time.DayOfWeek today = LocalDate.now().getDayOfWeek();
 
-        if(days[today.getValue() % 7]) {
+        if (days[today.getValue() % 7]) {
             Context context = getApplicationContext();
 
             long habitId = data.getLong(DATA_KEY_ID, 0L);
@@ -98,22 +106,23 @@ public class NotificationWorker extends Worker {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static void enqueueWorkerWithHabit(Context context, HabitModel habit, RemainderModel remainder, List<HabitInWeekModel> habitInWeekModelList) {
         loadRepeatDays(habitInWeekModelList);
-        //LocalTime time = LocalTime.now();
-        //time = LocalTime.of(time.getHour(), time.getMinute());
-        //long numberMinusNow = time.toSecondOfDay() / 60;
+        LocalTime time = LocalTime.now();
+        time = LocalTime.of(time.getHour(), time.getMinute());
+        long numberMinusNow = time.toSecondOfDay() / 60;
         long numberMinusReminder = remainder.getHourTime() * 60 + remainder.getMinutesTime();
-        /*long numberMinusDelay = 0L;
+        long numberMinusDelay = 0L;
         if (numberMinusNow < numberMinusReminder) {
             numberMinusDelay = numberMinusReminder - numberMinusNow;
         } else {
             numberMinusDelay = numberMinusReminder + (1440 - numberMinusNow);
-        }*/
-
+        }
+        Log.d(TAG, "enqueueWorkerWithHabit: " + numberMinusDelay);
         PeriodicWorkRequest notificationRequest =
                 new PeriodicWorkRequest
                         .Builder(NotificationWorker.class, 1, TimeUnit.DAYS)
                         .addTag(REQUEST_TAG_NAME)
-                        .setScheduleRequestedAt(numberMinusReminder, TimeUnit.MINUTES)
+                        .setInitialDelay(numberMinusDelay, TimeUnit.MINUTES)
+                        //.setScheduleRequestedAt(numberMinusReminder, TimeUnit.MINUTES)
                         .setInputData(new Data
                                 .Builder()
                                 .putLong(DATA_KEY_ID, habit.getHabitId())
@@ -132,7 +141,7 @@ public class NotificationWorker extends Worker {
     }
 
     private static void loadRepeatDays(List<HabitInWeekModel> habitInWeekModelList) {
-        for (HabitInWeekModel habit : habitInWeekModelList){
+        for (HabitInWeekModel habit : habitInWeekModelList) {
             if (habit.getDayOfWeekId().equals(DayOfWeek.SUN.getId())) {
                 repeatDays[0] = true;
             } else if (habit.getDayOfWeekId().equals(DayOfWeek.MON.getId())) {

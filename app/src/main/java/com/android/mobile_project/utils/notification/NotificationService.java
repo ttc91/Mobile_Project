@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
@@ -19,6 +20,7 @@ import com.android.mobile_project.ui.activity.input.InputActivity;
 
 public class NotificationService extends Service {
 
+    public static final String TAG = NotificationService.class.getSimpleName();
     private static final String CHANNEL_ID = "HabitAlarm";
     private static final String GROUP_KEY_NOTIFICATION = "com.android.mobile_project.group_key";
     private static final String INTENT_KEY_ID = "com.android.mobile_project.notification_id";
@@ -29,6 +31,7 @@ public class NotificationService extends Service {
 
     @Override
     public void onCreate() {
+        Log.d(TAG, "onCreate: ");
         super.onCreate();
 
         // Create the NotificationChannel, but only on API 26+ because
@@ -59,6 +62,7 @@ public class NotificationService extends Service {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void pushNotification(Intent intent) {
+        Log.d(TAG, "pushNotification: ");
         long habitId = intent.getLongExtra(INTENT_KEY_ID, 0L);
         String habitName = intent.getStringExtra(INTENT_KEY_NAME);
 
@@ -124,6 +128,7 @@ public class NotificationService extends Service {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public IBinder onBind(Intent intent) {
+        Log.d(TAG, "onBind: ");
         pushNotification(intent);
         return binder;
     }

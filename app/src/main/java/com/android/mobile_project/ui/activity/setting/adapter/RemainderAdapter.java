@@ -15,6 +15,7 @@ import com.android.mobile_project.databinding.LayoutReminderItemBinding;
 import com.android.mobile_project.ui.activity.setting.IHabitSettingViewModel;
 import com.android.mobile_project.ui.activity.setting.service.DbService;
 import com.android.mobile_project.ui.dialog.RemainderDialog;
+import com.android.mobile_project.utils.constant.TimeConstant;
 
 import java.util.List;
 
@@ -48,9 +49,10 @@ public class RemainderAdapter extends RecyclerView.Adapter<RemainderAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
+        String[] timeValue = TimeConstant.getTimeDisplayValue();
         RemainderModel model = remainderModelList.get(position);
-        holder.binding.tHour.setText(String.valueOf(model.getHourTime()));
-        holder.binding.tMinute.setText(String.valueOf(model.getMinutesTime()));
+        holder.binding.tHour.setText(String.valueOf(timeValue[model.getHourTime().intValue()]));
+        holder.binding.tMinute.setText(String.valueOf(timeValue[model.getMinutesTime().intValue()]));
 
         holder.binding.btnClose.setOnClickListener(view -> {
             vm.deleteRemainderByTimerHourAndTimerMinutesAndId(model.getHourTime(), model.getMinutesTime(), new DbService.DeleteRemainderResult() {

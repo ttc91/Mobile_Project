@@ -1,5 +1,6 @@
 package com.android.mobile_project.ui.activity.main.fragment.home.adapter;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.mobile_project.data.remote.model.HabitInWeekModel;
 import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.databinding.RcvItemHabitBinding;
+import com.android.mobile_project.utils.constant.TimeConstant;
 
 import java.util.List;
 
@@ -46,11 +48,14 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
         return new ViewHolder(binding);
     }
 
+    @SuppressLint("DefaultLocale")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         HabitModel habit = habitModelList.get(position);
+        String[] timeValue = TimeConstant.getTimeDisplayValue();
+        String format = "%02d";
 
         holder.binding.hname.setText(habit.getHabitName());
 
@@ -58,9 +63,9 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.ViewHolder> 
 
         if (habitInWeek != null && habitInWeek.isTimerHabit()) {
             holder.binding.timer.setVisibility(View.VISIBLE);
-            holder.binding.hTimer.setText(String.valueOf(habitInWeek.getTimerHour()));
-            holder.binding.mTimer.setText(String.valueOf(habitInWeek.getTimerMinute()));
-            holder.binding.sTimer.setText(String.valueOf(habitInWeek.getTimerSecond()));
+            holder.binding.hTimer.setText(String.format(format, habitInWeek.getTimerHour()));
+            holder.binding.mTimer.setText(String.format(format, habitInWeek.getTimerMinute()));
+            holder.binding.sTimer.setText(String.format(format, habitInWeek.getTimerSecond()));
         } else {
             holder.binding.timer.setVisibility(View.GONE);
         }
