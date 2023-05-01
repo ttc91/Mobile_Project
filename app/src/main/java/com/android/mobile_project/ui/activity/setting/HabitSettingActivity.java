@@ -56,6 +56,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 public class HabitSettingActivity extends AppCompatActivity implements InitLayout, View.OnClickListener {
 
     private static final String ZERO_VALUE = "00";
+    private static final String TAG = HabitSettingActivity.class.getSimpleName();
 
     private ActivityHabitSettingBinding binding;
     private LayoutTimePickerDialogBinding timerBinding;
@@ -334,20 +335,20 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
             @SuppressLint({"SetTextI18n"})
             @Override
             public void initUI() {
-
-                for (HabitInWeekModel m : viewModel.getHabitInWeekModelList()) {
-                    if (m.getTimerHour() == null && m.getTimerMinute() == null && m.getTimerSecond() == null) {
-                        binding.tHour.setText(ZERO_VALUE);
-                        binding.tMinutes.setText(ZERO_VALUE);
-                        binding.tSecond.setText(ZERO_VALUE);
-                    } else {
-                        binding.tHour.setText(String.format(format, m.getTimerHour()));
-                        binding.tMinutes.setText(String.format(format, m.getTimerMinute()));
-                        binding.tSecond.setText(String.format(format, m.getTimerSecond()));
+                viewModel.getMHabitInWeekListMutableLiveData().observe(HabitSettingActivity.this, habitInWeekModels -> {
+                    for (HabitInWeekModel m : habitInWeekModels) {
+                        if (m.getTimerHour() == null && m.getTimerMinute() == null && m.getTimerSecond() == null) {
+                            binding.tHour.setText(ZERO_VALUE);
+                            binding.tMinutes.setText(ZERO_VALUE);
+                            binding.tSecond.setText(ZERO_VALUE);
+                        } else {
+                            binding.tHour.setText(String.format(format, m.getTimerHour()));
+                            binding.tMinutes.setText(String.format(format, m.getTimerMinute()));
+                            binding.tSecond.setText(String.format(format, m.getTimerSecond()));
+                        }
+                        break;
                     }
-                    break;
-                }
-
+                });
             }
 
             @SuppressLint({"NotifyDataSetChanged", "LongLogTag"})

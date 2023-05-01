@@ -406,6 +406,7 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
                         .subscribe(habitInWeekModels -> {
                             Log.i("getDayOfWeekHabitListByUserAndHabitId", "onNext");
                             mHabitInWeekListMutableLiveData.postValue(habitInWeekModels);
+                            habitInWeekModelList = habitInWeekModels;
                             for(HabitInWeekModel model : habitInWeekModels){
                                 if(model.getDayOfWeekId().equals(DayOfWeek.SUN.getId())){
                                     setSelectSunDate(true);
