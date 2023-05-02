@@ -26,7 +26,7 @@ public class HabitMapper extends BaseMapper<HabitEntity, HabitModel> implements 
     @Override
     public HabitModel mapToModel(HabitEntity e) {
         return new HabitModel(e.getHabitId(), e.getHabitName(), e.getHabitLogo(),
-                e.getNumOfLongestSteak(), e.getUserId(), e.getDayOfTimeId());
+                e.getNumOfLongestSteak(), e.getUserId(), null, e.getDayOfTimeId(), null);
     }
 
     @Override

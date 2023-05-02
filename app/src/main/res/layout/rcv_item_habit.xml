@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -16,7 +17,8 @@
             android:layout_height="match_parent"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:background="@drawable/bck_habit_btn">
+            android:background="@drawable/bck_habit_btn"
+            tools:ignore="UselessParent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
@@ -44,7 +46,6 @@
                 android:layout_gravity="center"
                 android:layout_weight="2"
                 android:gravity="center"
-                android:text="Habit Title"
                 android:textSize="@dimen/_15ssp"
                 android:textColor="#CA66AE"
                 android:textStyle="bold" />
@@ -73,7 +74,6 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:layout_gravity="center"
-                        android:text="00"
                         android:textSize="@dimen/_10ssp"
                         android:textStyle="bold" />
 
@@ -81,9 +81,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:text="@string/str_colon"
                         android:gravity="center"
                         android:layout_gravity="center"
-                        android:text=":"
                         android:textSize="@dimen/_10ssp"
                         android:textStyle="bold" />
 
@@ -94,7 +94,6 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:layout_gravity="center"
-                        android:text="00"
                         android:textSize="@dimen/_10ssp"
                         android:textStyle="bold" />
 
@@ -102,9 +101,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:text="@string/str_colon"
                         android:gravity="center"
                         android:layout_gravity="center"
-                        android:text=":"
                         android:textSize="@dimen/_10ssp"
                         android:textStyle="bold" />
 
@@ -115,7 +114,6 @@
                         android:layout_weight="1"
                         android:gravity="center"
                         android:layout_gravity="center"
-                        android:text="00"
                         android:textSize="@dimen/_10ssp"
                         android:textStyle="bold" />
 
@@ -123,10 +121,11 @@
 
                 <ImageView
                     android:layout_width="@dimen/_15sdp"
-                    android:layout_height="@dimen/_15sdp"
+                    android:layout_height="0dp"
                     android:layout_weight="1"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_icon_smile" />
+                    android:src="@drawable/ic_icon_smile"
+                    tools:ignore="ContentDescription,NestedWeights" />
 
             </LinearLayout>
         </LinearLayout>

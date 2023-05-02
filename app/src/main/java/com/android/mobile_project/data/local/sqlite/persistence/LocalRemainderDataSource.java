@@ -57,4 +57,9 @@ public class LocalRemainderDataSource implements RemainderDataSource {
     public Completable deleteRemainderByTimerHourAndTimerMinutesAndId(Long h, Long m, Long id) {
         return dao.deleteRemainderByTimerHourAndTimerMinutesAndId(h, m, id);
     }
+
+    @Override
+    public List<RemainderEntity> getAll() {
+        return dao.getAll();
+    }
 }

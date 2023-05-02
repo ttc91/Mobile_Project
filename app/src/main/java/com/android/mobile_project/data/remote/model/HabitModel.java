@@ -12,10 +12,19 @@ import lombok.NoArgsConstructor;
 public class HabitModel extends BaseModel {
 
     private Long habitId;
+
     private String habitName;
+
     private String habitLogo;
+
     private Long numOfLongestSteak;
+
     private Long userId;
+
+    private String username;
+
     private Long dayOfTimeId;
+
+    private Long dateOfTime;
 
 }

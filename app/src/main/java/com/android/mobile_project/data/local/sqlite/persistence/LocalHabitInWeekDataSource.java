@@ -62,4 +62,9 @@ public class LocalHabitInWeekDataSource extends BaseDataSource implements HabitI
         return dao.getDayOfWeekHabitListByUserAndHabitIdAndId(userId, habitId, id);
     }
 
+    @Override
+    public List<HabitInWeekEntity> getAll() {
+        return dao.getAll();
+    }
+
 }

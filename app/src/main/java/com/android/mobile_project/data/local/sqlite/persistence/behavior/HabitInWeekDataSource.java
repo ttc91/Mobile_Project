@@ -19,4 +19,6 @@ public interface HabitInWeekDataSource extends BaseDataSource<HabitInWeekEntity>
 
     HabitInWeekEntity getDayOfWeekHabitListByUserAndHabitIdAndId(Long userId, Long habitId, Long id);
 
+    List<HabitInWeekEntity> getAll();
+
 }

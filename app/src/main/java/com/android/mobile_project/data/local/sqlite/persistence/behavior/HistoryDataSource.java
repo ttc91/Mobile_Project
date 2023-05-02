@@ -30,4 +30,6 @@ public interface HistoryDataSource extends BaseDataSource<HistoryEntity> {
 
     Single<Long> countHistoriesByDate(String historyDate);
 
+    List<HistoryEntity> getAll();
+
 }

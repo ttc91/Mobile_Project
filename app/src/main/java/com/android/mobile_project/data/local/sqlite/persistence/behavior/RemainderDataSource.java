@@ -18,4 +18,6 @@ public interface RemainderDataSource extends BaseDataSource<RemainderEntity> {
 
     Completable deleteRemainderByTimerHourAndTimerMinutesAndId(Long h, Long m, Long id);
 
+    List<RemainderEntity> getAll();
+
 }

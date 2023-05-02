@@ -34,4 +34,7 @@ public interface HabitInWeekDAO extends BaseDAO<HabitInWeekEntity>{
     @Query("SELECT * FROM tbl_habit_in_week WHERE user_id = :userId AND habit_id = :habitId AND day_of_week_id = :id")
     HabitInWeekEntity getDayOfWeekHabitListByUserAndHabitIdAndId(Long userId, Long habitId, Long id);
 
+    @Query("SELECT * FROM tbl_habit_in_week")
+    List<HabitInWeekEntity> getAll();
+
 }

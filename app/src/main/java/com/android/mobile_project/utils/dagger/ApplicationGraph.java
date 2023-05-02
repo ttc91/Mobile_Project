@@ -10,6 +10,7 @@ import com.android.mobile_project.utils.dagger.component.sub.input.InputComponen
 import com.android.mobile_project.utils.dagger.component.sub.main.MainComponent;
 import com.android.mobile_project.utils.dagger.module.ApplicationModule;
 import com.android.mobile_project.utils.dagger.module.DatabaseModule;
+import com.android.mobile_project.utils.dagger.module.RetrofitModule;
 import com.android.mobile_project.utils.dagger.module.SubComponentModule;
 
 import javax.inject.Singleton;
@@ -20,6 +21,7 @@ import dagger.Component;
 @Component(modules = {
         ApplicationModule.class,
         DatabaseModule.class,
+        RetrofitModule.class,
         SubComponentModule.class
 })
 public interface ApplicationGraph {

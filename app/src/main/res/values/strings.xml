@@ -19,6 +19,8 @@
     <string name="str_habit_tracker">Habit Tracker</string>
     <string name="str_next_to_main_activity">Go to MainActivity</string>
     <string name="str_habit_tracker_icon">Habit Tracker Icon</string>
+    <string name="str_doing_now">Doing Now</string>
+    <string name="str_login">Login Now</string>
 
     <!--Create Habit Activity-->
     <string name="title_name_create_habit_activity">NAME</string>
@@ -47,7 +49,32 @@
     <string name="title_failed">FAILED</string>
     <string name="title_done">DONE</string>
 
+    <!--Setting Fragment-->
+    <string name="text_synchronize">Synchronize</string>
+    <string name="text_about_us">About Us</string>
+    <string name="text_login">Log in</string>
+    <string name="text_logout">Log out</string>
+
     <!--Original-->
     <string name="str_right_arrow">Right arrow</string>
 
+    <!--Recycler view habit-->
+    <string name="str_colon"> : </string>
+
+    <!--About Us Activity-->
+    <string name="str_about_us_content">Contact directly to \n <b>tatchu6878@gmail.com</b> \n to get more information</string>
+    <string name="str_back">Back</string>
+
+    <!--Remainder Dialog-->
+    <string name="str_remainder_title">Remainder</string>
+    <string name="str_cancel">Cancel</string>
+    <string name="str_select">Select</string>
+
+    <!--Confirm Dialog-->
+    <string name="str_confirm_title">Confirm</string>
+    <string name="str_no">No</string>
+    <string name="str_yes">Yes</string>
+    <string name="str_content_delete_habit">Are you sure to delete it?</string>
+    <string name="str_content_logout">Are you sure to log out?</string>
+    
 </resources>

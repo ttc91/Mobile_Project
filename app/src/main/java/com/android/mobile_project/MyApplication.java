@@ -20,6 +20,7 @@ import com.android.mobile_project.utils.dagger.component.sub.input.InputComponen
 import com.android.mobile_project.utils.dagger.component.sub.main.MainComponent;
 import com.android.mobile_project.utils.dagger.module.ApplicationModule;
 import com.android.mobile_project.utils.dagger.module.DatabaseModule;
+import com.android.mobile_project.utils.dagger.module.RetrofitModule;
 
 public class MyApplication extends Application
         implements MainComponentProvider, HabitSettingComponentProvider,
@@ -39,6 +40,7 @@ public class MyApplication extends Application
         graph = DaggerApplicationGraph.builder()
                 .applicationModule(new ApplicationModule(this))
                 .databaseModule(new DatabaseModule(this))
+//                .retrofitModule(new RetrofitModule())
                 .build();
         graph.inject(this);
     }

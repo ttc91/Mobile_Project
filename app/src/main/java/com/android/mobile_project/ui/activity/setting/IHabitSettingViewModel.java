@@ -10,5 +10,6 @@ public interface IHabitSettingViewModel {
     void updateRemainder(int position, Long hourOld, Long minutesOld, Long hourNew, Long minutesNew, DbService.UpdateRemainderResult callback);
     void deleteRemainderByTimerHourAndTimerMinutesAndId(Long h, Long m, DbService.DeleteRemainderResult callback);
     void getHistoryByHabitIdAndDate(Long habitId, String date, DbService.GetHistoryByHabitAndDateResult callback);
+    void deleteHabit(DbService.DeleteHabitResult callback);
 
 }

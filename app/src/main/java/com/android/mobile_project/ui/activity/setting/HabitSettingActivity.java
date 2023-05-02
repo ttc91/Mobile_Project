@@ -31,6 +31,7 @@ import com.android.mobile_project.databinding.LayoutRemainderDialogBinding;
 import com.android.mobile_project.databinding.LayoutTimePickerDialogBinding;
 import com.android.mobile_project.ui.activity.setting.service.DbService;
 import com.android.mobile_project.ui.activity.setting.service.ToastService;
+import com.android.mobile_project.ui.dialog.ConfirmDialog;
 import com.android.mobile_project.utils.dagger.component.sub.setting.HabitSettingComponent;
 import com.android.mobile_project.utils.time.DayOfWeek;
 import com.android.mobile_project.utils.time.utils.TimeUtils;
@@ -600,22 +601,8 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
     }
 
     private void onClickDelete(){
-        viewModel.deleteHabit(new DbService.DeleteHabitResult() {
-            @SuppressLint("LongLogTag")
-            @Override
-            public void onDeleteHabitSuccess(CompositeDisposable disposable) {
-                Log.i("HabitSettingActivity-deleteHabit", "onDeleteHabitSuccess");
-                disposable.clear();
-            }
-
-            @SuppressLint("LongLogTag")
-            @Override
-            public void onDeleteHabitFailure(CompositeDisposable disposable) {
-                Log.e("HabitSettingActivity-deleteHabit", "onDeleteHabitFailure");
-                disposable.clear();
-            }
-        });
-        onClickBackBtn();
+        ConfirmDialog dialog = new ConfirmDialog(this, true, viewModel, null, null);
+        dialog.show(getSupportFragmentManager(), "dialog");
     }
 
     private void onClickRemainder(){

@@ -495,7 +495,8 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
         );
     }
 
-    protected void deleteHabit(DbService.DeleteHabitResult callback) {
+    @Override
+    public void deleteHabit(DbService.DeleteHabitResult callback) {
         mCompositeDisposable.add(
                 mHabitRepository.getMHabitDataSource().delete(HabitMapper.getInstance().mapToEntity(habitModel))
                         .observeOn(AndroidSchedulers.mainThread())
