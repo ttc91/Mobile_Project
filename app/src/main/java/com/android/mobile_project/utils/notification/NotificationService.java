@@ -22,20 +22,18 @@ public class NotificationService extends Service {
 
     public static final String TAG = NotificationService.class.getSimpleName();
     private static final String CHANNEL_ID = "HabitAlarm";
-    private static final String GROUP_KEY_NOTIFICATION = "com.android.mobile_project.group_key";
-    private static final String INTENT_KEY_ID = "com.android.mobile_project.notification_id";
-    private static final String INTENT_KEY_NAME = "com.android.mobile_project.notification_name";
-    private static final String INTENT_KEY_DAYS = "com.android.mobile_project.notification_days";
-    private static final String INTENT_KEY_HOUR = "com.android.mobile_project.notification_hour";
-    private static final String INTENT_KEY_MINUTE = "com.android.mobile_project.notification_minute";
+    public static final String GROUP_KEY_NOTIFICATION = "com.android.mobile_project.group_key";
+    public static final String INTENT_KEY_ID = "com.android.mobile_project.notification_id";
+    public static final String INTENT_KEY_NAME = "com.android.mobile_project.notification_name";
+    public static final String INTENT_KEY_DAYS = "com.android.mobile_project.notification_days";
+    public static final String INTENT_KEY_HOUR = "com.android.mobile_project.notification_hour";
+    public static final String INTENT_KEY_MINUTE = "com.android.mobile_project.notification_minute";
 
     @Override
     public void onCreate() {
         Log.d(TAG, "onCreate: ");
         super.onCreate();
 
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
             CharSequence name = getString(R.string.app_name);
@@ -45,83 +43,53 @@ public class NotificationService extends Service {
             NotificationChannel channel =
                     new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
-
-            // Register the channel with the system; you can't change the importance
-            // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
     }
 
-    /*@RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
+        Log.d(TAG, "onStartCommand: ");
         return super.onStartCommand(intent, flags, startId);
-    }*/
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void pushNotification(Intent intent) {
+    public void pushNotification(Intent intent, Context context) {
         Log.d(TAG, "pushNotification: ");
         long habitId = intent.getLongExtra(INTENT_KEY_ID, 0L);
         String habitName = intent.getStringExtra(INTENT_KEY_NAME);
 
-        Intent newIntent = new Intent(this, InputActivity.class);
+        Intent newIntent = new Intent(context, InputActivity.class);
         newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent =
-                PendingIntent.getActivity(this, 0, newIntent, 0);
+                PendingIntent.getActivity(context, 0, newIntent, 0);
 
         NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this, CHANNEL_ID)
+                new NotificationCompat.Builder(context, CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_launcher_foreground)
-                        .setContentTitle(getString(R.string.app_name))
+                        .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(habitName)
-                        // Set the intent that will fire when the user taps the notification
                         .setContentIntent(pendingIntent)
                         .setGroup(GROUP_KEY_NOTIFICATION)
                         .setAutoCancel(true)
-                        // For Android 7.1 and lower
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         NotificationManagerCompat notificationManager =
-                NotificationManagerCompat.from(getApplicationContext());
+                NotificationManagerCompat.from(context);
 
         notificationManager.notify(
                 (int) habitId,
                 builder.build());
-
-    }
-
-    public static Intent createIntent(Context packageContext, long id, String name) {
-        return new Intent(packageContext, NotificationService.class)
-                .putExtra(INTENT_KEY_ID, id)
-                .putExtra(INTENT_KEY_NAME, name);
-    }
-
-    public static Intent createIntent(
-            Context packageContext,
-            long id,
-            String name,
-            boolean[] days,
-            long hour,
-            long minute
-    ) {
-        return new Intent(packageContext, NotificationService.class)
-                .putExtra(INTENT_KEY_ID, id)
-                .putExtra(INTENT_KEY_NAME, name)
-                .putExtra(INTENT_KEY_DAYS, days)
-                .putExtra(INTENT_KEY_HOUR, hour)
-                .putExtra(INTENT_KEY_MINUTE, minute);
     }
 
     private final IBinder binder = new LocalBinder();
 
-    public class LocalBinder extends Binder {
+    public static class LocalBinder extends Binder {
         NotificationService getService() {
-            // Return this instance of LocalService so clients can call public methods.
-            return NotificationService.this;
+            return new NotificationService();
         }
     }
 
@@ -129,8 +97,20 @@ public class NotificationService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind: ");
-        pushNotification(intent);
+        //pushNotification(intent);
         return binder;
     }
 
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.d(TAG, "onUnbind: ");
+        stopService(intent);
+        return false;
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "onDestroy: ");
+        super.onDestroy();
+    }
 }

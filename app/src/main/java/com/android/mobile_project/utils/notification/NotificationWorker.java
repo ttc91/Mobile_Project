@@ -1,5 +1,12 @@
 package com.android.mobile_project.utils.notification;
 
+
+import static com.android.mobile_project.utils.notification.NotificationService.INTENT_KEY_DAYS;
+import static com.android.mobile_project.utils.notification.NotificationService.INTENT_KEY_HOUR;
+import static com.android.mobile_project.utils.notification.NotificationService.INTENT_KEY_ID;
+import static com.android.mobile_project.utils.notification.NotificationService.INTENT_KEY_MINUTE;
+import static com.android.mobile_project.utils.notification.NotificationService.INTENT_KEY_NAME;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -46,65 +53,86 @@ public class NotificationWorker extends Worker {
 
     NotificationService mService;
     boolean mBound = false;
+    private Intent intent;
 
     /**
      * Defines callbacks for service binding, passed to bindService().
      */
-    private ServiceConnection connection = new ServiceConnection() {
+    private ServiceConnection connection;
 
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance.
-            NotificationService.LocalBinder binder = (NotificationService.LocalBinder) service;
-            mService = binder.getService();
-            mBound = true;
-            Log.d(TAG, "onServiceConnected: " + mBound);
-        }
+    private ServiceConnection createConnection() {
+        return new ServiceConnection() {
 
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
-            Log.d(TAG, "onServiceDisconnected: " + mBound);
-        }
-    };
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onServiceConnected(ComponentName className,
+                                           IBinder service) {
+                // We've bound to LocalService, cast the IBinder and get LocalService instance.
+                NotificationService.LocalBinder binder = (NotificationService.LocalBinder) service;
+                mService = binder.getService();
+                mBound = true;
+                Log.d(TAG, "onServiceConnected: " + className);
+                mService.pushNotification(intent, getApplicationContext());
+            }
 
+            @Override
+            public void onServiceDisconnected(ComponentName arg0) {
+                mBound = false;
+                Log.d(TAG, "onServiceDisconnected: " + arg0);
+            }
+        };
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @NonNull
     @Override
     public Result doWork() {
-        Log.d(TAG, "doWork: ");
+        Log.d(TAG, "doWork: " + mBound);
         Data data = getInputData();
         boolean[] days = data.getBooleanArray(DATA_KEY_DAYS);
         java.time.DayOfWeek today = LocalDate.now().getDayOfWeek();
-
         if (days[today.getValue() % 7]) {
+            Log.d(TAG, "doWork: " + today.getValue() % 7);
             Context context = getApplicationContext();
 
             long habitId = data.getLong(DATA_KEY_ID, 0L);
             String habitName = data.getString(DATA_KEY_NAME);
-            /*Intent intent =
-                    NotificationService.createIntent(
-                            context,
-                            data.getLong(DATA_KEY_ID, 0l),
-                            data.getString(DATA_KEY_NAME));*/
-            Intent intent = NotificationService.createIntent(
+            intent = createIntent(
                     context,
                     habitId,
                     habitName,
                     days,
                     data.getLong(DATA_KEY_HOUR, 0L),
                     data.getLong(DATA_KEY_MINUTE, 0L));
+            connection = createConnection();
+            Log.d(TAG, "connection: " + connection.toString());
             context.bindService(intent, connection, Context.BIND_AUTO_CREATE);
-            //context.startService(intent);
         }
 
         return Result.success();
     }
 
+    public static Intent createIntent(
+            Context packageContext,
+            long id,
+            String name,
+            boolean[] days,
+            long hour,
+            long minute
+    ) {
+        return new Intent(packageContext, NotificationService.class)
+                .putExtra(INTENT_KEY_ID, id)
+                .putExtra(INTENT_KEY_NAME, name)
+                .putExtra(INTENT_KEY_DAYS, days)
+                .putExtra(INTENT_KEY_HOUR, hour)
+                .putExtra(INTENT_KEY_MINUTE, minute);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static void enqueueWorkerWithHabit(Context context, HabitModel habit, RemainderModel remainder, List<HabitInWeekModel> habitInWeekModelList) {
+        if (habitInWeekModelList == null || habitInWeekModelList.size() == 0) {
+            return;
+        }
         loadRepeatDays(habitInWeekModelList);
         LocalTime time = LocalTime.now();
         time = LocalTime.of(time.getHour(), time.getMinute());
@@ -135,7 +163,7 @@ public class NotificationWorker extends Worker {
                         .build();
 
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-                REQUEST_TAG_NAME + habit.getHabitId(),
+                REQUEST_TAG_NAME + habit.getHabitId() + remainder.getHourTime() + remainder.getMinutesTime(),
                 ExistingPeriodicWorkPolicy.REPLACE,
                 notificationRequest);
     }
@@ -160,9 +188,19 @@ public class NotificationWorker extends Worker {
         }
     }
 
-    public static void cancelWorkerWithHabit(Context context, long habitId) {
+    public static void cancelWorkerWithHabit(Context context, long habitId, List<RemainderModel> remainderList) {
+        if (remainderList != null && remainderList.size() > 0) {
+            Log.d(TAG, "cancelWorkerWithHabit: " + remainderList.size());
+            for (RemainderModel remainder : remainderList) {
+                cancelOneWorkerWithHabit(context, habitId, remainder.getHourTime(), remainder.getMinutesTime());
+            }
+        }
+    }
+
+    public static void cancelOneWorkerWithHabit(Context context, long habitId, Long h, Long m) {
+        Log.d(TAG, "cancelOneWorkerWithHabit: " + habitId);
         WorkManager.getInstance(context)
-                .cancelUniqueWork(REQUEST_TAG_NAME + habitId);
+                .cancelUniqueWork(REQUEST_TAG_NAME + habitId + h + m);
     }
 
     public static void cancelAllWorkers(Context context) {

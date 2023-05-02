@@ -33,6 +33,7 @@ import com.android.mobile_project.ui.activity.setting.service.DbService;
 import com.android.mobile_project.ui.activity.setting.service.ToastService;
 import com.android.mobile_project.utils.constant.TimeConstant;
 import com.android.mobile_project.utils.dagger.component.sub.setting.HabitSettingComponent;
+import com.android.mobile_project.utils.notification.NotificationWorker;
 import com.android.mobile_project.utils.time.DayOfWeek;
 import com.android.mobile_project.utils.time.utils.TimeUtils;
 import com.android.mobile_project.ui.InitLayout;
@@ -139,7 +140,7 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i("HabitSettingActivity", "onStart()");
+        Log.i(TAG, "onStart()");
         viewModel.getMHabitModelMutableLiveData().observe(this, habitModelObserver);
         viewModel.getMHabitInWeekListMutableLiveData().observe(this, habitInWeekModelListObserver);
         viewModel.getMDayOfTimeModelIdMutableLiveData().observe(this, dayOfTimeModelIdObserver);
