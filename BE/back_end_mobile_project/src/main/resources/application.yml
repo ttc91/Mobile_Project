@@ -1,0 +1,7 @@
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      database: habit_tracker
+      host: mongodbdocker
+      port: 27107
