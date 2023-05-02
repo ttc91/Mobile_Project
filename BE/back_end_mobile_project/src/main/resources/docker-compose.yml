@@ -1,0 +1,14 @@
+version: "1"
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    ports:
+      - "27017:27017"
+  habittracerbe:
+    image: habittracerbe:latest
+    container_name: "habittracerbe"
+    ports:
+      - "8989:8080"
+    links:
+      - mongodb

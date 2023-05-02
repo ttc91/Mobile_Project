@@ -104,6 +104,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>back-end-habit-tracer</finalName>
     </build>
     <repositories>
         <repository>
