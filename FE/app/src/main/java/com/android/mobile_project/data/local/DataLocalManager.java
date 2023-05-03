@@ -7,6 +7,7 @@ import com.android.mobile_project.data.local.pref.MySharedPreferences;
 
 public class DataLocalManager {
 
+    private static final String USER_TOKEN = "PREF_USER_TOKEN";
     private static final String USER_NAME = "PREF_USER_NAME";
     private static final String USER_ID = "PREF_USER_ID";
 
@@ -30,6 +31,14 @@ public class DataLocalManager {
         }
 
         return instance;
+    }
+
+    public void setToken(String value){
+        mySharedPreferences.putStringValue(USER_TOKEN, value);
+    }
+
+    public String getToken(){
+        return mySharedPreferences.getStringValue(USER_TOKEN);
     }
 
     public void setUserName(String value){

@@ -92,4 +92,9 @@ public class LocalHabitDataSource extends BaseDataSource implements HabitDataSou
     public void updateHabitInBackground(HabitEntity entity) {
         dao.updateHabitInBackground(entity);
     }
+
+    @Override
+    public List<HabitEntity> getAll() {
+        return dao.getAll();
+    }
 }

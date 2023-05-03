@@ -87,4 +87,9 @@ public class LocalHistoryDataSource extends BaseDataSource implements HistoryDat
     public Single<Long> countHistoriesByDate(String historyDate) {
         return dao.countHistoriesByDate(historyDate);
     }
+
+    @Override
+    public List<HistoryEntity> getAll() {
+        return dao.getAll();
+    }
 }

@@ -84,4 +84,7 @@ public interface HabitDAO extends BaseDAO<HabitEntity>{
     @Update
     void updateHabitInBackground(HabitEntity entity);
 
+    @Query("SELECT * FROM tbl_habit")
+    List<HabitEntity> getAll();
+
 }

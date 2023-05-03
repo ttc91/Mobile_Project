@@ -51,4 +51,7 @@ public interface HistoryDAO extends BaseDAO<HistoryEntity>{
     @Query("SELECT * FROM tbl_history WHERE habit_id = :hId AND date = :date")
     HistoryEntity getHistoryByHabitIdAndDateInBackground(Long hId, String date);
 
+    @Query("SELECT * FROM tbl_history")
+    List<HistoryEntity> getAll();
+
 }

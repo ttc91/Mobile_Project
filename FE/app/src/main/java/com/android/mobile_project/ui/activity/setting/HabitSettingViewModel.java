@@ -510,9 +510,9 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
         );
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    protected void deleteHabit(DbService.DeleteHabitResult callback) {
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void deleteHabit(DbService.DeleteHabitResult callback) {
         mCompositeDisposable.add(
                 mRemainderRepository.getMRemainderDataSource().getRemainderListByHabitId(mHabitModelMutableLiveData.getValue().getHabitId())
                         .map(remainderEntities -> RemainderMapper.getInstance().mapToListModel(remainderEntities))

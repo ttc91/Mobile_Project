@@ -1,6 +1,6 @@
 package com.android.mobile_project.utils.dagger.component.sub.input;
 
-import com.android.mobile_project.ui.activity.input.InputActivity;
+import com.android.mobile_project.ui.activity.login.LoginActivity;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
 import com.android.mobile_project.utils.dagger.module.activity.input.InputModule;
 
@@ -15,6 +15,6 @@ public interface InputComponent {
         InputComponent create();
     }
 
-    void inject(InputActivity activity);
+    void inject(LoginActivity activity);
 
 }

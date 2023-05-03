@@ -32,4 +32,6 @@ public interface HabitDataSource extends BaseDataSource<HabitEntity>{
 
     void updateHabitInBackground(HabitEntity entity);
 
+    List<HabitEntity> getAll();
+
 }

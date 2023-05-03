@@ -16,7 +16,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.android.mobile_project.R;
-import com.android.mobile_project.ui.activity.input.InputActivity;
+import com.android.mobile_project.ui.activity.login.LoginActivity;
 
 public class NotificationService extends Service {
 
@@ -60,10 +60,10 @@ public class NotificationService extends Service {
         long habitId = intent.getLongExtra(INTENT_KEY_ID, 0L);
         String habitName = intent.getStringExtra(INTENT_KEY_NAME);
 
-        Intent newIntent = new Intent(context, InputActivity.class);
+        Intent newIntent = new Intent(context, LoginActivity.class);
         newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent =
-                PendingIntent.getActivity(context, 0, newIntent, 0);
+                PendingIntent.getActivity(context, 0, newIntent, PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, CHANNEL_ID)

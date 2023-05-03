@@ -3,6 +3,7 @@ package com.android.mobile_project;
 import android.app.Application;
 
 import com.android.mobile_project.utils.dagger.ApplicationGraph;
+import com.android.mobile_project.utils.dagger.DaggerApplicationGraph;
 import com.android.mobile_project.utils.dagger.component.provider.CountDownComponentProvider;
 import com.android.mobile_project.utils.dagger.component.provider.CreateHabitComponentProvider;
 import com.android.mobile_project.utils.dagger.component.provider.CreateHistoryReceiverComponentProvider;
@@ -19,7 +20,7 @@ import com.android.mobile_project.utils.dagger.component.sub.input.InputComponen
 import com.android.mobile_project.utils.dagger.component.sub.main.MainComponent;
 import com.android.mobile_project.utils.dagger.module.ApplicationModule;
 import com.android.mobile_project.utils.dagger.module.DatabaseModule;
-import com.android.mobile_project.utils.dagger.DaggerApplicationGraph;
+import com.android.mobile_project.utils.dagger.module.RetrofitModule;
 
 public class MyApplication extends Application
         implements MainComponentProvider, HabitSettingComponentProvider,
@@ -28,6 +29,7 @@ public class MyApplication extends Application
         DayChangedReceiverComponentProvider {
 
     private ApplicationGraph graph;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -38,6 +40,7 @@ public class MyApplication extends Application
         graph = DaggerApplicationGraph.builder()
                 .applicationModule(new ApplicationModule(this))
                 .databaseModule(new DatabaseModule(this))
+//                .retrofitModule(new RetrofitModule())
                 .build();
         graph.inject(this);
     }
