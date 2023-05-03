@@ -1,0 +1,6 @@
+spring:
+  data:
+    mongodb:
+      database: habit_tracker
+      host: mongodb
+      port: 27017
