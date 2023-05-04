@@ -64,23 +64,23 @@ public class DailyCalendarAdapter extends RecyclerView.Adapter<DailyCalendarAdap
         DayOfWeek day = date.getDayOfWeek();
         String dayName = day.getDisplayName(TextStyle.FULL, Locale.US);
 
-        switch (dayName){
-            case DateConstant.DateName.DATE_MONDAY :
+        switch (dayName) {
+            case DateConstant.DateName.DATE_MONDAY:
                 holder.binding.dateName.setText(DailyCalendarEnum.MONDAY.getValue());
                 break;
-            case DateConstant.DateName.DATE_TUESDAY :
+            case DateConstant.DateName.DATE_TUESDAY:
                 holder.binding.dateName.setText(DailyCalendarEnum.TUESDAY.getValue());
                 break;
-            case DateConstant.DateName.DATE_WEDNESDAY :
+            case DateConstant.DateName.DATE_WEDNESDAY:
                 holder.binding.dateName.setText(DailyCalendarEnum.WEDNESDAY.getValue());
                 break;
-            case DateConstant.DateName.DATE_THURSDAY :
+            case DateConstant.DateName.DATE_THURSDAY:
                 holder.binding.dateName.setText(DailyCalendarEnum.THURSDAY.getValue());
                 break;
             case DateConstant.DateName.DATE_FRIDAY:
                 holder.binding.dateName.setText(DailyCalendarEnum.FRIDAY.getValue());
                 break;
-            case DateConstant.DateName.DATE_SATURDAY :
+            case DateConstant.DateName.DATE_SATURDAY:
                 holder.binding.dateName.setText(DailyCalendarEnum.SATURDAY.getValue());
                 break;
             default:
@@ -97,16 +97,16 @@ public class DailyCalendarAdapter extends RecyclerView.Adapter<DailyCalendarAdap
             onClickItem.onClick(view, date.format(DateTimeFormatter.ofPattern(DAY_FORMAT)));
         });
 
-        if(isFirstInit){
+        if (isFirstInit) {
             selectedItemPosition = 29;
             isFirstInit = false;
         }
 
-        if(selectedItemPosition == position){
-            holder.binding.parentView.setBackground(ContextCompat.getDrawable(context, R.drawable.bck_date_horizontal_car) );
+        if (selectedItemPosition == position) {
+            holder.binding.parentView.setBackground(ContextCompat.getDrawable(context, R.drawable.bck_date_horizontal_car));
             holder.binding.dateNum.setTextColor(Color.parseColor("#7FC779"));
             holder.binding.dateName.setTextColor(Color.parseColor("#7FC779"));
-        }else {
+        } else {
             holder.binding.parentView.setBackgroundResource(0);
             holder.binding.dateNum.setTextColor(Color.parseColor("#000000"));
             holder.binding.dateName.setTextColor(Color.parseColor("#000000"));
@@ -116,17 +116,23 @@ public class DailyCalendarAdapter extends RecyclerView.Adapter<DailyCalendarAdap
 
     @Override
     public int getItemCount() {
-        if (days != null){
+        if (days != null) {
             return days.size();
         }
         return 0;
     }
 
-    public interface OnClickItem{
+    public void resetDaySelected() {
+        selectedItemPosition = 29;
+        isFirstInit = false;
+        notifyDataSetChanged();
+    }
+
+    public interface OnClickItem {
         void onClick(View view, String date);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         RcvHorizontalCalendarTextDateBinding binding;
 

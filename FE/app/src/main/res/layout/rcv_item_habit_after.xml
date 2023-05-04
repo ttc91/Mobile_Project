@@ -31,6 +31,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:strokeColor="@null"
                     android:src="@drawable/ic_item_habit_after"
                     app:shapeAppearanceOverlay="@style/corner" />
 

@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import lombok.SneakyThrows;
 
 @MyCustomAnnotation.MyScope.ActivityScope
 public class CreateHabitViewModel extends ViewModel {
@@ -171,7 +170,6 @@ public class CreateHabitViewModel extends ViewModel {
         }
     };
 
-    @SneakyThrows
     protected void insertHabit(final String habitName, DbService.InsertHabit callback) {
 
         if(!isDayOfWeekSelected()){
@@ -259,7 +257,7 @@ public class CreateHabitViewModel extends ViewModel {
                 .observeOn(Schedulers.single())
                 .subscribe(habitEntity -> {
                     Log.i("getHabitByName", "onSuccess");
-                    callback.onGetHabitByNameSuccess(habitEntity.getHabitId());
+                    callback.onGetHabitByNameSuccess(habitEntity.habitId);
                 }, throwable -> {
                     Log.e("getHabitByName", "onError", throwable);
                     callback.onGetHabitByNameFailure();

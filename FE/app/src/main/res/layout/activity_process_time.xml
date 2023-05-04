@@ -23,7 +23,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_28sdp"
             android:layout_marginStart="@dimen/_15sdp"
             android:layout_marginEnd="@dimen/_15sdp"
             android:layout_marginBottom="@dimen/_15sdp"
@@ -34,7 +34,8 @@
                 android:id="@+id/btn_back"
                 android:layout_width="@dimen/_45sdp"
                 android:layout_height="@dimen/_45sdp"
-                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_marginTop="@dimen/_4sdp"
+                android:layout_marginStart="@dimen/_4sdp"
                 android:background="@drawable/btn_process_back"
                 android:onClick="@{(v) -> a.onClick(v)}"/>
 

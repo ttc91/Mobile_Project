@@ -18,7 +18,7 @@ public class DayOfWeekMapper extends BaseMapper<DayOfWeekEntity, DayOfWeekMapper
 
     @Override
     public DayOfWeekModel mapToModel(DayOfWeekEntity e) {
-        return new DayOfWeekModel(e.getDayOfWeekId(), e.getDayOfWeekName());
+        return new DayOfWeekModel(e.dayOfWeekId, e.dayOfWeekName);
     }
 
     @Override

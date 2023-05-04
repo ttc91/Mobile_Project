@@ -1,6 +1,7 @@
 package com.android.mobile_project.ui.activity.setting;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
@@ -28,6 +29,7 @@ import com.android.mobile_project.ui.activity.setting.service.DbService;
 import com.android.mobile_project.ui.activity.setting.service.InitService;
 import com.android.mobile_project.ui.activity.setting.service.ToastService;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
+import com.android.mobile_project.utils.notification.NotificationWorker;
 import com.android.mobile_project.utils.time.DayOfTime;
 import com.android.mobile_project.utils.time.DayOfWeek;
 
@@ -44,12 +46,13 @@ import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @MyCustomAnnotation.MyScope.ActivityScope
-public class HabitSettingViewModel extends ViewModel implements IHabitSettingViewModel{
+public class HabitSettingViewModel extends ViewModel implements IHabitSettingViewModel {
 
     private final HabitRepository mHabitRepository;
     private final RemainderRepository mRemainderRepository;
     private final HabitInWeekRepository mHabitInWeekRepository;
     private final HistoryRepository mHistoryRepository;
+    private Context context;
 
     @Inject
     public HabitSettingViewModel(HabitRepository mHabitRepository, RemainderRepository mRemainderRepository, HabitInWeekRepository mHabitInWeekRepository, HistoryRepository mHistoryRepository) {
@@ -57,6 +60,10 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
         this.mRemainderRepository = mRemainderRepository;
         this.mHabitInWeekRepository = mHabitInWeekRepository;
         this.mHistoryRepository = mHistoryRepository;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     protected InitService initService;
@@ -113,35 +120,35 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
         this.mRemainderAdapter = mRemainderAdapter;
     }
 
-    protected LiveData<Integer> getUpdateRemainderMutableLiveData(){
+    protected LiveData<Integer> getUpdateRemainderMutableLiveData() {
         return isUpdateRemainderItemMutableLiveData;
     }
 
-    protected LiveData<Boolean> getInsertOrRemoveRemainderModelListMutableLiveData(){
+    protected LiveData<Boolean> getInsertOrRemoveRemainderModelListMutableLiveData() {
         return isInsertOrRemoveRemainderModelListMutableLiveData;
     }
 
-    protected LiveData<Boolean> getUpdateDayOfTimeMutableLiveData(){
+    protected LiveData<Boolean> getUpdateDayOfTimeMutableLiveData() {
         return isUpdateDayOfTimeMutableLiveData;
     }
 
-    protected LiveData<Boolean> getUpdateHabitNameResultMutableLiveData(){
+    protected LiveData<Boolean> getUpdateHabitNameResultMutableLiveData() {
         return isUpdateHabitNameMutableLiveData;
     }
 
-    protected LiveData<Boolean> getDeleteHabitInWeekResultMutableLiveData(){
+    protected LiveData<Boolean> getDeleteHabitInWeekResultMutableLiveData() {
         return isDeleteHabitInWeekMutableLiveData;
     }
 
-    protected LiveData<HabitModel> getMHabitModelMutableLiveData(){
+    protected LiveData<HabitModel> getMHabitModelMutableLiveData() {
         return mHabitModelMutableLiveData;
     }
 
-    protected LiveData<List<HabitInWeekModel>> getMHabitInWeekListMutableLiveData(){
+    protected LiveData<List<HabitInWeekModel>> getMHabitInWeekListMutableLiveData() {
         return mHabitInWeekListMutableLiveData;
     }
 
-    protected LiveData<Long> getMDayOfTimeModelIdMutableLiveData(){
+    protected LiveData<Long> getMDayOfTimeModelIdMutableLiveData() {
         return mDayOfTimeModelIdMutableLiveData;
     }
 
@@ -259,62 +266,43 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
 
     @SuppressLint("LongLogTag")
     @Override
-    public void getHabitByUserIdAndHabitId(Long habitId, DbService.GetHabitByUserIdAndHabitIdResult callback){
+    public void getHabitByUserIdAndHabitId(Long habitId, DbService.GetHabitByUserIdAndHabitIdResult callback) {
         mCompositeDisposable.add(
                 mHabitRepository.getMHabitDataSource().getHabitByUserIdAndHabitId(DataLocalManager.getInstance().getUserId(), habitId)
-                    .map(habitEntity -> HabitMapper.getInstance().mapToModel(habitEntity))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(habitModel -> {
-                        Log.i("getHabitByUserIdAndHabitId","onSuccess");
-                        mHabitModelMutableLiveData.postValue(habitModel);
-                        habitCurrentName = habitModel.getHabitName();
+                        .map(habitEntity -> HabitMapper.getInstance().mapToModel(habitEntity))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(habitModel -> {
+                            Log.i("getHabitByUserIdAndHabitId", "onSuccess");
+                            mHabitModelMutableLiveData.postValue(habitModel);
+                            habitCurrentName = habitModel.getHabitName();
 
-                        if(habitModel.getDayOfTimeId().equals(DayOfTime.ANYTIME.getId())){
-                            setSelectAnytime(true);
-                            mDayOfTimeModelIdMutableLiveData.postValue(DayOfTime.ANYTIME.getId());
-                        }else if(habitModel.getDayOfTimeId().equals(DayOfTime.AFTERNOON.getId())){
-                            setSelectAfternoon(true);
-                            mDayOfTimeModelIdMutableLiveData.postValue(DayOfTime.AFTERNOON.getId());
-                        }else if(habitModel.getDayOfTimeId().equals(DayOfTime.MORNING.getId())){
-                            setSelectMorning(true);
-                            mDayOfTimeModelIdMutableLiveData.postValue(DayOfTime.MORNING.getId());
-                        }else if(habitModel.getDayOfTimeId().equals(DayOfTime.NIGHT.getId())){
-                            setSelectNight(true);
-                            mDayOfTimeModelIdMutableLiveData.postValue(DayOfTime.NIGHT.getId());
-                        }
+                            if (habitModel.getDayOfTimeId().equals(DayOfTime.ANYTIME.getId())) {
+                                setSelectAnytime(true);
+                                mDayOfTimeModelIdMutableLiveData.postValue(DayOfTime.ANYTIME.getId());
+                            } else if (habitModel.getDayOfTimeId().equals(DayOfTime.AFTERNOON.getId())) {
+                                setSelectAfternoon(true);
+                                mDayOfTimeModelIdMutableLiveData.postValue(DayOfTime.AFTERNOON.getId());
+                            } else if (habitModel.getDayOfTimeId().equals(DayOfTime.MORNING.getId())) {
+                                setSelectMorning(true);
+                                mDayOfTimeModelIdMutableLiveData.postValue(DayOfTime.MORNING.getId());
+                            } else if (habitModel.getDayOfTimeId().equals(DayOfTime.NIGHT.getId())) {
+                                setSelectNight(true);
+                                mDayOfTimeModelIdMutableLiveData.postValue(DayOfTime.NIGHT.getId());
+                            }
 
-                        callback.onGetHabitByUserIdAndHabitIdSuccess(habitModel, mCompositeDisposable);
-                    }, throwable -> {
-                        Log.e("getHabitByUserIdAndHabitId", "onError", throwable);
-                        callback.onGetHabitByUserIdAndHabitIdFailure(mCompositeDisposable);
-                    })
-        );
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    @SuppressLint("LongLogTag")
-    @Override
-    public void getRemainderListByHabitId(DbService.GetRemainderListByHabitIdResult callback) {
-        mCompositeDisposable.add(
-                mRemainderRepository.getMRemainderDataSource().getRemainderListByHabitId(mHabitModelMutableLiveData.getValue().getHabitId())
-                    .map(remainderEntities -> RemainderMapper.getInstance().mapToListModel(remainderEntities))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .observeOn(Schedulers.io())
-                    .subscribe(remainderModels -> {
-                        Log.i("getRemainderListByHabitId", "onNext");
-                        remainderModelList = remainderModels;
-                        callback.onGetRemainderListByHabitIdSuccess(mCompositeDisposable);
-                    },throwable -> {
-                        Log.e("getRemainderListByHabitId", "onError", throwable);
-                        callback.onGetRemainderListByHabitIdFailurẹ(mCompositeDisposable);
-                    })
+                            callback.onGetHabitByUserIdAndHabitIdSuccess(habitModel, mCompositeDisposable);
+                        }, throwable -> {
+                            Log.e("getHabitByUserIdAndHabitId", "onError", throwable);
+                            callback.onGetHabitByUserIdAndHabitIdFailure(mCompositeDisposable);
+                        })
         );
     }
 
     @Override
     public void updateRemainder(int position, Long hourOld, Long minutesOld, Long hourNew, Long minutesNew, DbService.UpdateRemainderResult callback) {
         checkExistRemainder(hourOld, minutesOld, new DbService.CheckExistRemainderResult() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @SuppressLint("LongLogTag")
             @Override
             public void onCheckExistRemainderSuccess(Long remainderId, CompositeDisposable disposable) {
@@ -329,6 +317,8 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
                                             remainderModelList.get(position).setHourTime(hourNew);
                                             remainderModelList.get(position).setMinutesTime(minutesNew);
                                             isUpdateRemainderItemMutableLiveData.postValue(position);
+                                            NotificationWorker.cancelOneWorkerWithHabit(context, mHabitModelMutableLiveData.getValue().getHabitId(), hourOld, minutesOld);
+                                            NotificationWorker.enqueueWorkerWithHabit(context, mHabitModelMutableLiveData.getValue(), model, mHabitInWeekListMutableLiveData.getValue());
                                             callback.onUpdateRemainderSuccess(mCompositeDisposable);
                                         }, throwable -> {
                                             Log.e("updateRemainder", "onError", throwable);
@@ -337,6 +327,7 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
                                 )
                 );
             }
+
             @SuppressLint("LongLogTag")
             @Override
             public void onCheckExistRemainderFailure(CompositeDisposable disposable) {
@@ -347,22 +338,43 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @SuppressLint("LongLogTag")
+    @Override
+    public void getRemainderListByHabitId(DbService.GetRemainderListByHabitIdResult callback) {
+        mCompositeDisposable.add(
+                mRemainderRepository.getMRemainderDataSource().getRemainderListByHabitId(mHabitModelMutableLiveData.getValue().getHabitId())
+                        .map(remainderEntities -> RemainderMapper.getInstance().mapToListModel(remainderEntities))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .observeOn(Schedulers.io())
+                        .subscribe(remainderModels -> {
+                            Log.i("getRemainderListByHabitId", "onNext");
+                            remainderModelList = remainderModels;
+                            callback.onGetRemainderListByHabitIdSuccess(mCompositeDisposable);
+                        }, throwable -> {
+                            Log.e("getRemainderListByHabitId", "onError", throwable);
+                            callback.onGetRemainderListByHabitIdFailurẹ(mCompositeDisposable);
+                        })
+        );
+    }
+
     @Override
     public void deleteRemainderByTimerHourAndTimerMinutesAndId(Long h, Long m, DbService.DeleteRemainderResult callback) {
         mCompositeDisposable.add(
                 mRemainderRepository.getMRemainderDataSource().deleteRemainderByTimerHourAndTimerMinutesAndId(
-                        h, m, mHabitModelMutableLiveData.getValue().getHabitId())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(() -> {
-                        Log.i("deleteRemainder", "onComplete");
-                        callback.onDeleteRemainderSuccess(mCompositeDisposable);
-                        isInsertOrRemoveRemainderModelListMutableLiveData.postValue(false);
-                    }, throwable -> {
-                        Log.e("deleteRemainder", "onError", throwable);
-                        callback.onDeleteRemainderFailure(mCompositeDisposable);
-                    }
-                )
+                                h, m, mHabitModelMutableLiveData.getValue().getHabitId())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(() -> {
+                                    Log.i("deleteRemainder", "onComplete");
+                                    NotificationWorker.cancelOneWorkerWithHabit(context, habitModel.getHabitId(), h, m);
+                                    callback.onDeleteRemainderSuccess(mCompositeDisposable);
+                                    isInsertOrRemoveRemainderModelListMutableLiveData.postValue(false);
+                                }, throwable -> {
+                                    Log.e("deleteRemainder", "onError", throwable);
+                                    callback.onDeleteRemainderFailure(mCompositeDisposable);
+                                }
+                        )
         );
 
     }
@@ -377,56 +389,57 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe(historyModel -> {
-                            Log.i("getHistoryByHabitIdAndDate", "onSuccess");
-                            callback.onGetHistoryByHabitAndDateSuccess(historyModel, mCompositeDisposable);
-                        }, throwable -> {
-                            Log.e("getHistoryByHabitIdAndDate", "onError", throwable);
-                            callback.onGetHistoryByHabitAndDateFailure(mCompositeDisposable);
-                        }
-                )
+                                    Log.i("getHistoryByHabitIdAndDate", "onSuccess");
+                                    callback.onGetHistoryByHabitAndDateSuccess(historyModel, mCompositeDisposable);
+                                }, throwable -> {
+                                    Log.e("getHistoryByHabitIdAndDate", "onError", throwable);
+                                    callback.onGetHistoryByHabitAndDateFailure(mCompositeDisposable);
+                                }
+                        )
         );
 
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressLint("LongLogTag")
-    protected void getDayOfWeekHabitListByUserAndHabitId(Long habitId, DbService.GetHabitInWeekHabitListByUserAndHabitId callback){
+    protected void getDayOfWeekHabitListByUserAndHabitId(Long habitId, DbService.GetHabitInWeekHabitListByUserAndHabitId callback) {
         mCompositeDisposable.add(
                 mHabitInWeekRepository.getMHabitInWeekDataSource().getDayOfWeekHabitListByUserAndHabitId(
-                        DataLocalManager.getInstance().getUserId(), habitId)
+                                DataLocalManager.getInstance().getUserId(), habitId)
                         .map(habitInWeekEntities -> HabitInWeekMapper.getInstance().mapToListModel(habitInWeekEntities))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(habitInWeekModels -> {
-                            Log.i("getDayOfWeekHabitListByUserAndHabitId", "onNext");
-                            mHabitInWeekListMutableLiveData.postValue(habitInWeekModels);
-                            for(HabitInWeekModel model : habitInWeekModels){
-                                if(model.getDayOfWeekId().equals(DayOfWeek.SUN.getId())){
-                                    setSelectSunDate(true);
-                                }else if(model.getDayOfWeekId().equals(DayOfWeek.MON.getId())){
-                                    setSelectMonDate(true);
-                                }else if(model.getDayOfWeekId().equals(DayOfWeek.TUE.getId())){
-                                    setSelectTueDate(true);
-                                }else if(model.getDayOfWeekId().equals(DayOfWeek.WED.getId())){
-                                    setSelectWedDate(true);
-                                }else if(model.getDayOfWeekId().equals(DayOfWeek.THU.getId())){
-                                    setSelectThuDate(true);
-                                }else if(model.getDayOfWeekId().equals(DayOfWeek.FRI.getId())){
-                                    setSelectFriDate(true);
-                                }else if(model.getDayOfWeekId().equals(DayOfWeek.SAT.getId())){
-                                    setSelectSatDate(true);
+                                    Log.i("getDayOfWeekHabitListByUserAndHabitId", "onNext");
+                                    mHabitInWeekListMutableLiveData.postValue(habitInWeekModels);
+                                    habitInWeekModelList = habitInWeekModels;
+                                    for (HabitInWeekModel model : habitInWeekModels) {
+                                        if (model.getDayOfWeekId().equals(DayOfWeek.SUN.getId())) {
+                                            setSelectSunDate(true);
+                                        } else if (model.getDayOfWeekId().equals(DayOfWeek.MON.getId())) {
+                                            setSelectMonDate(true);
+                                        } else if (model.getDayOfWeekId().equals(DayOfWeek.TUE.getId())) {
+                                            setSelectTueDate(true);
+                                        } else if (model.getDayOfWeekId().equals(DayOfWeek.WED.getId())) {
+                                            setSelectWedDate(true);
+                                        } else if (model.getDayOfWeekId().equals(DayOfWeek.THU.getId())) {
+                                            setSelectThuDate(true);
+                                        } else if (model.getDayOfWeekId().equals(DayOfWeek.FRI.getId())) {
+                                            setSelectFriDate(true);
+                                        } else if (model.getDayOfWeekId().equals(DayOfWeek.SAT.getId())) {
+                                            setSelectSatDate(true);
+                                        }
+                                    }
+                                    callback.onGetHabitInWeekHabitListByUserAndHabitIdSuccess(mCompositeDisposable);
+                                }, throwable -> {
+                                    Log.e("getDayOfWeekHabitListByUserAndHabitId", "onError", throwable);
+                                    callback.onGetHabitInWeekHabitListByUserAndHabitIdFailure(mCompositeDisposable);
                                 }
-                            }
-                            callback.onGetHabitInWeekHabitListByUserAndHabitIdSuccess(mCompositeDisposable);
-                        }, throwable -> {
-                            Log.e("getDayOfWeekHabitListByUserAndHabitId", "onError", throwable);
-                            callback.onGetHabitInWeekHabitListByUserAndHabitIdFailure(mCompositeDisposable);
-                        }
-                )
+                        )
         );
 
     }
 
-    private void checkExistRemainder(Long h, Long m, DbService.CheckExistRemainderResult callback){
+    private void checkExistRemainder(Long h, Long m, DbService.CheckExistRemainderResult callback) {
         mCompositeDisposable.add(
                 mRemainderRepository.getMRemainderDataSource().checkExistRemainder(h, m, mHabitModelMutableLiveData.getValue().getHabitId())
                         .map(remainderEntity -> RemainderMapper.getInstance().mapToModel(remainderEntity))
@@ -443,36 +456,38 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
         );
     }
 
-    protected void checkExistAndInsertRemainder(Long h, Long m, DbService.CheckExistRemainderResult callback){
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    protected void checkExistAndInsertRemainder(Long h, Long m, DbService.CheckExistRemainderResult callback) {
         mCompositeDisposable.add(
                 mRemainderRepository.getMRemainderDataSource().checkExistRemainder(h, m, mHabitModelMutableLiveData.getValue().getHabitId())
                         .map(remainderEntity -> RemainderMapper.getInstance().mapToModel(remainderEntity))
                         .subscribeOn(Schedulers.io())
                         .observeOn(Schedulers.single())
                         .subscribe(remainderModel -> {
-                            Log.i("checkExistRemainder", "onSuccess");
-                            callback.onCheckExistRemainderSuccess(remainderModel.getRemainderId(), mCompositeDisposable);
-                        }, throwable -> {
-                            Log.e("checkExistRemainder", "onError", throwable);
-                            callback.onCheckExistRemainderFailure(mCompositeDisposable);
-                            RemainderModel model = new RemainderModel(null, mHabitModelMutableLiveData.getValue().getHabitId(), h, m);
-                            insertRemainder(model, new DbService.InsertRemainderResult() {
-                                @SuppressLint("LongLogTag")
-                                @Override
-                                public void onInsertRemainderSuccess(CompositeDisposable disposable) {
-                                    Log.i("HabitSettingViewModel-insertRemainder", "onInsertRemainderSuccess");
-                                    disposable.clear();
-                                }
+                                    Log.i("checkExistRemainder", "onSuccess");
+                                    callback.onCheckExistRemainderSuccess(remainderModel.getRemainderId(), mCompositeDisposable);
+                                }, throwable -> {
+                                    Log.e("checkExistRemainder", "onError", throwable);
+                                    callback.onCheckExistRemainderFailure(mCompositeDisposable);
+                                    RemainderModel model = new RemainderModel(null, mHabitModelMutableLiveData.getValue().getHabitId(), h, m);
+                                    insertRemainder(model, new DbService.InsertRemainderResult() {
+                                        @SuppressLint("LongLogTag")
+                                        @Override
+                                        public void onInsertRemainderSuccess(CompositeDisposable disposable) {
+                                            Log.i("HabitSettingViewModel-insertRemainder", "onInsertRemainderSuccess");
+                                            disposable.clear();
+                                            NotificationWorker.enqueueWorkerWithHabit(context, mHabitModelMutableLiveData.getValue(), model, mHabitInWeekListMutableLiveData.getValue());
+                                        }
 
-                                @SuppressLint("LongLogTag")
-                                @Override
-                                public void onInsertRemainderFailure(CompositeDisposable disposable) {
-                                    Log.i("HabitSettingViewModel-insertRemainder", "onInsertRemainderFailure");
-                                    disposable.clear();
+                                        @SuppressLint("LongLogTag")
+                                        @Override
+                                        public void onInsertRemainderFailure(CompositeDisposable disposable) {
+                                            Log.i("HabitSettingViewModel-insertRemainder", "onInsertRemainderFailure");
+                                            disposable.clear();
+                                        }
+                                    });
                                 }
-                            });
-                        }
-                )
+                        )
         );
     }
 
@@ -482,34 +497,47 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe(() -> {
-                            Log.i("insertRemainder", "onComplete");
-                            callback.onInsertRemainderSuccess(mCompositeDisposable);
-                            //After insert update to RemainderList post value is true - means insert
-                            remainderModelList.add(remainderModel);
-                            isInsertOrRemoveRemainderModelListMutableLiveData.postValue(true);
-                        }, throwable -> {
-                            Log.e("insertRemainder", "onError", throwable);
-                            callback.onInsertRemainderFailure(mCompositeDisposable);
-                        }
-                )
+                                    Log.i("insertRemainder", "onComplete");
+                                    callback.onInsertRemainderSuccess(mCompositeDisposable);
+                                    //After insert update to RemainderList post value is true - means insert
+                                    remainderModelList.add(remainderModel);
+                                    isInsertOrRemoveRemainderModelListMutableLiveData.postValue(true);
+                                }, throwable -> {
+                                    Log.e("insertRemainder", "onError", throwable);
+                                    callback.onInsertRemainderFailure(mCompositeDisposable);
+                                }
+                        )
         );
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void deleteHabit(DbService.DeleteHabitResult callback) {
         mCompositeDisposable.add(
-                mHabitRepository.getMHabitDataSource().delete(HabitMapper.getInstance().mapToEntity(habitModel))
+                mRemainderRepository.getMRemainderDataSource().getRemainderListByHabitId(mHabitModelMutableLiveData.getValue().getHabitId())
+                        .map(remainderEntities -> RemainderMapper.getInstance().mapToListModel(remainderEntities))
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(() -> {
-                            Log.i("deleteHabit", "onComplete");
-                            callback.onDeleteHabitSuccess(mCompositeDisposable);
+                        .observeOn(Schedulers.io())
+                        .subscribe(remainderModels -> {
+                            remainderModelList = remainderModels;
+                            mCompositeDisposable.add(
+                                    mHabitRepository.getMHabitDataSource().delete(HabitMapper.getInstance().mapToEntity(habitModel))
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribeOn(Schedulers.io())
+                                            .subscribe(() -> {
+                                                        Log.i("deleteHabit", "onComplete");
+                                                        NotificationWorker.cancelWorkerWithHabit(context, habitModel.getHabitId(), remainderModels);
+                                                        callback.onDeleteHabitSuccess(mCompositeDisposable);
+                                                    }, throwable -> {
+                                                        Log.e("deleteHabit", "onError", throwable);
+                                                        callback.onDeleteHabitFailure(mCompositeDisposable);
+                                                    }
+                                            )
+                            );
                         }, throwable -> {
-                            Log.e("deleteHabit", "onError", throwable);
-                            callback.onDeleteHabitFailure(mCompositeDisposable);
-                        }
-                )
+                        })
         );
+
     }
 
     @SuppressLint("LongLogTag")
@@ -540,16 +568,16 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
 
         mCompositeDisposable.add(
                 mHabitInWeekRepository.getMHabitInWeekDataSource().insert(HabitInWeekMapper.getInstance().mapToEntity(model))
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(() -> {
-                        Log.i("insertHabitInWeek", "onComplete");
-                        callback.onInsertHabitInWeekSuccess(mCompositeDisposable);
-                    }, throwable -> {
-                        Log.e("insertHabitInWeek", "onError", throwable);
-                        callback.onInsertHabitInWeekFailure(mCompositeDisposable);
-                    }
-                )
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(() -> {
+                                    Log.i("insertHabitInWeek", "onComplete");
+                                    callback.onInsertHabitInWeekSuccess(mCompositeDisposable);
+                                }, throwable -> {
+                                    Log.e("insertHabitInWeek", "onError", throwable);
+                                    callback.onInsertHabitInWeekFailure(mCompositeDisposable);
+                                }
+                        )
         );
 
 
@@ -559,13 +587,13 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
 
         Long dayOfTimeId = 0L;
 
-        if(selectAnytime){
+        if (selectAnytime) {
             dayOfTimeId = DayOfTime.ANYTIME.getId();
-        }else if(selectNight){
+        } else if (selectNight) {
             dayOfTimeId = DayOfTime.NIGHT.getId();
-        }else if(selectAfternoon){
+        } else if (selectAfternoon) {
             dayOfTimeId = DayOfTime.AFTERNOON.getId();
-        }else if(selectMorning){
+        } else if (selectMorning) {
             dayOfTimeId = DayOfTime.MORNING.getId();
         }
 
@@ -587,23 +615,23 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
 
     }
 
-    protected void checkExistHabitByName(String habitName, DbService.GetHabitByNameResult callback){
+    protected void checkExistHabitByName(String habitName, DbService.GetHabitByNameResult callback) {
 
-        if(habitName.equals(habitCurrentName)){
+        if (habitName.equals(habitCurrentName)) {
             callback.onGetHabitByNameFailure(mCompositeDisposable);
-        }else {
+        } else {
             mCompositeDisposable.add(
                     mHabitRepository.getMHabitDataSource().getHabitByName(habitName)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(habitEntity -> {
-                                Log.i("getHabitByName", "onSuccess");
-                                callback.onGetHabitByNameSuccess(mCompositeDisposable, habitEntity.getHabitId());
-                            }, throwable -> {
-                                Log.e("getHabitByName", "onError", throwable);
-                                callback.onGetHabitByNameFailure(mCompositeDisposable);
-                            }
-                    )
+                                        Log.i("getHabitByName", "onSuccess");
+                                        callback.onGetHabitByNameSuccess(mCompositeDisposable, habitEntity.getHabitId());
+                                    }, throwable -> {
+                                        Log.e("getHabitByName", "onError", throwable);
+                                        callback.onGetHabitByNameFailure(mCompositeDisposable);
+                                    }
+                            )
             );
         }
 
@@ -627,7 +655,7 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
 
     }
 
-    protected void dispose(){
+    protected void dispose() {
         mCompositeDisposable.clear();
         mCompositeDisposable.dispose();
     }

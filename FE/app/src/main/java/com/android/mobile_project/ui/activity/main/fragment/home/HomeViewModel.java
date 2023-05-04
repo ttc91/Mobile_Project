@@ -41,6 +41,7 @@ import javax.inject.Inject;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @MyCustomAnnotation.MyScope.FragmentScope
@@ -70,14 +71,14 @@ public class HomeViewModel extends BaseViewModel {
 
     protected HabitAdapter.RecyclerViewClickListener recyclerViewClickListener;
 
-    private List<HabitInWeekModel> habitInWeekModelList = new ArrayList<>();
+    private List<HabitInWeekModel> mHabitInWeekModelList = new ArrayList<>();
 
-    public List<HabitInWeekModel> getHabitInWeekModelList() {
-        return habitInWeekModelList;
+    public List<HabitInWeekModel> getmHabitInWeekModelList() {
+        return mHabitInWeekModelList;
     }
 
-    public void setHabitInWeekModelList(List<HabitInWeekModel> habitInWeekModelList) {
-        this.habitInWeekModelList = habitInWeekModelList;
+    public void setmHabitInWeekModelList(List<HabitInWeekModel> mHabitInWeekModelList) {
+        this.mHabitInWeekModelList = mHabitInWeekModelList;
     }
 
     public String getCalendarBarDate() {
@@ -96,8 +97,16 @@ public class HomeViewModel extends BaseViewModel {
 
     //Xoá đoạn này khi fix insert history sau 12h
     private final MutableLiveData<Boolean> insertHistoryLD = new MutableLiveData<>();
+
     public LiveData<Boolean> getInsertHistoryLD() {
         return insertHistoryLD;
+    }
+
+    //Transition sang count down activity
+    private final MutableLiveData<HabitInWeekModel> countDownTimerLD = new MutableLiveData<>();
+
+    public LiveData<HabitInWeekModel> getCountDownTimerLD() {
+        return countDownTimerLD;
     }
 
     public LiveData<Boolean> getHabitTodayLD() {
@@ -108,24 +117,19 @@ public class HomeViewModel extends BaseViewModel {
         return habitBeforeLD;
     }
 
-    public LiveData<Boolean> getHabitAfterLD() {
+    public MutableLiveData<Boolean> getHabitAfterLD() {
         return habitAfterLD;
     }
 
 
+    private List<HabitModel> mHabitModelList = new ArrayList<>();
+    private HabitAdapter mHabitAdapter = new HabitAdapter(mHabitModelList, mHabitInWeekModelList, recyclerViewClickListener);
 
-    private List<HabitModel> habitModelList = new ArrayList<>();
-    private HabitAdapter mHabitAdapter = new HabitAdapter(habitModelList, habitInWeekModelList, recyclerViewClickListener);
+    private List<HabitModel> mHabitModelDoneList = new ArrayList<>();
+    private DoneHabitAdapter mDoneHabitAdapter = new DoneHabitAdapter(mHabitModelDoneList);
 
-    private List<HabitModel> habitModelBeforeList = new ArrayList<>();
-
-    private List<HabitModel> habitModelAfterList = new ArrayList<>();
-
-    private List<HabitModel> habitModelDoneList = new ArrayList<>();
-    private DoneHabitAdapter mDoneHabitAdapter = new DoneHabitAdapter(habitModelDoneList);
-
-    private List<HabitModel> habitModelFailedList = new ArrayList<>();
-    private FailedHabitAdapter mFailedHabitAdapter = new FailedHabitAdapter(habitModelFailedList);
+    private List<HabitModel> mHabitModelFailedList = new ArrayList<>();
+    private FailedHabitAdapter mFailedHabitAdapter = new FailedHabitAdapter(mHabitModelFailedList);
 
     private boolean hideToDo = false;
     private boolean hideDone = false;
@@ -149,22 +153,6 @@ public class HomeViewModel extends BaseViewModel {
     @RequiresApi(api = Build.VERSION_CODES.O)
     protected void setMonth(TextView text) {
         text.setText(timeUtils.getMonthYearFromDate());
-    }
-
-    protected List<HabitModel> getHabitModelBeforeList() {
-        return habitModelBeforeList;
-    }
-
-    protected void setHabitModelBeforeList(List<HabitModel> habitModelBeforeList) {
-        this.habitModelBeforeList = habitModelBeforeList;
-    }
-
-    protected List<HabitModel> getHabitModelAfterList() {
-        return habitModelAfterList;
-    }
-
-    protected void setHabitModelAfterList(List<HabitModel> habitModelAfterList) {
-        this.habitModelAfterList = habitModelAfterList;
     }
 
     public DailyCalendarAdapter.OnClickItem getOnClickItem() {
@@ -211,16 +199,16 @@ public class HomeViewModel extends BaseViewModel {
         this.hideFailed = hideFailed;
     }
 
-    protected List<HabitModel> getHabitModelDoneList() {
-        return habitModelDoneList;
+    protected List<HabitModel> getmHabitModelDoneList() {
+        return mHabitModelDoneList;
     }
 
-    protected List<HabitModel> getHabitModelFailedList() {
-        return habitModelFailedList;
+    protected List<HabitModel> getmHabitModelFailedList() {
+        return mHabitModelFailedList;
     }
 
-    protected List<HabitModel> getHabitModelList() {
-        return habitModelList;
+    protected List<HabitModel> getmHabitModelList() {
+        return mHabitModelList;
     }
 
     protected HabitAdapter getmHabitAdapter() {
@@ -252,9 +240,9 @@ public class HomeViewModel extends BaseViewModel {
         this.dayOfWeekId = timeUtils.getCurrentDayOfWeekId(this.dayName);
     }
 
-    private List<HabitModel> habitsOfUser = new ArrayList<>();
+    private List<HabitModel> mHabitsOfUser = new ArrayList<>();
 
-    private List<HistoryModel> historyModels = new ArrayList<>();
+    private List<HistoryModel> mHistoryModels = new ArrayList<>();
 
     public Flowable<List<HabitEntity>> getHabitsByUserId() {
         return mHabitRepository.getMHabitDataSource()
@@ -281,8 +269,8 @@ public class HomeViewModel extends BaseViewModel {
                     List<Object> list = new ArrayList();
                     list.add(habitEntities);
                     list.add(habitInWeekEntities);
-                    habitsOfUser = HabitMapper.getInstance().mapToListModel(habitEntities);
-                    habitInWeekModelList = HabitInWeekMapper.getInstance().mapToListModel(habitInWeekEntities);
+                    mHabitsOfUser = HabitMapper.getInstance().mapToListModel(habitEntities);
+                    mHabitInWeekModelList = HabitInWeekMapper.getInstance().mapToListModel(habitInWeekEntities);
                     return null;
                 });
         addDisposable(result
@@ -304,6 +292,7 @@ public class HomeViewModel extends BaseViewModel {
      * @param date
      */
     public void getHabitAndHistory(String date) {
+        Log.d(TAG, "getHabitAndHistory: " + date);
         Long dateOfWeekId = timeUtils.getDayOfWeekId(date);
         Flowable<List<HabitEntity>> observable1 = getHabitsByUserId();
         Flowable<List<HabitInWeekEntity>> observable2 = getHabitInWeekModels(dateOfWeekId);
@@ -316,25 +305,30 @@ public class HomeViewModel extends BaseViewModel {
                     list.add(habitEntities);
                     list.add(habitInWeekEntities);
                     list.add(historyEntities);
-                    habitsOfUser = HabitMapper.getInstance().mapToListModel(habitEntities);
-                    habitInWeekModelList = HabitInWeekMapper.getInstance().mapToListModel(habitInWeekEntities);
-                    historyModels = HistoryMapper.getInstance().mapToListModel(historyEntities);
+                    mHabitsOfUser = HabitMapper.getInstance().mapToListModel(habitEntities);
+                    mHabitInWeekModelList = HabitInWeekMapper.getInstance().mapToListModel(habitInWeekEntities);
+                    mHistoryModels = HistoryMapper.getInstance().mapToListModel(historyEntities);
                     //Xoá đoạn này khi fix được thêm History mới sau 12h
                     /*if (historyModels.size() == 0 && habitInWeekEntities.size() != 0) {
                         insertHistoriesList(date);
                     }*/
                     return list;
                 });
+
         addDisposable(result
                 .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
                 .subscribeWith(new CustomSubscriber<List<Object>>() {
                     @Override
                     public void onNext(List<Object> objects) {
                         if (isSelectedTheDayAfter()) {
+                            Log.d(TAG, "habitAfterLD: postValue");
                             habitAfterLD.postValue(true);
                         } else if (isSelectedTheDayBefore()) {
+                            Log.d(TAG, "habitBeforeLD: postValue");
                             habitBeforeLD.postValue(true);
                         } else {
+                            Log.d(TAG, "habitTodayLD: postValue");
                             habitTodayLD.postValue(true);
                         }
                     }
@@ -348,21 +342,24 @@ public class HomeViewModel extends BaseViewModel {
         mHabitAdapter.clear();
         mDoneHabitAdapter.clear();
         mFailedHabitAdapter.clear();
-        for (HistoryModel history : historyModels) {
+        for (HistoryModel history : mHistoryModels) {
             if (history.getHistoryHabitsState().equals(VAL_NULL)) {
-                habitModelList.add(getHabitById(habitsOfUser, history.getHabitId()));
+                mHabitModelList.add(getHabitById(mHabitsOfUser, history.getHabitId()));
             } else if (history.getHistoryHabitsState().equals(VAL_TRUE)) {
-                habitModelDoneList.add(getHabitById(habitsOfUser, history.getHabitId()));
+                mHabitModelDoneList.add(getHabitById(mHabitsOfUser, history.getHabitId()));
             } else {
-                habitModelFailedList.add(getHabitById(habitsOfUser, history.getHabitId()));
+                mHabitModelFailedList.add(getHabitById(mHabitsOfUser, history.getHabitId()));
             }
         }
     }
 
     public void clearHabitList() {
-        habitModelList.clear();
-        habitModelDoneList.clear();
-        habitModelFailedList.clear();
+        mHabitModelList.clear();
+        mHabitModelDoneList.clear();
+        mHabitModelFailedList.clear();
+        mHabitsOfUser.clear();
+        mHistoryModels.clear();
+        mHabitInWeekModelList.clear();
     }
 
     /**
@@ -372,21 +369,21 @@ public class HomeViewModel extends BaseViewModel {
      */
     public void insertHistoriesList(String historyTime) {
         Log.d(TAG, "insertHistoriesList: ");
-        if (historyModels.isEmpty() && habitInWeekModelList.isEmpty()) {
+        if (mHistoryModels.isEmpty() && mHabitInWeekModelList.isEmpty()) {
             return;
         }
-        if (historyModels.size() == habitInWeekModelList.size()) {
+        if (mHistoryModels.size() == mHabitInWeekModelList.size()) {
             return;
         }
-        if (historyModels.isEmpty() && !habitInWeekModelList.isEmpty()) {
-            for (HabitInWeekModel habitInWeek : habitInWeekModelList) {
+        if (mHistoryModels.isEmpty() && !mHabitInWeekModelList.isEmpty()) {
+            for (HabitInWeekModel habitInWeek : mHabitInWeekModelList) {
                 HistoryModel model = new HistoryModel();
                 model.setHistoryDate(historyTime);
                 model.setUserId(DataLocalManager.getInstance().getUserId());
                 model.setHistoryHabitsState(VAL_NULL);
                 model.setHabitId(habitInWeek.getHabitId());
                 insertHistory(model);
-                this.historyModels.add(model);
+                this.mHistoryModels.add(model);
             }
         }
         insertHistoryLD.postValue(true);
@@ -407,7 +404,7 @@ public class HomeViewModel extends BaseViewModel {
             return;
         }
         for (HabitInWeekModel habitInWeek : habitInWeekModels) {
-            habitModelList.add(getHabitById(habitsOfUser, habitInWeek.getHabitId()));
+            mHabitModelList.add(getHabitById(mHabitsOfUser, habitInWeek.getHabitId()));
         }
     }
 
@@ -420,46 +417,63 @@ public class HomeViewModel extends BaseViewModel {
         return null;
     }
 
-    public void updateHistory(int position, Class<?> adapterName, String value, String date) {
+    private HabitInWeekModel getHabitInWeekById(List<HabitInWeekModel> habitModels, Long id) {
+        for (HabitInWeekModel habit : habitModels) {
+            if (habit.getHabitId().equals(id)) {
+                return habit;
+            }
+        }
+        return null;
+    }
+
+    public void updateHistory(int position, Class<?> adapterName, String value, String date, boolean isCountDown) {
         HabitModel habitModel = new HabitModel();
+        HabitInWeekModel habitInWeekModel = new HabitInWeekModel();
         if (HabitAdapter.class.equals(adapterName)) {
-            if (habitModelList.size() != 0) {
-                habitModel = habitModelList.get(position);
-                habitModelList.remove(position);
+            if (mHabitModelList.size() != 0) {
+                habitModel = mHabitModelList.get(position);
+                habitInWeekModel = getHabitInWeekById(mHabitInWeekModelList, habitModel.getHabitId());
+                mHabitModelList.remove(position);
                 setHabitStatus(habitModel, value);
                 mHabitAdapter.notifyItemRemoved(position);
             }
         } else if (DoneHabitAdapter.class.equals(adapterName)) {
-            if (habitModelDoneList.size() != 0) {
-                habitModel = habitModelDoneList.get(position);
-                habitModelDoneList.remove(position);
+            if (mHabitModelDoneList.size() != 0) {
+                habitModel = mHabitModelDoneList.get(position);
+                habitInWeekModel = getHabitInWeekById(mHabitInWeekModelList, habitModel.getHabitId());
+                mHabitModelDoneList.remove(position);
                 setHabitStatus(habitModel, value);
                 mDoneHabitAdapter.notifyItemRemoved(position);
             }
         } else {
-            if (habitModelFailedList.size() != 0) {
-                habitModel = habitModelFailedList.get(position);
-                habitModelFailedList.remove(position);
+            if (mHabitModelFailedList.size() != 0) {
+                habitModel = mHabitModelFailedList.get(position);
+                habitInWeekModel = getHabitInWeekById(mHabitInWeekModelList, habitModel.getHabitId());
+                mHabitModelFailedList.remove(position);
                 setHabitStatus(habitModel, value);
                 mFailedHabitAdapter.notifyItemRemoved(position);
             }
         }
-        updateHistoryStatus(habitModel, date, value);
+        if (habitInWeekModel.isTimerHabit() && isCountDown) {
+            countDownTimerLD.postValue(habitInWeekModel);
+        } else {
+            updateHistoryStatus(habitModel, date, value);
+        }
     }
 
     private void setHabitStatus(HabitModel habitModel, String status) {
         switch (status) {
             case VAL_NULL:
-                habitModelList.add(habitModel);
-                mHabitAdapter.notifyItemInserted(habitModelList.size() - 1);
+                mHabitModelList.add(habitModel);
+                mHabitAdapter.notifyItemInserted(mHabitModelList.size() - 1);
                 break;
             case VAL_TRUE:
-                habitModelDoneList.add(habitModel);
-                mDoneHabitAdapter.notifyItemInserted(habitModelDoneList.size() - 1);
+                mHabitModelDoneList.add(habitModel);
+                mDoneHabitAdapter.notifyItemInserted(mHabitModelDoneList.size() - 1);
                 break;
             case VAL_FALSE:
-                habitModelFailedList.add(habitModel);
-                mFailedHabitAdapter.notifyItemInserted(habitModelFailedList.size() - 1);
+                mHabitModelFailedList.add(habitModel);
+                mFailedHabitAdapter.notifyItemInserted(mHabitModelFailedList.size() - 1);
                 break;
             default:
                 break;

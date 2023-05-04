@@ -26,6 +26,7 @@ import com.android.mobile_project.databinding.LayoutRemainderDialogBinding;
 import com.android.mobile_project.ui.activity.setting.IHabitSettingViewModel;
 import com.android.mobile_project.ui.activity.setting.adapter.RemainderAdapter;
 import com.android.mobile_project.ui.activity.setting.service.DbService;
+import com.android.mobile_project.utils.constant.TimeConstant;
 
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
@@ -59,14 +60,16 @@ public class RemainderDialog extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         binding.setDialog(this);
-
+        String[] timeValue = TimeConstant.getTimeDisplayValue();
         binding.hNumPicker.setMaxValue(59);
         binding.hNumPicker.setMinValue(0);
         binding.mNumPicker.setMaxValue(59);
         binding.mNumPicker.setMinValue(0);
 
         binding.hNumPicker.setValue(Math.toIntExact(hourOld));
+        binding.hNumPicker.setDisplayedValues(timeValue);
         binding.mNumPicker.setValue(Math.toIntExact(minuteOld));
+        binding.mNumPicker.setDisplayedValues(timeValue);
 
         binding.btnCancel.setOnClickListener(view -> dismiss());
 

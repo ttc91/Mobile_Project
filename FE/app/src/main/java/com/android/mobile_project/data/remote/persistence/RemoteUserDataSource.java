@@ -1,5 +1,7 @@
 package com.android.mobile_project.data.remote.persistence;
 
+import android.util.Log;
+
 import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.data.local.sqlite.dao.UserDAO;
 import com.android.mobile_project.data.remote.api.UserAPI;
@@ -28,6 +30,7 @@ public class RemoteUserDataSource implements IRemoteUserDataSource {
 
     @Override
     public Call<ResponseModel<JwtResponseModel>> signIn() {
+        Log.d("RemoteUserDataSource", "signIn: ");
         String username = DataLocalManager.getInstance().getUserName();
         SignInRequestModel model = new SignInRequestModel(username);
         return userAPI.signIn(model);

@@ -40,7 +40,7 @@
     <style name="SplashTheme" parent="FullScreenTheme">
         <item name="android:windowBackground">@drawable/bck_splash</item>
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:statusBarColor">@color/bck_ground</item>
+        <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowTranslucentNavigation">false</item>
     </style>
 

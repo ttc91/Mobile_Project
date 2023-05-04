@@ -1,5 +1,7 @@
 package com.android.mobile_project.data.remote.model;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class HabitInWeekModel extends BaseModel{
+public class HabitInWeekModel extends BaseModel implements Serializable {
 
     private Long userId;
     private Long habitId;
