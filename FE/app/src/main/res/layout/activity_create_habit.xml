@@ -87,6 +87,7 @@
                             android:layout_height="@dimen/_70sdp"
                             android:layout_marginTop="@dimen/_20sdp"
                             android:src="@drawable/icon_habit"
+                            app:strokeColor="@null"
                             app:shapeAppearanceOverlay="@style/corner"
                             android:visibility="gone"/>
 

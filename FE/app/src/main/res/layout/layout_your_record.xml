@@ -74,6 +74,7 @@
             android:layout_height="@dimen/_80sdp"
             android:layout_marginEnd="@dimen/_5sdp"
             android:src="@drawable/ic_img_cup"
+            app:strokeColor="@null"
             app:shapeAppearanceOverlay="@style/corner"/>
 
     </LinearLayout>
@@ -164,6 +165,7 @@
             android:layout_width="@dimen/_80sdp"
             android:layout_height="@dimen/_80sdp"
             android:layout_marginEnd="@dimen/_5sdp"
+            app:strokeColor="@null"
             android:src="@drawable/icon_best_habit"
             app:shapeAppearanceOverlay="@style/corner"/>
 

@@ -52,6 +52,7 @@
                     <com.google.android.material.imageview.ShapeableImageView
                         android:layout_width="@dimen/_30sdp"
                         android:layout_height="@dimen/_30sdp"
+                        app:strokeColor="@null"
                         android:src="@drawable/ic_synchronize"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -98,6 +99,7 @@
                             android:layout_width="@dimen/_30sdp"
                             android:layout_height="@dimen/_30sdp"
                             android:src="@drawable/ic_about_us"
+                            app:strokeColor="@null"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
