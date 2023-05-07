@@ -1,7 +1,6 @@
 package com.android.mobile_project.ui.activity.login;
 
 import android.os.Build;
-import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -40,11 +39,9 @@ import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Call;
@@ -141,15 +138,16 @@ public class LoginViewModel extends BaseViewModel {
         });
     }
 
-    private List<HabitEntity> habitModels = new ArrayList<>();
-    private List<HabitInWeekEntity> habitInWeekModels = new ArrayList<>();
-    private List<HistoryEntity> historyModels = new ArrayList<>();
-    private List<RemainderEntity> remainderModels = new ArrayList<>();
+    private List<HabitModel> habitModels = new ArrayList<>();
+    private List<HabitInWeekModel> habitInWeekModels = new ArrayList<>();
+    private List<HistoryModel> historyModels = new ArrayList<>();
+    private List<RemainderModel> remainderModels = new ArrayList<>();
 
-    private final CountDownLatch latch = new CountDownLatch(3);
+    private final CountDownLatch mRemoteLatch = new CountDownLatch(4);
+    private final CountDownLatch mLocalLatch = new CountDownLatch(4);
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void loadHabitFromServerIntoDB() {
+    private void loadHabitFromServer() {
         Long userId = mUserIdMutableLiveData.getValue();
         habitRepository.getMRemoteHabitDataSource().getAllHabit()
                 .observeOn(Schedulers.newThread())
@@ -158,45 +156,30 @@ public class LoginViewModel extends BaseViewModel {
                     @Override
                     public void onSuccess(@NonNull ResponseModel<HabitModel> habitModelResponseModel) {
                         if (habitModelResponseModel.getObjectList().size() == 0) {
-                            latch.countDown();
-                            latch.countDown();
+                            mRemoteLatch.countDown();
                             return;
                         }
                         Log.d(TAG, "onSuccess: habitRepository" + habitModelResponseModel.getMessage() + habitModelResponseModel.getStatusCode());
                         //latch.countDown();
-                        List<HabitModel> habitList = (List<HabitModel>) habitModelResponseModel.getObjectList();
-                        habitList.forEach(item -> {
+                        habitModels = (List<HabitModel>) habitModelResponseModel.getObjectList();
+                        habitModels.forEach(item -> {
                             item.setUserId(userId);
                             item.setDayOfTimeId(item.getDateOfTime());
                         });
-                        habitModels = HabitMapper.getInstance().mapToListEntity(habitList);
-                        habitRepository.getMHabitDataSource()
-                                .insertAll(habitModels.toArray(new HabitEntity[0]))
-                                .observeOn(Schedulers.newThread())
-                                .observeOn(Schedulers.newThread())
-                                .subscribe(new CustomCompletableObserver() {
-                                    @Override
-                                    public void onComplete() {
-                                        Log.d(TAG, "onComplete: habitRepository");
-                                        //loadHabitInWeekFromServerIntoDB();
-                                        loadHistoryFromServerIntoDB();
-                                        loadReminderFromServerIntoDB();
-                                    }
-                                });
+                        mRemoteLatch.countDown();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, "onError: " + e.getMessage());
-                        latch.countDown();
-                        latch.countDown();
+                        mRemoteLatch.countDown();
                         super.onError(e);
                     }
                 });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void loadHabitInWeekFromServerIntoDB() {
+    private void loadHabitInWeekFromServer() {
         Long userId = mUserIdMutableLiveData.getValue();
         habitInWeekRepository.getMRemoteHabitInWeekDataSource()
                 .getAllHabitInWeek()
@@ -206,39 +189,28 @@ public class LoginViewModel extends BaseViewModel {
                     @Override
                     public void onSuccess(@NonNull ResponseModel<HabitInWeekModel> models) {
                         if (models.getObjectList().size() == 0) {
-                            latch.countDown();
+                            mRemoteLatch.countDown();
                             return;
                         }
                         Log.d(TAG, "onSuccess: habitInWeekRepository");
                         //latch.countDown();
-                        List<HabitInWeekModel> habitInWeekList = (List<HabitInWeekModel>) models.getObjectList();
-                        habitInWeekList.forEach(item -> {
+                        habitInWeekModels = (List<HabitInWeekModel>) models.getObjectList();
+                        habitInWeekModels.forEach(item -> {
                             item.setUserId(userId);
                         });
-                        habitInWeekModels = HabitInWeekMapper.getInstance().mapToListEntity(habitInWeekList);
-                        habitInWeekRepository.getMHabitInWeekDataSource()
-                                .insertAll(habitInWeekModels.toArray(new HabitInWeekEntity[0]))
-                                .observeOn(Schedulers.newThread())
-                                .observeOn(Schedulers.newThread())
-                                .subscribe(new CustomCompletableObserver() {
-                                    @Override
-                                    public void onComplete() {
-                                        Log.d(TAG, "onComplete: habitInWeekRepository");
-                                        latch.countDown();
-                                    }
-                                });
+                        mRemoteLatch.countDown();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        latch.countDown();
+                        mRemoteLatch.countDown();
                         super.onError(e);
                     }
                 });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void loadHistoryFromServerIntoDB() {
+    private void loadHistoryFromServer() {
         Long userId = mUserIdMutableLiveData.getValue();
         historyRepository.getMRemoteHistoryDataSource()
                 .getAllHistory()
@@ -248,41 +220,30 @@ public class LoginViewModel extends BaseViewModel {
                     @Override
                     public void onSuccess(@NonNull ResponseModel<HistoryModel> models) {
                         if (models.getObjectList().size() == 0) {
-                            latch.countDown();
+                            mRemoteLatch.countDown();
                             return;
                         }
                         Log.d(TAG, "onSuccess: historyRepository");
-                        List<HistoryModel> historyList = (List<HistoryModel>) models.getObjectList();
+                        historyModels = (List<HistoryModel>) models.getObjectList();
                         long i = 1L;
-                        for (HistoryModel history : historyList) {
+                        for (HistoryModel history : historyModels) {
                             history.setHistoryId(i);
                             history.setUserId(userId);
                             i++;
                         }
-                        historyModels = HistoryMapper.getInstance().mapToListEntity(historyList);
-                        historyRepository.getMHistoryDataSource()
-                                .insertAll(historyModels.toArray(new HistoryEntity[0]))
-                                .observeOn(Schedulers.newThread())
-                                .observeOn(Schedulers.newThread())
-                                .subscribe(new CustomCompletableObserver() {
-                                    @Override
-                                    public void onComplete() {
-                                        Log.d(TAG, "onComplete: historyRepository");
-                                        latch.countDown();
-                                    }
-                                });
+                        mRemoteLatch.countDown();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        latch.countDown();
+                        mRemoteLatch.countDown();
                         super.onError(e);
                     }
                 });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void loadReminderFromServerIntoDB() {
+    private void loadReminderFromServer() {
         //Long userId = mUserIdMutableLiveData.getValue();
         remainderRepository.getMRemoteRemainderDataSource()
                 .getAllReminder()
@@ -292,47 +253,95 @@ public class LoginViewModel extends BaseViewModel {
                     @Override
                     public void onSuccess(@NonNull ResponseModel<RemainderModel> models) {
                         if (models.getObjectList().size() == 0) {
-                            latch.countDown();
+                            mRemoteLatch.countDown();
                             return;
                         }
                         Log.d(TAG, "onSuccess: remainderRepository ");
-                        List<RemainderModel> reminderList = (List<RemainderModel>) models.getObjectList();
+                        remainderModels = (List<RemainderModel>) models.getObjectList();
                         long i = 1L;
-                        for (RemainderModel remind : reminderList) {
+                        for (RemainderModel remind : remainderModels) {
                             remind.setRemainderId(i);
                             i++;
                         }
-                        remainderModels = RemainderMapper.getInstance().mapToListEntity(reminderList);
-                        remainderRepository.getMRemainderDataSource()
-                                .insertAll(remainderModels.toArray(new RemainderEntity[0]))
-                                .observeOn(Schedulers.newThread())
-                                .observeOn(Schedulers.newThread())
-                                .subscribe(new CustomCompletableObserver() {
-                                    @Override
-                                    public void onComplete() {
-                                        Log.d(TAG, "onComplete: remainderRepository");
-                                        latch.countDown();
-                                    }
-                                });
+                        mRemoteLatch.countDown();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        latch.countDown();
+                        mRemoteLatch.countDown();
                         super.onError(e);
                     }
                 });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
+    private void insertAllDataIntoDB() {
+        habitRepository.getMHabitDataSource()
+                .insertAll(HabitMapper.getInstance().mapToListEntity(habitModels)
+                        .toArray(new HabitEntity[0]))
+                .observeOn(Schedulers.newThread())
+                .observeOn(Schedulers.newThread())
+                .subscribe(new CustomCompletableObserver() {
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete: habitRepository");
+                        mLocalLatch.countDown();
+                        habitInWeekRepository.getMHabitInWeekDataSource()
+                                .insertAll(HabitInWeekMapper.getInstance().mapToListEntity(habitInWeekModels)
+                                        .toArray(new HabitInWeekEntity[0]))
+                                .observeOn(Schedulers.newThread())
+                                .observeOn(Schedulers.newThread())
+                                .subscribe(new CustomCompletableObserver() {
+                                    @Override
+                                    public void onComplete() {
+                                        Log.d(TAG, "onComplete: habitInWeekRepository");
+                                        mLocalLatch.countDown();
+                                    }
+                                });
+
+                        historyRepository.getMHistoryDataSource()
+                                .insertAll(HistoryMapper.getInstance().mapToListEntity(historyModels)
+                                        .toArray(new HistoryEntity[0]))
+                                .observeOn(Schedulers.newThread())
+                                .observeOn(Schedulers.newThread())
+                                .subscribe(new CustomCompletableObserver() {
+                                    @Override
+                                    public void onComplete() {
+                                        Log.d(TAG, "onComplete: historyRepository");
+                                        mLocalLatch.countDown();
+                                    }
+                                });
+
+                        remainderRepository.getMRemainderDataSource()
+                                .insertAll(RemainderMapper.getInstance().mapToListEntity(remainderModels)
+                                        .toArray(new RemainderEntity[0]))
+                                .observeOn(Schedulers.newThread())
+                                .observeOn(Schedulers.newThread())
+                                .subscribe(new CustomCompletableObserver() {
+                                    @Override
+                                    public void onComplete() {
+                                        Log.d(TAG, "onComplete: remainderRepository");
+                                        mLocalLatch.countDown();
+                                    }
+                                });
+                    }
+                });
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void loadAllDataFromServer() {
 
-        loadHabitFromServerIntoDB();
-        loadHabitInWeekFromServerIntoDB();
+        loadHabitFromServer();
+        loadHabitInWeekFromServer();
+        loadHistoryFromServer();
+        loadReminderFromServer();
 
         Log.d(TAG, "loadAllDataFromServer: before");
         try {
-            latch.await();
+            mRemoteLatch.await();
+            insertAllDataIntoDB();
+            mLocalLatch.await();
             mLiveDataIsSuccess.postValue(true);
             Log.d(TAG, "loadAllDataFromServer: after await");
         } catch (InterruptedException e) {
