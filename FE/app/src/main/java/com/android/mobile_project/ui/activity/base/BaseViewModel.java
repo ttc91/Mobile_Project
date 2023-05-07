@@ -16,7 +16,7 @@ import io.reactivex.rxjava3.subscribers.DisposableSubscriber;
 
 public abstract class BaseViewModel extends ViewModel {
 
-    public static final String TAG = BaseViewModel.class.getSimpleName();
+    private static final String TAG = BaseViewModel.class.getSimpleName();
     protected CompositeDisposable mMainCompDisposable = new CompositeDisposable();
     protected CompositeDisposable mFlowableCompDisposable = new CompositeDisposable();
     protected MutableLiveData<Boolean> mLiveDataIsLoading = new MutableLiveData<>();

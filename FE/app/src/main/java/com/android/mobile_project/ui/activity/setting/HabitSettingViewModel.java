@@ -55,7 +55,8 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
     private Context context;
 
     @Inject
-    public HabitSettingViewModel(HabitRepository mHabitRepository, RemainderRepository mRemainderRepository, HabitInWeekRepository mHabitInWeekRepository, HistoryRepository mHistoryRepository) {
+    public HabitSettingViewModel(HabitRepository mHabitRepository, RemainderRepository mRemainderRepository,
+                                 HabitInWeekRepository mHabitInWeekRepository, HistoryRepository mHistoryRepository) {
         this.mHabitRepository = mHabitRepository;
         this.mRemainderRepository = mRemainderRepository;
         this.mHabitInWeekRepository = mHabitInWeekRepository;

@@ -51,15 +51,12 @@ import retrofit2.Response;
 @MyCustomAnnotation.MyScope.ActivityScope
 public class LoginViewModel extends BaseViewModel {
 
+    private static final String TAG = LoginViewModel.class.getSimpleName();
     private final HabitRepository habitRepository;
-
     private final HabitInWeekRepository habitInWeekRepository;
-
     private final HistoryRepository historyRepository;
-
     private final RemainderRepository remainderRepository;
     private final UserRepository mUserRepository;
-
     private final MutableLiveData<Long> mUserIdMutableLiveData = new MutableLiveData<>();
 
     protected LiveData<Long> getUserIdMutableLiveData() {
@@ -74,7 +71,8 @@ public class LoginViewModel extends BaseViewModel {
     }
 
     @Inject
-    public LoginViewModel(HabitRepository habitRepository, HabitInWeekRepository habitInWeekRepository, HistoryRepository historyRepository, RemainderRepository remainderRepository, UserRepository mUserRepository) {
+    public LoginViewModel(HabitRepository habitRepository, HabitInWeekRepository habitInWeekRepository,
+                          HistoryRepository historyRepository, RemainderRepository remainderRepository, UserRepository mUserRepository) {
         this.habitRepository = habitRepository;
         this.habitInWeekRepository = habitInWeekRepository;
         this.historyRepository = historyRepository;
@@ -83,7 +81,6 @@ public class LoginViewModel extends BaseViewModel {
     }
 
     protected ToastService toastService;
-
     protected DbService dbService;
 
     protected InitService initService;
@@ -326,7 +323,7 @@ public class LoginViewModel extends BaseViewModel {
                                 });
                     }
                 });
-
+        //NotificationWorker.enqueueWorkerWithHabit();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
