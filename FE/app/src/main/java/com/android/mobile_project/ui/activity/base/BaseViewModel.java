@@ -43,6 +43,7 @@ public abstract class BaseViewModel extends ViewModel {
 
         @Override
         public void onError(Throwable e) {
+            Log.d(TAG, "onError: " + e.getMessage());
             mLiveDataOnError.postValue(e);
             e.printStackTrace();
         }

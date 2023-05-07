@@ -5,6 +5,7 @@ import com.android.mobile_project.data.local.sqlite.dao.HabitDAO;
 import com.android.mobile_project.data.local.sqlite.persistence.behavior.HabitDataSource;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -96,5 +97,15 @@ public class LocalHabitDataSource extends BaseDataSource implements HabitDataSou
     @Override
     public List<HabitEntity> getAll() {
         return dao.getAll();
+    }
+
+    @Override
+    public Completable insertAll(HabitEntity... habitEntities) {
+        return dao.insertAll(habitEntities);
+    }
+
+    @Override
+    public Completable deleteAll() {
+        return dao.deleteAll();
     }
 }

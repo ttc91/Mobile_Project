@@ -1,6 +1,7 @@
 package com.android.mobile_project.data.local.sqlite.persistence.behavior;
 
 import com.android.mobile_project.data.local.sqlite.entity.db.HabitEntity;
+import com.android.mobile_project.data.local.sqlite.entity.db.HabitInWeekEntity;
 
 import java.util.List;
 
@@ -33,5 +34,9 @@ public interface HabitDataSource extends BaseDataSource<HabitEntity>{
     void updateHabitInBackground(HabitEntity entity);
 
     List<HabitEntity> getAll();
+
+    Completable insertAll(HabitEntity... habitEntities);
+
+    Completable deleteAll();
 
 }

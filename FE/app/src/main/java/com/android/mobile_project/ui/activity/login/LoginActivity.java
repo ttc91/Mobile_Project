@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
                         viewModel.getUserIdByName(userName, new GetUserIdFromLocalResult() {
                             @Override
                             public void onGetIdSuccess() {
-                                redirectToNextActivity();
+                                //redirectToNextActivity();
                             }
 
                             @Override
@@ -179,12 +179,23 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
             }
         };
 
+        viewModel.getLiveDataIsSuccess().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean) {
+                    redirectToNextActivity();
+                }
+            }
+        });
+
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btn_doing_now){
             viewModel.dbService.setUser("null");
+            redirectToNextActivity();
         }else if(view.getId() == R.id.btn_gg){
             Intent it = gsc.getSignInIntent();
             startActivityForResult(it, LOGIN_REQUEST_CODE);
@@ -251,7 +262,7 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
                     viewModel.dbService.setUser(personEmail);
                     viewModel.requestSignInToServer();
                 }
-                redirectToNextActivity();
+                //redirectToNextActivity();
             }catch (Exception e){
                 Log.e("loginError", Arrays.toString(e.getStackTrace()));
                 viewModel.toastService.makeErrorToast();

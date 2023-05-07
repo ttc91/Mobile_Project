@@ -6,8 +6,10 @@ import androidx.annotation.RequiresApi;
 
 import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.data.local.sqlite.dao.HabitInWeekDAO;
+import com.android.mobile_project.data.local.sqlite.persistence.BaseDataSource;
 import com.android.mobile_project.data.remote.api.HabitInWeekAPI;
 import com.android.mobile_project.data.remote.model.HabitInWeekModel;
+import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.data.remote.model.api.HabitInWeekSynchronizeModel;
 import com.android.mobile_project.data.remote.model.api.base.ResponseModel;
 import com.android.mobile_project.data.remote.persistence.behavior.IRemoteHabitInWeekDataSource;
@@ -19,10 +21,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.core.Single;
 import retrofit2.Call;
 
 @MyCustomAnnotation.MyScope.ActivityScope
-public class RemoteHabitInWeekDataSource implements IRemoteHabitInWeekDataSource {
+public class RemoteHabitInWeekDataSource extends BaseDataSource implements IRemoteHabitInWeekDataSource {
 
     private final HabitInWeekAPI habitInWeekAPI;
 
@@ -44,6 +47,13 @@ public class RemoteHabitInWeekDataSource implements IRemoteHabitInWeekDataSource
         synchronizeModel.setDataList(habitInWeekModels);
         String token = StringConstant.STRING_BEARER + DataLocalManager.getInstance().getToken();
         return habitInWeekAPI.synchronize(token, synchronizeModel);
+    }
+
+    @Override
+    public Single<ResponseModel<HabitInWeekModel>> getAllHabitInWeek() {
+        String username = DataLocalManager.getInstance().getUserName();
+        String token = StringConstant.STRING_BEARER + DataLocalManager.getInstance().getToken();
+        return habitInWeekAPI.getAllHabitInWeek(token, username);
     }
 
 }

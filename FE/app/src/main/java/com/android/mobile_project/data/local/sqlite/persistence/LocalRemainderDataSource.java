@@ -1,5 +1,6 @@
 package com.android.mobile_project.data.local.sqlite.persistence;
 
+import com.android.mobile_project.data.local.sqlite.entity.db.HistoryEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.RemainderEntity;
 import com.android.mobile_project.data.local.sqlite.dao.RemainderDAO;
 import com.android.mobile_project.data.local.sqlite.persistence.behavior.RemainderDataSource;
@@ -14,7 +15,7 @@ import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 
 @MyCustomAnnotation.MyScope.ActivityScope
-public class LocalRemainderDataSource implements RemainderDataSource {
+public class LocalRemainderDataSource extends BaseDataSource implements RemainderDataSource {
 
     private final RemainderDAO dao;
 
@@ -61,5 +62,15 @@ public class LocalRemainderDataSource implements RemainderDataSource {
     @Override
     public List<RemainderEntity> getAll() {
         return dao.getAll();
+    }
+
+    @Override
+    public Completable insertAll(RemainderEntity... remainderEntities) {
+        return dao.insertAll(remainderEntities);
+    }
+
+    @Override
+    public Completable deleteAll() {
+        return dao.deleteAll();
     }
 }

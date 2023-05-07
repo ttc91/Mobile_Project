@@ -1,5 +1,6 @@
 package com.android.mobile_project.data.local.sqlite.persistence.behavior;
 
+import com.android.mobile_project.data.local.sqlite.entity.db.HistoryEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.RemainderEntity;
 
 import java.util.List;
@@ -19,5 +20,9 @@ public interface RemainderDataSource extends BaseDataSource<RemainderEntity> {
     Completable deleteRemainderByTimerHourAndTimerMinutesAndId(Long h, Long m, Long id);
 
     List<RemainderEntity> getAll();
+
+    Completable insertAll(RemainderEntity... habitEntities);
+
+    Completable deleteAll();
 
 }

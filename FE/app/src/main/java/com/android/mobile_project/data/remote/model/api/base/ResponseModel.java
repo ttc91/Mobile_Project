@@ -1,6 +1,7 @@
 package com.android.mobile_project.data.remote.model.api.base;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -22,6 +23,6 @@ public class ResponseModel <T> implements Serializable {
 
     private Exception messageError;
 
-    private List<?> objectList;
+    private List<T> objectList = new ArrayList<>();
 
 }

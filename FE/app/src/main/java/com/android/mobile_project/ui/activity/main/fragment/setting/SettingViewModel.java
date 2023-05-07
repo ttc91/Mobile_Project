@@ -19,19 +19,24 @@ import com.android.mobile_project.data.repository.HabitRepository;
 import com.android.mobile_project.data.repository.HistoryRepository;
 import com.android.mobile_project.data.repository.RemainderRepository;
 import com.android.mobile_project.data.repository.UserRepository;
+import com.android.mobile_project.ui.activity.base.BaseViewModel;
 import com.android.mobile_project.ui.activity.main.fragment.setting.service.ApiService;
 import com.android.mobile_project.ui.activity.main.fragment.setting.service.InitService;
 import com.android.mobile_project.ui.activity.main.fragment.setting.service.ToastService;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
 
+import java.util.concurrent.CountDownLatch;
+
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 @MyCustomAnnotation.MyScope.FragmentScope
-public class SettingViewModel {
+public class SettingViewModel extends BaseViewModel {
 
     private final HabitRepository habitRepository;
 
@@ -48,6 +53,8 @@ public class SettingViewModel {
     protected ToastService toastService;
 
     protected Boolean isLogin = false;
+
+    private final CountDownLatch latch = new CountDownLatch(4);
 
     @Inject
     public SettingViewModel(HabitRepository habitRepository, HabitInWeekRepository habitInWeekRepository, HistoryRepository historyRepository, RemainderRepository remainderRepository, UserRepository userRepository) {
@@ -126,6 +133,16 @@ public class SettingViewModel {
                 Log.e("SettingViewModel - signIn", "onFailure");
             }
         });
+    }
+
+    private void loadAllDataFromServer() {
+        habitRepository.getMRemoteHabitDataSource().getAllHabit().subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new CustomSingleObserver<ResponseModel<HabitModel>>() {
+                    @Override
+                    public void onSuccess(@io.reactivex.rxjava3.annotations.NonNull ResponseModel<HabitModel> habitModelResponseModel) {
+                        //habitRepository.getMHabitDataSource().
+                    }
+                });
     }
 
 }

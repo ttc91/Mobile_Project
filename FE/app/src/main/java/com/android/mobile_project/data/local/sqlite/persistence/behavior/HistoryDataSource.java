@@ -1,5 +1,6 @@
 package com.android.mobile_project.data.local.sqlite.persistence.behavior;
 
+import com.android.mobile_project.data.local.sqlite.entity.db.HabitEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.HistoryEntity;
 
 import java.util.List;
@@ -31,5 +32,9 @@ public interface HistoryDataSource extends BaseDataSource<HistoryEntity> {
     Single<Long> countHistoriesByDate(String historyDate);
 
     List<HistoryEntity> getAll();
+
+    Completable insertAll(HistoryEntity... habitEntities);
+
+    Completable deleteAll();
 
 }

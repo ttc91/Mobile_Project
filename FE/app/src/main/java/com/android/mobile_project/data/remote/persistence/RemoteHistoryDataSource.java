@@ -6,7 +6,9 @@ import androidx.annotation.RequiresApi;
 
 import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.data.local.sqlite.dao.HistoryDAO;
+import com.android.mobile_project.data.local.sqlite.persistence.BaseDataSource;
 import com.android.mobile_project.data.remote.api.HistoryAPI;
+import com.android.mobile_project.data.remote.model.HabitInWeekModel;
 import com.android.mobile_project.data.remote.model.HistoryModel;
 import com.android.mobile_project.data.remote.model.api.HistorySynchronizeModel;
 import com.android.mobile_project.data.remote.model.api.base.ResponseModel;
@@ -19,10 +21,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.core.Single;
 import retrofit2.Call;
 
 @MyCustomAnnotation.MyScope.ActivityScope
-public class RemoteHistoryDataSource implements IRemoteHistoryDataSource {
+public class RemoteHistoryDataSource extends BaseDataSource implements IRemoteHistoryDataSource {
 
     private final HistoryAPI historyAPI;
 
@@ -44,5 +47,12 @@ public class RemoteHistoryDataSource implements IRemoteHistoryDataSource {
         synchronizeModel.setDataList(historyModels);
         String token = StringConstant.STRING_BEARER + DataLocalManager.getInstance().getToken();
         return historyAPI.synchronize(token, synchronizeModel);
+    }
+
+    @Override
+    public Single<ResponseModel<HistoryModel>> getAllHistory() {
+        String username = DataLocalManager.getInstance().getUserName();
+        String token = StringConstant.STRING_BEARER + DataLocalManager.getInstance().getToken();
+        return historyAPI.getAllHistory(token, username);
     }
 }

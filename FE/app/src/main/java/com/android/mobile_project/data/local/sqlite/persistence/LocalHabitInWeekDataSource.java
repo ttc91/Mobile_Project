@@ -1,5 +1,6 @@
 package com.android.mobile_project.data.local.sqlite.persistence;
 
+import com.android.mobile_project.data.local.sqlite.entity.db.HabitEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.HabitInWeekEntity;
 import com.android.mobile_project.data.local.sqlite.dao.HabitInWeekDAO;
 import com.android.mobile_project.data.local.sqlite.persistence.behavior.HabitInWeekDataSource;
@@ -67,4 +68,12 @@ public class LocalHabitInWeekDataSource extends BaseDataSource implements HabitI
         return dao.getAll();
     }
 
+    @Override
+    public Completable insertAll(HabitInWeekEntity... habitEntities) {
+        return dao.insertAll(habitEntities);
+    }
+    @Override
+    public Completable deleteAll() {
+        return dao.deleteAll();
+    }
 }
