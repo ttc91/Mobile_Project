@@ -94,6 +94,7 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
         } else if (v.getId() == R.id.btn_login_logout) {
             if (viewModel.isLogin) {
                 DataLocalManager.getInstance().setUserName("null");
+                DataLocalManager.getInstance().setToken("");
                 executeLogOut();
             } else {
                 executeLogIn();
@@ -200,6 +201,7 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
                     //viewModel.requestSignInToServer();
                     viewModel.initService.loadUI();
                     viewModel.toastService.makeLoginSuccess();
+                    Log.d(TAG, "onActivityResult: after");
                 }
             } catch (Exception e) {
                 Log.e("loginError", Arrays.toString(e.getStackTrace()));
@@ -210,8 +212,8 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
     }
 
     @Override
-    public void onStop() {
+    public void onDestroy() {
         viewModel.setDispose();
-        super.onStop();
+        super.onDestroy();
     }
 }

@@ -148,6 +148,7 @@ public class SettingViewModel extends BaseViewModel {
     }
 
     private void requestSignInToServer() {
+        Log.d(TAG, "requestSignInToServer: ");
         userRepository.getMRemoteUserDataSource().signIn().enqueue(new Callback<ResponseModel<JwtResponseModel>>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @SuppressLint("LongLogTag")
@@ -168,17 +169,17 @@ public class SettingViewModel extends BaseViewModel {
     }
 
     protected void getUserIdByName(String username) {
-
+        Log.d(TAG, "getUserIdByName: ");
         mCompositeDisposable.add(
                 userRepository.getMUserDataSource().getUserIdByName(username)
                         .observeOn(Schedulers.single())
                         .subscribeOn(Schedulers.io())
                         .subscribe(aLong -> {
-                            Log.i("getUserIdByName", "onSuccess");
+                            Log.i(TAG, "getUserIdByName onSuccess");
                             mUserIdMutableLiveData.postValue(aLong);
                             requestSignInToServer();
                         }, throwable -> {
-                            Log.e("getUserIdByName", "onError", throwable);
+                            Log.e(TAG, "getUserIdByName onError", throwable);
                         })
         );
 
