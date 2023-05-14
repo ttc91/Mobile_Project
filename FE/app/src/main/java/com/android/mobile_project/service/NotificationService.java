@@ -1,5 +1,6 @@
-package com.android.mobile_project.utils.notification;
+package com.android.mobile_project.service;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -54,6 +55,7 @@ public class NotificationService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void pushNotification(Intent intent, Context context) {
         Log.d(TAG, "pushNotification: ");
@@ -62,8 +64,15 @@ public class NotificationService extends Service {
 
         Intent newIntent = new Intent(context, LoginActivity.class);
         newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(context, 0, newIntent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            pendingIntent =
+                    PendingIntent.getActivity(context, 0, newIntent, PendingIntent.FLAG_IMMUTABLE);
+        }else {
+            pendingIntent =
+                    PendingIntent.getActivity(context, 0, newIntent, 0);
+        }
+
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, CHANNEL_ID)
@@ -88,7 +97,7 @@ public class NotificationService extends Service {
     private final IBinder binder = new LocalBinder();
 
     public static class LocalBinder extends Binder {
-        NotificationService getService() {
+        public NotificationService getService() {
             return new NotificationService();
         }
     }

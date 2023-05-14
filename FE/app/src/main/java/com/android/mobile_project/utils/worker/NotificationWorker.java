@@ -1,11 +1,11 @@
-package com.android.mobile_project.utils.notification;
+package com.android.mobile_project.utils.worker;
 
 
-import static com.android.mobile_project.utils.notification.NotificationService.INTENT_KEY_DAYS;
-import static com.android.mobile_project.utils.notification.NotificationService.INTENT_KEY_HOUR;
-import static com.android.mobile_project.utils.notification.NotificationService.INTENT_KEY_ID;
-import static com.android.mobile_project.utils.notification.NotificationService.INTENT_KEY_MINUTE;
-import static com.android.mobile_project.utils.notification.NotificationService.INTENT_KEY_NAME;
+import static com.android.mobile_project.service.NotificationService.INTENT_KEY_DAYS;
+import static com.android.mobile_project.service.NotificationService.INTENT_KEY_HOUR;
+import static com.android.mobile_project.service.NotificationService.INTENT_KEY_ID;
+import static com.android.mobile_project.service.NotificationService.INTENT_KEY_MINUTE;
+import static com.android.mobile_project.service.NotificationService.INTENT_KEY_NAME;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -24,6 +24,7 @@ import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import com.android.mobile_project.service.NotificationService;
 import com.android.mobile_project.utils.time.DayOfWeek;
 import com.android.mobile_project.data.remote.model.HabitInWeekModel;
 import com.android.mobile_project.data.remote.model.HabitModel;

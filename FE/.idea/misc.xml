@@ -1,7 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_item_missing.xml" value="0.22780797101449277" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_missing_doing.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_remainder_dialog.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_reminder_item.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_time_picker_dialog.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_ver_calendar.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_waiting.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_your_record.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/rcv_horizontal_calendar_text_date.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/rcv_item_habit.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/rcv_item_habit_after.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/rcv_item_habit_done.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/rcv_item_habit_failed.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/rcv_vertical_calendar_text_date.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_best_planner.xml" value="0.292" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_bottom.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_car_date.xml" value="0.317" />
@@ -131,7 +147,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_16" project-jdk-name="jbr-17" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

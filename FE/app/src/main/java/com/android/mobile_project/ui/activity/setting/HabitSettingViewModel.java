@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -15,7 +14,6 @@ import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.data.remote.model.HabitInWeekModel;
 import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.data.remote.model.RemainderModel;
-import com.android.mobile_project.data.repository.DayOfTimeRepository;
 import com.android.mobile_project.data.repository.HabitInWeekRepository;
 import com.android.mobile_project.data.repository.HabitRepository;
 import com.android.mobile_project.data.repository.HistoryRepository;
@@ -29,7 +27,7 @@ import com.android.mobile_project.ui.activity.setting.service.DbService;
 import com.android.mobile_project.ui.activity.setting.service.InitService;
 import com.android.mobile_project.ui.activity.setting.service.ToastService;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
-import com.android.mobile_project.utils.notification.NotificationWorker;
+import com.android.mobile_project.utils.worker.NotificationWorker;
 import com.android.mobile_project.utils.time.DayOfTime;
 import com.android.mobile_project.utils.time.DayOfWeek;
 
@@ -39,10 +37,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.CompletableObserver;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
-import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
 @MyCustomAnnotation.MyScope.ActivityScope

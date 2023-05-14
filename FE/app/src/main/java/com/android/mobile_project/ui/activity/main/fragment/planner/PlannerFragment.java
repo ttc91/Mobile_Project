@@ -279,7 +279,7 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
                     int currentIndex = i;
 
                     while (currentIndex != 0) {
-                        currentIndex += 1;
+                        currentIndex -= 1;
                         date = date.minusDays(1);
                         dateWeek[currentIndex] = date;
                     }
