@@ -16,8 +16,8 @@
         android:gravity="center">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="@dimen/_80sdp"
-            android:layout_height="@dimen/_80sdp"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_70sdp"
             android:layout_marginStart="@dimen/_5sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -65,13 +65,13 @@
             android:layout_marginEnd="@dimen/_10sdp"
             android:text="Longest\nSteak"
             android:textColor="#5A5858"
-            android:textSize="@dimen/_16ssp"
+            android:textSize="@dimen/_13ssp"
             android:textStyle="bold"
             android:gravity="center"/>
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:layout_width="@dimen/_80sdp"
-            android:layout_height="@dimen/_80sdp"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_70sdp"
             android:layout_marginEnd="@dimen/_5sdp"
             android:src="@drawable/ic_img_cup"
             app:strokeColor="@null"
@@ -90,8 +90,8 @@
         android:gravity="center">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="@dimen/_80sdp"
-            android:layout_height="@dimen/_80sdp"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_70sdp"
             android:layout_marginStart="@dimen/_5sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -145,7 +145,7 @@
                 android:layout_marginEnd="@dimen/_20sdp"
                 android:text="Best\nHabit"
                 android:textColor="#5A5858"
-                android:textSize="@dimen/_16ssp"
+                android:textSize="@dimen/_13ssp"
                 android:textStyle="bold"
                 android:gravity="center"/>
 
@@ -155,15 +155,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:gravity="center"
-                android:textSize="@dimen/_15ssp"
+                android:textSize="@dimen/_10ssp"
                 android:textStyle="bold"
                 android:textColor="#7D682F"/>
 
         </LinearLayout>
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:layout_width="@dimen/_80sdp"
-            android:layout_height="@dimen/_80sdp"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_height="@dimen/_70sdp"
             android:layout_marginEnd="@dimen/_5sdp"
             app:strokeColor="@null"
             android:src="@drawable/icon_best_habit"

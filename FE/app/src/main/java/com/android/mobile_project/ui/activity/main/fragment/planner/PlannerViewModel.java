@@ -143,7 +143,7 @@ public class PlannerViewModel extends ViewModel {
 
     protected void setLongestSteakForPlannerFragment(String historyDate){
         mCompositeDisposable.add(
-                mHistoryRepository.getMHistoryDataSource().countHistoriesByDate(historyDate)
+                mHistoryRepository.getMHistoryDataSource().countTrueStateByHistoryDate(historyDate)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe(number -> {

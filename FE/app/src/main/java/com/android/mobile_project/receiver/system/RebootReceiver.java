@@ -7,7 +7,7 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import com.android.mobile_project.utils.worker.AutoInsertWorker;
+import com.android.mobile_project.utils.alarm.AlarmUtil;
 
 public class RebootReceiver extends BroadcastReceiver {
 
@@ -15,7 +15,7 @@ public class RebootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if(intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)){
-            AutoInsertWorker.enqueueWorker(context);
+            AlarmUtil.setAutoInsertHistoryAlarm(context.getApplicationContext());
         }
     }
 

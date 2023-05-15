@@ -1,5 +1,7 @@
 package com.android.mobile_project.utils.worker;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -11,11 +13,14 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.ForegroundInfo;
+import androidx.work.OutOfQuotaPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import com.android.mobile_project.R;
 import com.android.mobile_project.service.AutoInsertService;
 
 import java.time.LocalTime;
@@ -29,6 +34,8 @@ public class AutoInsertWorker extends Worker {
 
     private AutoInsertService mService;
 
+    private Context context;
+
     private final ServiceConnection connection = new ServiceConnection() {
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
@@ -36,7 +43,7 @@ public class AutoInsertWorker extends Worker {
             Log.i(TAG, "AutoInsertService - onServiceConnected");
             AutoInsertService.AutoInsertServiceBinder binder = (AutoInsertService.AutoInsertServiceBinder) service;
             mService = binder.getService();
-            mService.autoInsertForNewDay(getApplicationContext());
+//            mService.autoInsertForNewDay(getApplicationContext());
             mService.pushNotification(getApplicationContext());
         }
 
@@ -48,13 +55,14 @@ public class AutoInsertWorker extends Worker {
 
     public AutoInsertWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
+        this.context = context;
     }
 
     @NonNull
     @Override
     public Result doWork() {
         Log.i(TAG, "doWork()");
-        Intent it = new Intent(getApplicationContext(), AutoInsertService.class);
+        Intent it = new Intent(context, AutoInsertService.class);
         getApplicationContext().bindService(it, connection, Context.BIND_AUTO_CREATE);
         return Result.success();
     }
@@ -65,7 +73,7 @@ public class AutoInsertWorker extends Worker {
         LocalTime time = LocalTime.now();
         time = LocalTime.of(time.getHour(), time.getMinute());
         long numberMinusNow = time.toSecondOfDay() / 60;
-        long numberMinusReminder = 22 * 60 + 59;
+        long numberMinusReminder = 21 * 60 + 01;
         long numberMinusDelay = 0L;
         if (numberMinusNow < numberMinusReminder) {
             numberMinusDelay = numberMinusReminder - numberMinusNow;
@@ -82,14 +90,9 @@ public class AutoInsertWorker extends Worker {
                 .build();
 
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-                REQUEST_TAG_NAME, ExistingPeriodicWorkPolicy.REPLACE, request);
+                REQUEST_TAG_NAME + "work"
+                , ExistingPeriodicWorkPolicy.REPLACE, request);
 
     }
 
-    @Override
-    public void onStopped() {
-        Log.i(TAG, "onStopped()");
-        super.onStopped();
-        getApplicationContext().unbindService(connection);
-    }
 }

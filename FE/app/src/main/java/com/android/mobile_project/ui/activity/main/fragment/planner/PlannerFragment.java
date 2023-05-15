@@ -41,6 +41,8 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 
 public class PlannerFragment extends Fragment implements InitLayout, View.OnClickListener {
 
+    private static final String TAG = PlannerFragment.class.getSimpleName();
+
     private static final String DATE_FORMAT = "yyyy-MM-dd";
 
     public PlannerComponent component;
@@ -281,9 +283,6 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
                     while (currentIndex != 0) {
                         currentIndex -= 1;
                         date = date.minusDays(1);
-                        if (currentIndex >= dateWeek.length) {
-                            break;
-                        }
                         dateWeek[currentIndex] = date;
                     }
                 }
@@ -313,6 +312,13 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
 
         };
 
+    }
+
+    @Override
+    public void onResume() {
+        Log.i(TAG, "onResume");
+        super.onResume();
+        viewModel.initService.setWeeklyCalendar();
     }
 
     @Override

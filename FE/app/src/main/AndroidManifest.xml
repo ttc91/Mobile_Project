@@ -61,8 +61,7 @@
 
         <service
             android:name=".service.AutoInsertService"
-            android:enabled="true"
-            android:exported="false" />
+            android:enabled="true"/>
 
     </application>
 

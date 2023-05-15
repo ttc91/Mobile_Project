@@ -45,8 +45,6 @@ Rapp/src/main/java/com/android/mobile_project/data/remote/model/DayOfTimeModel.j
 Uapp/src/main/java/com/android/mobile_project/data/repository/DayOfTimeRepository.java,5\9\599fe7f7886d6bc03468c38d6b325c0e4bae2c8a
 á
 Wapp/src/main/java/com/android/mobile_project/utils/dagger/module/ApplicationModule.java,2\e\2e8008aed6c4af03f8493a636c4c0378791d586a
-î
-dapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/planner/PlannerViewModel.java,1\5\15f822eb5a2f9152f327473b1ea4f0c58d6c9392
 â
 Yapp/src/main/java/com/android/mobile_project/ui/activity/create/service/ToastService.java,b\9\b9512991b2841a5011555cfba543c8bbc096feae
 Ä
@@ -113,8 +111,6 @@ Zapp/src/main/java/com/android/mobile_project/data/remote/model/api/SignInReques
 Xapp/src/main/java/com/android/mobile_project/data/remote/model/api/JwtResponseModel.java,e\3\e3ba45bff6b057c23efe2fddc5fd303097f3e53d
 è
 _app/src/main/java/com/android/mobile_project/data/remote/persistence/RemoteHabitDataSource.java,9\0\905a447a3da06c6d20727e82325a0be9965eaf40
-}
-Mapp/src/main/java/com/android/mobile_project/data/local/DataLocalManager.java,e\4\e402ade484093691270991949b5421c5995340c8
 ô
 iapp/src/main/java/com/android/mobile_project/data/remote/persistence/behavior/IRemoteHabitDataSource.java,c\1\c17230d4560839a1c906886dc1f145a6b429d883
 à
@@ -167,8 +163,6 @@ lapp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/beha
 japp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/behavior/HistoryDataSource.java,f\7\f7732044b79139e2df673a7be0aaed97bcb5b39e
 ñ
 fapp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/LocalHistoryDataSource.java,7\e\7eedbff87391994b2a8092c0a8fd7c125e56484d
-Ç
-Rapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/HistoryDAO.java,c\0\c09700092eaaa52863fb36f5978c94f6fd7810f5
 å
 \app/src/main/java/com/android/mobile_project/ui/activity/setting/IHabitSettingViewModel.java,5\e\5e726fd3ab4c0e786accddca4e1b09dc800cdd9c
 á
@@ -209,12 +203,6 @@ oapp/src/main/java/com/android/mobile_project/utils/dagger/component/sub/service
 Xapp/src/main/java/com/android/mobile_project/utils/dagger/module/SubComponentModule.java,d\8\d82c05dd8c22f064284ab1bca14e5c1e8af366fc
 v
 Fapp/src/main/java/com/android/mobile_project/utils/time/DayOfWeek.java,b\f\bfb249adc0163ca00b771556a1cd2c8a7405ee30
-ì
-capp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/planner/PlannerFragment.java,f\2\f256bdfd999b8252ff8ff82878e2c8e02501e1d8
-
-Oapp/src/main/java/com/android/mobile_project/ui/activity/main/MainActivity.java,e\d\eda40895d996ca962ce737c72e99ff42c65ebc15
-o
-?app/src/main/java/com/android/mobile_project/MyApplication.java,4\4\4491519b89794a868cc0f0381ce259cb39363b5f
 |
 Lapp/src/main/java/com/android/mobile_project/utils/time/utils/TimeUtils.java,c\b\cbc775a62c2e18cd3958c966fa77e7867b02731d
 
@@ -225,23 +213,9 @@ Mapp/src/main/java/com/android/mobile_project/service/NotificationService.java,
 qapp/src/main/java/com/android/mobile_project/utils/dagger/component/sub/receiver/DayChangedReceiverComponent.java,b\6\b6a26a4941267fac0091641bb0e3b8cc9422500e
 •
 uapp/src/main/java/com/android/mobile_project/utils/dagger/component/provider/DayChangedReceiverComponentProvider.java,b\3\b3a19e9904c1f4aa64095eb1ab21c02a6cfd6145
-Å
-Qapp/src/main/java/com/android/mobile_project/utils/worker/NotificationWorker.java,6\4\64980e0cc7870bf44743eea74aa6666a804e7f70
 Ü
 Vapp/src/main/java/com/android/mobile_project/receiver/local/CreateHistoryReceiver.java,c\4\c40974156a014914a9439c1a655eeba5ce8021c6
-Ä
-Papp/src/main/java/com/android/mobile_project/receiver/system/RebootReceiver.java,a\f\af31fab11fd3be49041ce6b6bfe9152bff9a8e4e
 à
 Xapp/src/main/java/com/android/mobile_project/ui/activity/create/CreateHabitActivity.java,7\e\7ea7b6c6db07398aaefa67d00a21fff053ac5232
-Å
-Qapp/src/main/java/com/android/mobile_project/ui/activity/login/LoginActivity.java,f\4\f4f31f31fbf10ee5623ae9e4546ce429e47b6679
 î
 dapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/setting/SettingViewModel.java,e\8\e8a80d52207d1d17e6d3f5d119a5bbfbb74d9040
-
-Oapp/src/main/java/com/android/mobile_project/utils/worker/AutoInsertWorker.java,2\3\230806173911e99dd514cd5604c621bb56de7f11
-É
-Sapp/src/main/java/com/android/mobile_project/receiver/local/DayChangedReceiver.java,1\7\173fa8f1bdadd9c49d82cdb36b20093eb2a8d282
-P
- app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
-{
-Kapp/src/main/java/com/android/mobile_project/service/AutoInsertService.java,f\1\f1807e02fea8e97f92eef2a13a61dcafea2e6aaf

@@ -5,6 +5,7 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.android.mobile_project.utils.alarm.AlarmUtil;
 import com.android.mobile_project.utils.dagger.ApplicationGraph;
 import com.android.mobile_project.utils.dagger.DaggerApplicationGraph;
 import com.android.mobile_project.utils.dagger.component.provider.AutoInsertServiceComponentProvider;
@@ -25,14 +26,14 @@ import com.android.mobile_project.utils.dagger.component.sub.input.InputComponen
 import com.android.mobile_project.utils.dagger.component.sub.main.MainComponent;
 import com.android.mobile_project.utils.dagger.module.ApplicationModule;
 import com.android.mobile_project.utils.dagger.module.DatabaseModule;
-import com.android.mobile_project.utils.dagger.module.RetrofitModule;
-import com.android.mobile_project.utils.worker.AutoInsertWorker;
 
 public class MyApplication extends Application
         implements MainComponentProvider, HabitSettingComponentProvider,
         InputComponentProvider, CountDownComponentProvider,
         CreateHabitComponentProvider, CreateHistoryReceiverComponentProvider,
         DayChangedReceiverComponentProvider, AutoInsertServiceComponentProvider {
+
+    private static final String TAG = MyApplication.class.getSimpleName();
 
     private ApplicationGraph graph;
 
@@ -52,7 +53,7 @@ public class MyApplication extends Application
                 .build();
         graph.inject(this);
 
-        AutoInsertWorker.enqueueWorker(getApplicationContext());
+        AlarmUtil.setAutoInsertHistoryAlarm(getApplicationContext());
 
     }
 
@@ -95,4 +96,5 @@ public class MyApplication extends Application
     public AutoInsertServiceComponent provideAutoInsertServiceComponent() {
         return graph.mAutoInsertServiceComponent().create();
     }
+
 }
