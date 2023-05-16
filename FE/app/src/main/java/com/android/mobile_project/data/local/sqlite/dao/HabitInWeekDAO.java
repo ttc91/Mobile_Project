@@ -1,9 +1,11 @@
 package com.android.mobile_project.data.local.sqlite.dao;
 
 import androidx.room.Dao;
+import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
+import com.android.mobile_project.data.local.sqlite.entity.db.HabitEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.HabitInWeekEntity;
 
 import java.util.List;
@@ -36,5 +38,11 @@ public interface HabitInWeekDAO extends BaseDAO<HabitInWeekEntity>{
 
     @Query("SELECT * FROM tbl_habit_in_week")
     List<HabitInWeekEntity> getAll();
+
+    @Insert
+    Completable insertAll(HabitInWeekEntity... habitEntities);
+
+    @Query("DELETE FROM tbl_habit_in_week")
+    Completable deleteAll();
 
 }

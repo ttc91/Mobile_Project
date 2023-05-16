@@ -5,13 +5,17 @@ import com.android.mobile_project.data.local.sqlite.dao.HabitDAO;
 import com.android.mobile_project.data.local.sqlite.persistence.behavior.HabitDataSource;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.CompletableObserver;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.disposables.Disposable;
 
 @MyCustomAnnotation.MyScope.ActivityScope
 public class LocalHabitDataSource extends BaseDataSource implements HabitDataSource {
@@ -96,5 +100,15 @@ public class LocalHabitDataSource extends BaseDataSource implements HabitDataSou
     @Override
     public List<HabitEntity> getAll() {
         return dao.getAll();
+    }
+
+    @Override
+    public Completable insertAll(HabitEntity... habitEntities) {
+        return dao.insertAll(habitEntities);
+    }
+
+    @Override
+    public Completable deleteAll() {
+        return dao.deleteAll();
     }
 }

@@ -105,6 +105,9 @@ public class MainActivity extends AppCompatActivity implements InitLayout {
                         plannerFragment = new PlannerFragment();
                         fm.beginTransaction().add(R.id.frag_contain, plannerFragment, PLANNER).hide(active).setTransition(FragmentTransaction.TRANSIT_NONE).commit();
                     }else {
+                        Fragment fragment = getSupportFragmentManager().findFragmentByTag(PLANNER);
+                        if(fragment != null)
+                            fragment.onResume();
                         fm.beginTransaction().hide(active).show(plannerFragment).setTransition(FragmentTransaction.TRANSIT_NONE).commit();
                     }
                     active = plannerFragment;

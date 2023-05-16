@@ -21,4 +21,8 @@ public interface HabitInWeekDataSource extends BaseDataSource<HabitInWeekEntity>
 
     List<HabitInWeekEntity> getAll();
 
+    Completable insertAll(HabitInWeekEntity... habitEntities);
+
+    Completable deleteAll();
+
 }

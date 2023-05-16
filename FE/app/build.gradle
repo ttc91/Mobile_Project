@@ -61,8 +61,6 @@ dependencies {
     // optional - Paging 3 Integration
     implementation "androidx.room:room-paging:2.5.0-alpha01"
 
-    implementation "androidx.work:work-runtime:2.5.0"
-
     //Lombok
     compileOnly 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
@@ -81,6 +79,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.7.2'
     implementation 'com.squareup.okhttp3:okhttp:3.6.0'
+    implementation "com.squareup.retrofit2:adapter-rxjava3:2.9.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.3"
 
     //LiveData
     implementation "androidx.lifecycle:lifecycle-viewmodel:2.5.1"
@@ -94,9 +94,10 @@ dependencies {
     //Swipe layout
     implementation "com.daimajia.swipelayout:library:1.2.0@aar"
 
-
     //Google auth
     implementation 'com.google.android.gms:play-services-auth:20.5.0'
+
+    implementation 'androidx.work:work-runtime-ktx:2.7.1'
 
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'

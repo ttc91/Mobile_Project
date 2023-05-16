@@ -22,6 +22,10 @@ public final class MyCustomAnnotation {
         @Retention(RetentionPolicy.RUNTIME)
         @interface ReceiverScope{}
 
+        @Scope
+        @Retention(RetentionPolicy.RUNTIME)
+        @interface ServiceScope{}
+
     }
 
     public interface MyQualifier{

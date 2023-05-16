@@ -1,5 +1,6 @@
 package com.android.mobile_project.data.local.sqlite.persistence;
 
+import com.android.mobile_project.data.local.sqlite.entity.db.HabitEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.HistoryEntity;
 import com.android.mobile_project.data.local.sqlite.dao.HistoryDAO;
 import com.android.mobile_project.data.local.sqlite.persistence.behavior.HistoryDataSource;
@@ -91,5 +92,14 @@ public class LocalHistoryDataSource extends BaseDataSource implements HistoryDat
     @Override
     public List<HistoryEntity> getAll() {
         return dao.getAll();
+    }
+
+    @Override
+    public Completable insertAll(HistoryEntity... historyEntities) {
+        return dao.insertAll(historyEntities);
+    }
+    @Override
+    public Completable deleteAll() {
+        return dao.deleteAll();
     }
 }

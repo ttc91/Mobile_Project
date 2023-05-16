@@ -5,6 +5,8 @@ import com.android.mobile_project.utils.dagger.component.sub.count.CountDownComp
 import com.android.mobile_project.utils.dagger.component.sub.create.CreateHabitComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.CreateHistoryReceiverComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.DayChangedReceiverComponent;
+import com.android.mobile_project.utils.dagger.component.sub.receiver.RebootReceiverComponent;
+import com.android.mobile_project.utils.dagger.component.sub.service.AutoInsertServiceComponent;
 import com.android.mobile_project.utils.dagger.component.sub.setting.HabitSettingComponent;
 import com.android.mobile_project.utils.dagger.component.sub.input.InputComponent;
 import com.android.mobile_project.utils.dagger.component.sub.main.MainComponent;
@@ -31,12 +33,30 @@ public interface ApplicationGraph {
     /**
      * Used to declare Component when start app.
      */
+
+    /**
+     * <b>Activity</b>
+     * @return activity component
+     */
     MainComponent.Factory mMainComponent();
     HabitSettingComponent.Factory mHabitSettingComponent();
     InputComponent.Factory mInputComponent();
     CountDownComponent.Factory mCountDownComponent();
     CreateHabitComponent.Factory mCreateHabitComponent();
+
+    /**
+     * <b>Receiver</b>
+     * @return receiver component
+     */
     CreateHistoryReceiverComponent.Factory mCreateHistoryReceiverComponent();
     DayChangedReceiverComponent.Factory mDayChangedReceiverComponent();
+    RebootReceiverComponent.Factory mRebootReceiverComponent();
+
+
+    /**
+     * <b>Service</b>
+     * @return service component
+     */
+    AutoInsertServiceComponent.Factory mAutoInsertServiceComponent();
 
 }

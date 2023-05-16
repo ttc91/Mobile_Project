@@ -4,6 +4,8 @@ import com.android.mobile_project.utils.dagger.component.sub.count.CountDownComp
 import com.android.mobile_project.utils.dagger.component.sub.create.CreateHabitComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.CreateHistoryReceiverComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.DayChangedReceiverComponent;
+import com.android.mobile_project.utils.dagger.component.sub.receiver.RebootReceiverComponent;
+import com.android.mobile_project.utils.dagger.component.sub.service.AutoInsertServiceComponent;
 import com.android.mobile_project.utils.dagger.component.sub.setting.HabitSettingComponent;
 import com.android.mobile_project.utils.dagger.component.sub.input.InputComponent;
 import com.android.mobile_project.utils.dagger.component.sub.main.MainComponent;
@@ -17,6 +19,8 @@ import dagger.Module;
         InputComponent.class,
         CreateHabitComponent.class,
         CreateHistoryReceiverComponent.class,
-        DayChangedReceiverComponent.class
+        DayChangedReceiverComponent.class,
+        RebootReceiverComponent.class,
+        AutoInsertServiceComponent.class
 })
 public class SubComponentModule { }

@@ -1,9 +1,11 @@
 package com.android.mobile_project.data.local.sqlite.dao;
 
 import androidx.room.Dao;
+import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
+import com.android.mobile_project.data.local.sqlite.entity.db.HistoryEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.RemainderEntity;
 
 import java.util.List;
@@ -32,5 +34,11 @@ public interface RemainderDAO extends BaseDAO<RemainderEntity>{
 
     @Query("SELECT * FROM tbl_remainder")
     List<RemainderEntity> getAll();
+
+    @Insert
+    Completable insertAll(RemainderEntity... habitEntities);
+
+    @Query("DELETE FROM tbl_remainder")
+    Completable deleteAll();
 
 }

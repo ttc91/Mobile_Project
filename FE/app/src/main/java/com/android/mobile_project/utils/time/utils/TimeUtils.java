@@ -51,7 +51,6 @@ public class TimeUtils {
 
         LocalDate firstDayOfMonth = selectedDate.withDayOfMonth(1);
         int numWeekOfMonth = firstDayOfMonth.getDayOfWeek().getValue();
-        Log.i("checkkkk", String.valueOf(numWeekOfMonth));
 
         for (int i = 1; i <= 42; i++) {
 

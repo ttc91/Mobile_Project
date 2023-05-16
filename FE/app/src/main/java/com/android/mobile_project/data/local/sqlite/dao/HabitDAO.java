@@ -1,6 +1,7 @@
 package com.android.mobile_project.data.local.sqlite.dao;
 
 import androidx.room.Dao;
+import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
@@ -86,5 +87,11 @@ public interface HabitDAO extends BaseDAO<HabitEntity>{
 
     @Query("SELECT * FROM tbl_habit")
     List<HabitEntity> getAll();
+
+    @Insert
+    Completable insertAll(HabitEntity... habitEntities);
+
+    @Query("DELETE FROM tbl_habit")
+    Completable deleteAll();
 
 }

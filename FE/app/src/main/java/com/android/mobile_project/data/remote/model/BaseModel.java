@@ -1,4 +1,6 @@
 package com.android.mobile_project.data.remote.model;
 
-public abstract class BaseModel {
+import java.io.Serializable;
+
+public abstract class BaseModel implements Serializable {
 }

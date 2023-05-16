@@ -29,7 +29,7 @@ import com.android.mobile_project.ui.activity.setting.service.DbService;
 import com.android.mobile_project.ui.activity.setting.service.InitService;
 import com.android.mobile_project.ui.activity.setting.service.ToastService;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
-import com.android.mobile_project.utils.notification.NotificationWorker;
+import com.android.mobile_project.utils.worker.NotificationWorker;
 import com.android.mobile_project.utils.time.DayOfTime;
 import com.android.mobile_project.utils.time.DayOfWeek;
 
@@ -55,7 +55,8 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
     private Context context;
 
     @Inject
-    public HabitSettingViewModel(HabitRepository mHabitRepository, RemainderRepository mRemainderRepository, HabitInWeekRepository mHabitInWeekRepository, HistoryRepository mHistoryRepository) {
+    public HabitSettingViewModel(HabitRepository mHabitRepository, RemainderRepository mRemainderRepository,
+                                 HabitInWeekRepository mHabitInWeekRepository, HistoryRepository mHistoryRepository) {
         this.mHabitRepository = mHabitRepository;
         this.mRemainderRepository = mRemainderRepository;
         this.mHabitInWeekRepository = mHabitInWeekRepository;

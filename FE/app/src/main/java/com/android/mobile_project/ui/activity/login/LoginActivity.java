@@ -1,9 +1,5 @@
 package com.android.mobile_project.ui.activity.login;
 
-import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,7 +16,6 @@ import com.android.mobile_project.R;
 import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.data.remote.model.UserModel;
 import com.android.mobile_project.databinding.ActivityLoginBinding;
-import com.android.mobile_project.receiver.system.DayChangedReceiver;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.login.service.DbService;
 import com.android.mobile_project.ui.activity.login.service.ToastService;
@@ -52,10 +47,6 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
 
     private Observer<Long> mUserIdObserver;
 
-    private AlarmManager mAlarmManager;
-
-    private PendingIntent mPendingIntent;
-
     private GoogleSignInOptions gso;
 
     private GoogleSignInClient gsc;
@@ -84,8 +75,6 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
 
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
         gsc = GoogleSignIn.getClient(this, gso);
-
-        startInsertHistoryAlarm();
 
     }
 
@@ -116,7 +105,7 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
                         viewModel.getUserIdByName(userName, new GetUserIdFromLocalResult() {
                             @Override
                             public void onGetIdSuccess() {
-                                redirectToNextActivity();
+                                //redirectToNextActivity();
                             }
 
                             @Override
@@ -135,6 +124,7 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
                 });
 
                 DataLocalManager.getInstance().setUserName(userName);
+                DataLocalManager.getInstance().setLongestTeak(0L);
 
             }
 
@@ -179,12 +169,20 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
             }
         };
 
+        viewModel.getLiveDataIsSuccess().observe(this, aBoolean -> {
+            if (aBoolean) {
+                redirectToNextActivity();
+            }
+        });
+
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.btn_doing_now){
             viewModel.dbService.setUser("null");
+            redirectToNextActivity();
         }else if(view.getId() == R.id.btn_gg){
             Intent it = gsc.getSignInIntent();
             startActivityForResult(it, LOGIN_REQUEST_CODE);
@@ -215,27 +213,7 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
         finish();
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
-    private void startInsertHistoryAlarm(){
 
-        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(getApplicationContext(), DayChangedReceiver.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            mPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
-        }else{
-            mPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-        }
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 0);
-
-        mAlarmManager.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, mPendingIntent);
-
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -251,7 +229,7 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
                     viewModel.dbService.setUser(personEmail);
                     viewModel.requestSignInToServer();
                 }
-                redirectToNextActivity();
+                //redirectToNextActivity();
             }catch (Exception e){
                 Log.e("loginError", Arrays.toString(e.getStackTrace()));
                 viewModel.toastService.makeErrorToast();

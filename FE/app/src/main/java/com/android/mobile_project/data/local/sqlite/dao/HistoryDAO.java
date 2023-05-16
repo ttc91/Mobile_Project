@@ -5,6 +5,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
+import com.android.mobile_project.data.local.sqlite.entity.db.HabitInWeekEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.HistoryEntity;
 
 import java.util.List;
@@ -53,5 +54,14 @@ public interface HistoryDAO extends BaseDAO<HistoryEntity>{
 
     @Query("SELECT * FROM tbl_history")
     List<HistoryEntity> getAll();
+
+    @Query("SELECT * FROM tbl_history WHERE user_id = :uId AND date = :date")
+    List<HistoryEntity> getHistoriesByDateInBackground(Long uId, String date);
+
+    @Insert
+    Completable insertAll(HistoryEntity... habitEntities);
+
+    @Query("DELETE FROM tbl_history")
+    Completable deleteAll();
 
 }

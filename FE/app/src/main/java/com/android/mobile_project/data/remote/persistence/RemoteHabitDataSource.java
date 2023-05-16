@@ -1,11 +1,13 @@
 package com.android.mobile_project.data.remote.persistence;
 
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
 import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.data.local.sqlite.dao.HabitDAO;
+import com.android.mobile_project.data.local.sqlite.persistence.BaseDataSource;
 import com.android.mobile_project.data.remote.api.HabitAPI;
 import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.data.remote.model.api.HabitSynchronizeModel;
@@ -19,10 +21,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.core.Single;
 import retrofit2.Call;
 
 @MyCustomAnnotation.MyScope.ActivityScope
-public class RemoteHabitDataSource implements IRemoteHabitDataSource {
+public class RemoteHabitDataSource extends BaseDataSource implements IRemoteHabitDataSource {
 
     private final HabitAPI habitAPI;
 
@@ -48,6 +51,14 @@ public class RemoteHabitDataSource implements IRemoteHabitDataSource {
         synchronizeModel.setUsername(username);
         String token = StringConstant.STRING_BEARER + DataLocalManager.getInstance().getToken();
         return habitAPI.synchronize(token, synchronizeModel);
+    }
+
+    @Override
+    public Single<ResponseModel<HabitModel>> getAllHabit() {
+        String username = DataLocalManager.getInstance().getUserName();
+        String token = StringConstant.STRING_BEARER + DataLocalManager.getInstance().getToken();
+        Log.d("RemoteHabitDataSource", "getAllHabit: " + username + "-- " + token);
+        return habitAPI.getAllHabit(token, username);
     }
 
 }

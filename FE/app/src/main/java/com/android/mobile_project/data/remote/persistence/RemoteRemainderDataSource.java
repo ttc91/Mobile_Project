@@ -6,7 +6,9 @@ import androidx.annotation.RequiresApi;
 
 import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.data.local.sqlite.dao.RemainderDAO;
+import com.android.mobile_project.data.local.sqlite.persistence.BaseDataSource;
 import com.android.mobile_project.data.remote.api.RemainderAPI;
+import com.android.mobile_project.data.remote.model.HistoryModel;
 import com.android.mobile_project.data.remote.model.RemainderModel;
 import com.android.mobile_project.data.remote.model.api.RemainderSynchronizeModel;
 import com.android.mobile_project.data.remote.model.api.base.ResponseModel;
@@ -19,10 +21,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.rxjava3.core.Single;
 import retrofit2.Call;
 
 @MyCustomAnnotation.MyScope.ActivityScope
-public class RemoteRemainderDataSource implements IRemoteRemainderDataSource {
+public class RemoteRemainderDataSource extends BaseDataSource implements IRemoteRemainderDataSource {
 
     private final RemainderAPI remainderAPI;
 
@@ -44,6 +47,13 @@ public class RemoteRemainderDataSource implements IRemoteRemainderDataSource {
         synchronizeModel.setDataList(remainderModels);
         String token = StringConstant.STRING_BEARER + DataLocalManager.getInstance().getToken();
         return remainderAPI.synchronize(token, synchronizeModel);
+    }
+
+    @Override
+    public Single<ResponseModel<RemainderModel>> getAllReminder() {
+        String username = DataLocalManager.getInstance().getUserName();
+        String token = StringConstant.STRING_BEARER + DataLocalManager.getInstance().getToken();
+        return remainderAPI.getAllReminder(token, username);
     }
 
 }

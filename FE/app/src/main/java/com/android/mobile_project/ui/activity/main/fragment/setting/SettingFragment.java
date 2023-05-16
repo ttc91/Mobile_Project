@@ -39,8 +39,9 @@ import java.util.Arrays;
 
 import javax.inject.Inject;
 
-public class SettingFragment extends Fragment implements InitLayout, View.OnClickListener{
+public class SettingFragment extends Fragment implements InitLayout, View.OnClickListener {
 
+    private static final String TAG = SettingFragment.class.getSimpleName();
     private final int LOGIN_REQUEST_CODE = 2000;
 
     public SettingComponent component;
@@ -58,7 +59,7 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
     @Override
     public void onAttach(@NonNull Context context) {
         Log.i("SettingFragment", "onAttach");
-        component = ((MainActivity)getActivity()).component.mSettingComponent().create();
+        component = ((MainActivity) getActivity()).component.mSettingComponent().create();
         component.inject(this);
         super.onAttach(context);
     }
@@ -78,7 +79,7 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.btn_synchronize){
+        if (v.getId() == R.id.btn_synchronize) {
             viewModel.synchronizeToServer(new ApiService.SynchronizeToServerResult() {
                 @Override
                 public void onSynchronizeToServerSuccess() {
@@ -90,14 +91,15 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
                     viewModel.toastService.makeErrorToast();
                 }
             });
-        }else if(v.getId() == R.id.btn_login_logout){
-            if(viewModel.isLogin){
+        } else if (v.getId() == R.id.btn_login_logout) {
+            if (viewModel.isLogin) {
                 DataLocalManager.getInstance().setUserName("null");
+                DataLocalManager.getInstance().setToken("");
                 executeLogOut();
-            }else {
+            } else {
                 executeLogIn();
             }
-        }else if(v.getId() == R.id.btn_about_us){
+        } else if (v.getId() == R.id.btn_about_us) {
             redirectToAboutUsActivity();
         }
     }
@@ -139,11 +141,11 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
             public void initUI() {
                 String username = DataLocalManager.getInstance().getUserName();
                 viewModel.isLogin = !username.equals("null");
-                if(viewModel.isLogin){
+                if (viewModel.isLogin) {
                     binding.btnSynchronize.setVisibility(View.VISIBLE);
                     binding.btnLoginLogout.setBackground(getResources().getDrawable(R.drawable.bck_item_failed));
                     binding.tvLoginStatus.setText(getResources().getString(R.string.text_logout));
-                }else {
+                } else {
                     binding.btnSynchronize.setVisibility(View.GONE);
                     binding.btnLoginLogout.setBackground(getResources().getDrawable(R.drawable.bck_item_done));
                     binding.tvLoginStatus.setText(getResources().getString(R.string.text_login));
@@ -155,11 +157,11 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
             public void loadUI() {
                 String username = DataLocalManager.getInstance().getUserName();
                 viewModel.isLogin = !username.equals("null");
-                if(viewModel.isLogin){
+                if (viewModel.isLogin) {
                     binding.btnSynchronize.setVisibility(View.VISIBLE);
                     binding.btnLoginLogout.setBackground(getResources().getDrawable(R.drawable.bck_item_failed));
                     binding.tvLoginStatus.setText(getResources().getString(R.string.text_logout));
-                }else {
+                } else {
                     binding.btnSynchronize.setVisibility(View.GONE);
                     binding.btnLoginLogout.setBackground(getResources().getDrawable(R.drawable.bck_item_done));
                     binding.tvLoginStatus.setText(getResources().getString(R.string.text_login));
@@ -169,36 +171,39 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
 
     }
 
-    private void executeLogOut(){
+    private void executeLogOut() {
         ConfirmDialog dialog = new ConfirmDialog(getContext(), false, null, gsc, viewModel.initService);
         dialog.show(getChildFragmentManager(), "dialog");
     }
 
-    private void executeLogIn(){
+    private void executeLogIn() {
         Intent it = gsc.getSignInIntent();
         startActivityForResult(it, LOGIN_REQUEST_CODE);
     }
 
-    private void redirectToAboutUsActivity(){
+    private void redirectToAboutUsActivity() {
         startActivity(new Intent(getContext(), AboutUsActivity.class));
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == LOGIN_REQUEST_CODE){
+        if (requestCode == LOGIN_REQUEST_CODE) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try{
+            try {
                 task.getResult(ApiException.class);
                 GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getContext());
-                if(acct != null){
+                if (acct != null) {
+                    Log.d(TAG, "onActivityResult: ");
                     String personEmail = acct.getEmail();
                     DataLocalManager.getInstance().setUserName(personEmail);
-                    viewModel.requestSignInToServer();
+                    viewModel.getUserIdByName(personEmail);
+                    //viewModel.requestSignInToServer();
                     viewModel.initService.loadUI();
                     viewModel.toastService.makeLoginSuccess();
+                    Log.d(TAG, "onActivityResult: after");
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.e("loginError", Arrays.toString(e.getStackTrace()));
                 viewModel.toastService.makeErrorToast();
             }
@@ -206,4 +211,9 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
         }
     }
 
+    @Override
+    public void onDestroy() {
+        viewModel.setDispose();
+        super.onDestroy();
+    }
 }
