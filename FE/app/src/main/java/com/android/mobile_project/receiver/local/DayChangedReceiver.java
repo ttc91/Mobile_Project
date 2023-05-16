@@ -94,32 +94,36 @@ public class DayChangedReceiver extends BroadcastReceiver {
                 1L, dayOfWeekYesterdayId);
         Log.i(TAG, "Habit in week yesterday size " + habitInWeekYesterdayEntities.size());
 
-        //insert history for next day
-        Log.i(TAG, "Insert history for next day");
-        for (HabitInWeekEntity entity : habitInWeekToDayEntities) {
-            HabitEntity habitEntity = mHabitDAO.getHabitByUserIdAndHabitIdInBackground(1L, entity.getHabitId());
-            HistoryEntity historyEntity = new HistoryEntity();
-            historyEntity.setHabitId(habitEntity.getHabitId());
-            historyEntity.setHistoryDate(todayFormat);
-            historyEntity.setHistoryHabitsState(VAL_NULL);
-            historyEntity.setUserId(1L);
-            mHistoryDAO.insertInBackground(historyEntity);
+        if(habitInWeekToDayEntities.size() > 0){
+            //insert history for next day
+            Log.i(TAG, "Insert history for next day");
+            for (HabitInWeekEntity entity : habitInWeekToDayEntities) {
+                HabitEntity habitEntity = mHabitDAO.getHabitByUserIdAndHabitIdInBackground(1L, entity.getHabitId());
+                HistoryEntity historyEntity = new HistoryEntity();
+                historyEntity.setHabitId(habitEntity.getHabitId());
+                historyEntity.setHistoryDate(todayFormat);
+                historyEntity.setHistoryHabitsState(VAL_NULL);
+                historyEntity.setUserId(1L);
+                mHistoryDAO.insertInBackground(historyEntity);
+            }
         }
 
-        //Update longest steak for habit
-        Log.i(TAG, "Update longest steak for habit");
-        for (HabitInWeekEntity entity : habitInWeekYesterdayEntities) {
-            HabitEntity habitEntity = mHabitDAO.getHabitByUserIdAndHabitIdInBackground(1L, entity.getDayOfWeekId());
-            try {
-                HistoryEntity historyEntity = mHistoryDAO.getHistoryByHabitIdAndDateInBackground(habitEntity.getHabitId(), yesterdayFormat);
-                if (historyEntity.getHistoryHabitsState().equals(VAL_TRUE)) {
-                    habitEntity.setNumOfLongestSteak(Long.sum(habitEntity.getNumOfLongestSteak(), 1L));
-                } else {
-                    habitEntity.setNumOfLongestSteak(0L);
+        if(habitInWeekYesterdayEntities.size() > 0){
+            //Update longest steak for habit
+            Log.i(TAG, "Update longest steak for habit");
+            for (HabitInWeekEntity entity : habitInWeekYesterdayEntities) {
+                HabitEntity habitEntity = mHabitDAO.getHabitByUserIdAndHabitIdInBackground(1L, entity.getDayOfWeekId());
+                try {
+                    HistoryEntity historyEntity = mHistoryDAO.getHistoryByHabitIdAndDateInBackground(habitEntity.getHabitId(), yesterdayFormat);
+                    if (historyEntity.getHistoryHabitsState().equals(VAL_TRUE)) {
+                        habitEntity.setNumOfLongestSteak(Long.sum(habitEntity.getNumOfLongestSteak(), 1L));
+                    } else {
+                        habitEntity.setNumOfLongestSteak(0L);
+                    }
+                    mHabitDAO.updateHabitInBackground(habitEntity);
+                } catch (NullPointerException e) {
+                    Log.e("DayChangedReceiver", String.valueOf(e));
                 }
-                mHabitDAO.updateHabitInBackground(habitEntity);
-            } catch (NullPointerException e) {
-                Log.e("DayChangedReceiver", String.valueOf(e));
             }
         }
 

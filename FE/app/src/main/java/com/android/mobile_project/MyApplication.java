@@ -16,10 +16,12 @@ import com.android.mobile_project.utils.dagger.component.provider.DayChangedRece
 import com.android.mobile_project.utils.dagger.component.provider.HabitSettingComponentProvider;
 import com.android.mobile_project.utils.dagger.component.provider.InputComponentProvider;
 import com.android.mobile_project.utils.dagger.component.provider.MainComponentProvider;
+import com.android.mobile_project.utils.dagger.component.provider.RebootReceiverComponentProvider;
 import com.android.mobile_project.utils.dagger.component.sub.count.CountDownComponent;
 import com.android.mobile_project.utils.dagger.component.sub.create.CreateHabitComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.CreateHistoryReceiverComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.DayChangedReceiverComponent;
+import com.android.mobile_project.utils.dagger.component.sub.receiver.RebootReceiverComponent;
 import com.android.mobile_project.utils.dagger.component.sub.service.AutoInsertServiceComponent;
 import com.android.mobile_project.utils.dagger.component.sub.setting.HabitSettingComponent;
 import com.android.mobile_project.utils.dagger.component.sub.input.InputComponent;
@@ -31,7 +33,7 @@ public class MyApplication extends Application
         implements MainComponentProvider, HabitSettingComponentProvider,
         InputComponentProvider, CountDownComponentProvider,
         CreateHabitComponentProvider, CreateHistoryReceiverComponentProvider,
-        DayChangedReceiverComponentProvider, AutoInsertServiceComponentProvider {
+        DayChangedReceiverComponentProvider, AutoInsertServiceComponentProvider, RebootReceiverComponentProvider {
 
     private static final String TAG = MyApplication.class.getSimpleName();
 
@@ -97,4 +99,8 @@ public class MyApplication extends Application
         return graph.mAutoInsertServiceComponent().create();
     }
 
+    @Override
+    public RebootReceiverComponent provideRebootReceiverComponent() {
+        return graph.mRebootReceiverComponent().create();
+    }
 }

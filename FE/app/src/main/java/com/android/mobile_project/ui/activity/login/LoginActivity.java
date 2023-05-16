@@ -124,6 +124,7 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
                 });
 
                 DataLocalManager.getInstance().setUserName(userName);
+                DataLocalManager.getInstance().setLongestTeak(0L);
 
             }
 
