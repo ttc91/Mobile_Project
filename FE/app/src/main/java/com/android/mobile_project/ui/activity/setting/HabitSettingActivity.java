@@ -34,7 +34,6 @@ import com.android.mobile_project.ui.activity.setting.service.ToastService;
 import com.android.mobile_project.utils.constant.TimeConstant;
 import com.android.mobile_project.ui.dialog.ConfirmDialog;
 import com.android.mobile_project.utils.dagger.component.sub.setting.HabitSettingComponent;
-import com.android.mobile_project.utils.notification.NotificationWorker;
 import com.android.mobile_project.utils.time.DayOfWeek;
 import com.android.mobile_project.utils.time.utils.TimeUtils;
 import com.android.mobile_project.ui.InitLayout;
