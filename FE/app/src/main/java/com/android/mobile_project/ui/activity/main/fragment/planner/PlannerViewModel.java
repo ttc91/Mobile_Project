@@ -67,8 +67,6 @@ public class PlannerViewModel extends ViewModel {
 
     protected InitService initService;
 
-    protected static Integer steak = 0;
-
     public MutableLiveData<Integer> getLongestSteakForPlannerFragmentMutableLiveData() {
         return longestSteakForPlannerFragmentMutableLiveData;
     }
@@ -141,20 +139,22 @@ public class PlannerViewModel extends ViewModel {
         this.longestSteakHabitModelMutable = longestSteakHabitModelMutable;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     protected void setLongestSteakForPlannerFragment(String historyDate){
         mCompositeDisposable.add(
-                mHistoryRepository.getMHistoryDataSource().countHistoriesByDate(historyDate)
+                mHistoryRepository.getMHistoryDataSource().countTrueStateByHistoryDate(historyDate)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.io())
                         .subscribe(number -> {
                                     Log.i("getHistoryWithSteak", "onSuccess");
                                     Log.i("historySteak", String.valueOf(number));
                                     if(number > 0){
-                                        steak += 1;
+                                        Long steak = DataLocalManager.getInstance().getLongestTeak();
+                                        DataLocalManager.getInstance().setLongestTeak(steak + 1L);
                                     }else {
-                                        steak = 0;
+                                        DataLocalManager.getInstance().setLongestTeak(0L);
                                     }
-                                    longestSteakForPlannerFragmentMutableLiveData.postValue(steak);
+                                    longestSteakForPlannerFragmentMutableLiveData.postValue(Math.toIntExact(DataLocalManager.getInstance().getLongestTeak()));
                                 }, throwable -> Log.e("getHistoryByDate", "onError", throwable)
                         )
         );

@@ -12,6 +12,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.RemoteViews;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -40,20 +41,9 @@ public class AutoInsertService extends Service {
 
     public static final String GROUP_KEY_NOTIFICATION = "com.android.mobile_project.group_key";
 
-    private static final String MY_ACTION = "com.android.project.AUTO_INSERT";
-
     public AutoInsertServiceComponent component;
 
     private final IBinder binder = new AutoInsertServiceBinder();
-
-    @Inject
-    HabitInWeekDAO mHabitInWeekDAO;
-
-    @Inject
-    HabitDAO mHabitDAO;
-
-    @Inject
-    HistoryDAO mHistoryDAO;
 
     public static class AutoInsertServiceBinder extends Binder {
         public AutoInsertService getService(){
@@ -92,26 +82,30 @@ public class AutoInsertService extends Service {
     public void pushNotification(Context context){
         Log.i(TAG, "pushNotification");
         Intent it = new Intent(context, LoginActivity.class);
-        it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             pendingIntent =
-                    PendingIntent.getActivity(context, 0, it, PendingIntent.FLAG_IMMUTABLE);
+                    PendingIntent.getActivity(context, 999, it, PendingIntent.FLAG_IMMUTABLE);
         }else {
             pendingIntent =
-                    PendingIntent.getActivity(context, 0, it, 0);
+                    PendingIntent.getActivity(context, 999, it, 0);
         }
+
+        // Get the layouts to use in the custom notification
+        RemoteViews notificationLayout = new RemoteViews(context.getPackageName(), R.layout.layout_habit_in_week_notification);
+        notificationLayout.setTextViewText(R.id.notification_title, "Your habit had been updated for new day. Please doing now !");
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_launcher_foreground)
-                        .setContentTitle(context.getString(R.string.app_name))
-                        .setContentText("Your habit had been updated for new day. Please doing now !")
+                        .setSmallIcon(R.drawable.ic_about_deciduous_tree)
+                        .setColor(context.getResources().getColor(R.color.green))
                         .setGroup(GROUP_KEY_NOTIFICATION)
                         .setAutoCancel(true)
                         .setContentIntent(pendingIntent)
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                        .setCustomContentView(notificationLayout)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setStyle(new NotificationCompat.DecoratedCustomViewStyle());
 
         it.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -119,16 +113,6 @@ public class AutoInsertService extends Service {
 
         notificationManager.notify(NOTIFICATION_ID, builder.build());
 
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void autoInsertForNewDay(Context context){
-        Log.i(TAG, "autoInsertForNewDay()");
-        synchronized ("doWork"){
-            Log.i(TAG, "registerReceiver");
-            Intent intent = new Intent(context, DayChangedReceiver.class);
-            context.sendBroadcast(intent);
-        }
     }
 
 }

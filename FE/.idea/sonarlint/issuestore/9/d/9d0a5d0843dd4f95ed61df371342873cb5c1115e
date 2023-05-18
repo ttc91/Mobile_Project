@@ -1,11 +1,0 @@
-
-N
-java:S5993U"9Change the visibility of this constructor to "protected".(ŠöÊ
-H
-java:S1128"-Remove this unused import 'android.util.Log'.(Ô¦Ø²øÿÿÿÿ
-Z
-java:S1128"?Remove this unused import 'androidx.lifecycle.MutableLiveData'.(Íèæâýÿÿÿÿ
-P
-java:S1128";Remove this unused import 'org.reactivestreams.Subscriber'.(Ð§âE
-X
-java:S1128"=Remove this unused import 'org.reactivestreams.Subscription'.(–ºÌèûÿÿÿÿ

@@ -55,6 +55,9 @@ public interface HistoryDAO extends BaseDAO<HistoryEntity>{
     @Query("SELECT * FROM tbl_history")
     List<HistoryEntity> getAll();
 
+    @Query("SELECT * FROM tbl_history WHERE user_id = :uId AND date = :date")
+    List<HistoryEntity> getHistoriesByDateInBackground(Long uId, String date);
+
     @Insert
     Completable insertAll(HistoryEntity... habitEntities);
 

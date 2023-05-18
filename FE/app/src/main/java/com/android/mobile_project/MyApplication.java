@@ -5,6 +5,7 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
+import com.android.mobile_project.utils.alarm.AlarmUtil;
 import com.android.mobile_project.utils.dagger.ApplicationGraph;
 import com.android.mobile_project.utils.dagger.DaggerApplicationGraph;
 import com.android.mobile_project.utils.dagger.component.provider.AutoInsertServiceComponentProvider;
@@ -15,24 +16,26 @@ import com.android.mobile_project.utils.dagger.component.provider.DayChangedRece
 import com.android.mobile_project.utils.dagger.component.provider.HabitSettingComponentProvider;
 import com.android.mobile_project.utils.dagger.component.provider.InputComponentProvider;
 import com.android.mobile_project.utils.dagger.component.provider.MainComponentProvider;
+import com.android.mobile_project.utils.dagger.component.provider.RebootReceiverComponentProvider;
 import com.android.mobile_project.utils.dagger.component.sub.count.CountDownComponent;
 import com.android.mobile_project.utils.dagger.component.sub.create.CreateHabitComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.CreateHistoryReceiverComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.DayChangedReceiverComponent;
+import com.android.mobile_project.utils.dagger.component.sub.receiver.RebootReceiverComponent;
 import com.android.mobile_project.utils.dagger.component.sub.service.AutoInsertServiceComponent;
 import com.android.mobile_project.utils.dagger.component.sub.setting.HabitSettingComponent;
 import com.android.mobile_project.utils.dagger.component.sub.input.InputComponent;
 import com.android.mobile_project.utils.dagger.component.sub.main.MainComponent;
 import com.android.mobile_project.utils.dagger.module.ApplicationModule;
 import com.android.mobile_project.utils.dagger.module.DatabaseModule;
-import com.android.mobile_project.utils.dagger.module.RetrofitModule;
-import com.android.mobile_project.utils.worker.AutoInsertWorker;
 
 public class MyApplication extends Application
         implements MainComponentProvider, HabitSettingComponentProvider,
         InputComponentProvider, CountDownComponentProvider,
         CreateHabitComponentProvider, CreateHistoryReceiverComponentProvider,
-        DayChangedReceiverComponentProvider, AutoInsertServiceComponentProvider {
+        DayChangedReceiverComponentProvider, AutoInsertServiceComponentProvider, RebootReceiverComponentProvider {
+
+    private static final String TAG = MyApplication.class.getSimpleName();
 
     private ApplicationGraph graph;
 
@@ -52,7 +55,7 @@ public class MyApplication extends Application
                 .build();
         graph.inject(this);
 
-        AutoInsertWorker.enqueueWorker(getApplicationContext());
+        AlarmUtil.setAutoInsertHistoryAlarm(getApplicationContext());
 
     }
 
@@ -94,5 +97,10 @@ public class MyApplication extends Application
     @Override
     public AutoInsertServiceComponent provideAutoInsertServiceComponent() {
         return graph.mAutoInsertServiceComponent().create();
+    }
+
+    @Override
+    public RebootReceiverComponent provideRebootReceiverComponent() {
+        return graph.mRebootReceiverComponent().create();
     }
 }

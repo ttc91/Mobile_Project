@@ -30,6 +30,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
 import java.util.Arrays;
+import java.util.Calendar;
 
 import javax.inject.Inject;
 
@@ -123,6 +124,7 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
                 });
 
                 DataLocalManager.getInstance().setUserName(userName);
+                DataLocalManager.getInstance().setLongestTeak(0L);
 
             }
 
@@ -211,28 +213,7 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
         finish();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void startInsertHistoryAlarm(){
 
-//        mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(getApplicationContext(), DayChangedReceiver.class);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            mPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
-//        }else{
-//            mPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
-//        }
-//
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTimeInMillis(System.currentTimeMillis());
-//        calendar.set(Calendar.HOUR_OF_DAY, 23);
-//        calendar.set(Calendar.MINUTE, 59);
-//        calendar.set(Calendar.SECOND, 0);
-//
-//        mAlarmManager.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
-//                AlarmManager.INTERVAL_DAY, mPendingIntent);
-
-
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override

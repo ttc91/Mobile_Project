@@ -10,6 +10,7 @@ public class DataLocalManager {
     private static final String USER_TOKEN = "PREF_USER_TOKEN";
     private static final String USER_NAME = "PREF_USER_NAME";
     private static final String USER_ID = "PREF_USER_ID";
+    private static final String LONGEST_STEAK = "PREF_LONGEST_STEAK";
 
     private static DataLocalManager instance;
 
@@ -55,6 +56,14 @@ public class DataLocalManager {
 
     public Long getUserId(){
         return DataLocalManager.mySharedPreferences.getLongValue(USER_ID);
+    }
+
+    public void setLongestTeak(Long value){
+        DataLocalManager.mySharedPreferences.putLongValue(LONGEST_STEAK, value);
+    }
+
+    public Long getLongestTeak(){
+        return DataLocalManager.mySharedPreferences.getLongValue(LONGEST_STEAK);
     }
 
 }

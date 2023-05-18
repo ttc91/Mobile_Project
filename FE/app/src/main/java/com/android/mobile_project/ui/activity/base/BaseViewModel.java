@@ -80,7 +80,7 @@ public abstract class BaseViewModel extends ViewModel {
 
     }
 
-    public abstract static class CustomSubscriber<T> extends DisposableSubscriber<T> {
+    public abstract class CustomSubscriber<T> extends DisposableSubscriber<T> {
         public CustomSubscriber() {
             super();
         }
@@ -93,6 +93,7 @@ public abstract class BaseViewModel extends ViewModel {
 
         @Override
         public void onComplete() {
+
         }
 
 
