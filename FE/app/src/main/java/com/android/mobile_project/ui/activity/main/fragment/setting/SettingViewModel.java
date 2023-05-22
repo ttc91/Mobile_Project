@@ -1,6 +1,7 @@
 package com.android.mobile_project.ui.activity.main.fragment.setting;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
@@ -34,6 +35,7 @@ import com.android.mobile_project.ui.activity.main.fragment.setting.service.ApiS
 import com.android.mobile_project.ui.activity.main.fragment.setting.service.InitService;
 import com.android.mobile_project.ui.activity.main.fragment.setting.service.ToastService;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
+import com.android.mobile_project.utils.worker.NotificationWorker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +76,12 @@ public class SettingViewModel extends BaseViewModel {
     }
 
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+
+    private Context context;
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
 
     protected void setDispose() {
         mCompositeDisposable.clear();
@@ -321,7 +329,7 @@ public class SettingViewModel extends BaseViewModel {
                 });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void insertAllDataIntoDB() {
         habitRepository.getMHabitDataSource()
                 .insertAll(HabitMapper.getInstance().mapToListEntity(habitModels)
@@ -373,10 +381,25 @@ public class SettingViewModel extends BaseViewModel {
                                 });
                     }
                 });
-        //NotificationWorker.enqueueWorkerWithHabit();
+        NotificationWorker.cancelAllWorkers(context);
+        for (RemainderModel remainderModel: remainderModels) {
+            HabitModel habitModel = new HabitModel();
+            List<HabitInWeekModel> habitInWeekModelList = new ArrayList<>();
+            for (HabitModel habitModel1: habitModels) {
+                if (habitModel1.getHabitId().equals(remainderModel.getHabitId())) {
+                    habitModel = habitModel1;
+                }
+            }
+            for (HabitInWeekModel habitInWeekModel: habitInWeekModels) {
+                if (habitInWeekModel.getHabitId().equals(remainderModel.getHabitId())) {
+                    habitInWeekModelList.add(habitInWeekModel);
+                }
+            }
+            NotificationWorker.enqueueWorkerWithHabit(context, habitModel, remainderModel, habitInWeekModelList);
+        }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void loadAllDataFromServer() {
 
         loadHabitFromServer();

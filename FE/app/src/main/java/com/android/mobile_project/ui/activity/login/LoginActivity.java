@@ -90,6 +90,7 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
     public void initViewModel() {
 
         binding.setVm(viewModel);
+        viewModel.setContext(this);
 
         viewModel.dbService = new DbService() {
             @Override
