@@ -120,6 +120,7 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
     @Override
     public void initViewModel() {
         binding.setVm(viewModel);
+        viewModel.setContext(getContext());
 
         viewModel.toastService = new ToastService() {
             @Override
