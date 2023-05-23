@@ -18,6 +18,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.DialogFragment;
 
 import com.android.mobile_project.R;
+import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.databinding.LayoutConfirmDialogBinding;
 import com.android.mobile_project.ui.activity.main.fragment.setting.service.InitService;
 import com.android.mobile_project.ui.activity.setting.IHabitSettingViewModel;
@@ -82,6 +83,7 @@ public class ConfirmDialog extends DialogFragment {
             binding.ivConfirm.setImageResource(R.drawable.ic_wastebasket);
         }else {
             binding.btnYes.setOnClickListener(v -> {
+                DataLocalManager.getInstance().setLoginState("false");
                 gsc.signOut().addOnCompleteListener(task -> initService.loadUI());
                 dismiss();
             });

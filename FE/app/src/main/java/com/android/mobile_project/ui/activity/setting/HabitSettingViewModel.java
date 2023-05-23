@@ -477,6 +477,8 @@ public class HabitSettingViewModel extends ViewModel implements IHabitSettingVie
                                         public void onInsertRemainderSuccess(CompositeDisposable disposable) {
                                             Log.i("HabitSettingViewModel-insertRemainder", "onInsertRemainderSuccess");
                                             disposable.clear();
+                                            DataLocalManager.getInstance().setUserStateChangeData("true");
+                                            Log.i("Change state data change", DataLocalManager.getInstance().getUserStateChangeData());
                                             NotificationWorker.enqueueWorkerWithHabit(context, mHabitModelMutableLiveData.getValue(), model, mHabitInWeekListMutableLiveData.getValue());
                                         }
 

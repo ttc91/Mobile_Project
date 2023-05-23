@@ -37,6 +37,7 @@ public class RemoteHabitDataSource extends BaseDataSource implements IRemoteHabi
         this.dao = dao;
     }
 
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public Call<ResponseModel<HabitModel>> synchronize() {

@@ -1,5 +1,6 @@
 package com.android.mobile_project.ui.activity.main.fragment.home;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.util.Log;
 import android.widget.TextView;
@@ -487,7 +488,10 @@ public class HomeViewModel extends BaseViewModel {
      * @param date
      * @param value
      */
+    @SuppressLint("LongLogTag")
     public void updateHistoryStatus(HabitModel habitModel, String date, String value) {
+        DataLocalManager.getInstance().setUserStateChangeData("true");
+        Log.i("Change state data change", DataLocalManager.getInstance().getUserStateChangeData());
         mHistoryRepository.getMHistoryDataSource().getHistoryByHabitIdAndDate(habitModel.getHabitId(), date)
                 .subscribe(new CustomSingleObserver<HistoryEntity>() {
                     @Override

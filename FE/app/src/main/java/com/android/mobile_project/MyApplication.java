@@ -1,10 +1,15 @@
 package com.android.mobile_project;
 
 import android.app.Application;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.android.mobile_project.data.local.DataLocalManager;
+import com.android.mobile_project.receiver.system.TimeTickReceiver;
 import com.android.mobile_project.utils.alarm.AlarmUtil;
 import com.android.mobile_project.utils.dagger.ApplicationGraph;
 import com.android.mobile_project.utils.dagger.DaggerApplicationGraph;
@@ -17,23 +22,27 @@ import com.android.mobile_project.utils.dagger.component.provider.HabitSettingCo
 import com.android.mobile_project.utils.dagger.component.provider.InputComponentProvider;
 import com.android.mobile_project.utils.dagger.component.provider.MainComponentProvider;
 import com.android.mobile_project.utils.dagger.component.provider.RebootReceiverComponentProvider;
+import com.android.mobile_project.utils.dagger.component.provider.TimeTickReceiverComponentProvider;
 import com.android.mobile_project.utils.dagger.component.sub.count.CountDownComponent;
 import com.android.mobile_project.utils.dagger.component.sub.create.CreateHabitComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.CreateHistoryReceiverComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.DayChangedReceiverComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.RebootReceiverComponent;
+import com.android.mobile_project.utils.dagger.component.sub.receiver.TimeTickReceiverComponent;
 import com.android.mobile_project.utils.dagger.component.sub.service.AutoInsertServiceComponent;
 import com.android.mobile_project.utils.dagger.component.sub.setting.HabitSettingComponent;
 import com.android.mobile_project.utils.dagger.component.sub.input.InputComponent;
 import com.android.mobile_project.utils.dagger.component.sub.main.MainComponent;
 import com.android.mobile_project.utils.dagger.module.ApplicationModule;
 import com.android.mobile_project.utils.dagger.module.DatabaseModule;
+import com.android.mobile_project.utils.dagger.module.RetrofitModule;
 
 public class MyApplication extends Application
         implements MainComponentProvider, HabitSettingComponentProvider,
         InputComponentProvider, CountDownComponentProvider,
         CreateHabitComponentProvider, CreateHistoryReceiverComponentProvider,
-        DayChangedReceiverComponentProvider, AutoInsertServiceComponentProvider, RebootReceiverComponentProvider {
+        DayChangedReceiverComponentProvider, AutoInsertServiceComponentProvider,
+        RebootReceiverComponentProvider, TimeTickReceiverComponentProvider {
 
     private static final String TAG = MyApplication.class.getSimpleName();
 
@@ -42,6 +51,7 @@ public class MyApplication extends Application
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onCreate() {
+        Log.i(TAG, "onCreate");
         super.onCreate();
         init();
     }
@@ -51,12 +61,16 @@ public class MyApplication extends Application
         graph = DaggerApplicationGraph.builder()
                 .applicationModule(new ApplicationModule(this))
                 .databaseModule(new DatabaseModule(this))
-//                .retrofitModule(new RetrofitModule())
+                .retrofitModule(new RetrofitModule())
                 .build();
         graph.inject(this);
 
         AlarmUtil.setAutoInsertHistoryAlarm(getApplicationContext());
+        registerReceiver(new TimeTickReceiver(), new IntentFilter(Intent.ACTION_TIME_TICK));
 
+        DataLocalManager.init(getApplicationContext());
+        DataLocalManager.getInstance().setCountToSynchronizeServer(0L);
+        DataLocalManager.getInstance().setUserStateChangeData("false");
     }
 
     @Override
@@ -102,5 +116,10 @@ public class MyApplication extends Application
     @Override
     public RebootReceiverComponent provideRebootReceiverComponent() {
         return graph.mRebootReceiverComponent().create();
+    }
+
+    @Override
+    public TimeTickReceiverComponent provideTimeTickReceiverComponent() {
+        return graph.mTimeTickReceiverComponent().create();
     }
 }

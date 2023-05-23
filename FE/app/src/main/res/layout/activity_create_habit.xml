@@ -322,11 +322,17 @@
 
                 </LinearLayout>
 
+                <ImageView
+                    android:layout_width="@dimen/_100sdp"
+                    android:layout_height="@dimen/_140sdp"
+                    android:src="@drawable/ic_palm_tree_1"
+                    tools:ignore="ContentDescription" />
+
                 <Button
                     android:id="@+id/btn_create"
                     android:layout_width="@dimen/_270sdp"
                     android:layout_height="@dimen/_45sdp"
-                    android:layout_marginTop="@dimen/_130sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
                     android:background="@drawable/btn_create"
                     android:onClick="@{(v) -> a.onClick(v)}"
                     android:text="@string/text_create_button"
@@ -334,47 +340,43 @@
                     android:textSize="@dimen/_12ssp"
                     android:textStyle="bold" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btn_back"
-                    android:layout_width="@dimen/_40sdp"
-                    android:layout_height="@dimen/_40sdp"
-                    android:layout_gravity="left"
-                    android:layout_marginStart="@dimen/_5sdp"
-                    android:layout_marginTop="@dimen/_10sdp"
-                    android:onClick="@{(v) -> a.onClick(v)}"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:ignore="RtlHardcoded">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bck_circle_white_btn"
-                        android:contentDescription="@string/description_left_arrow_icon"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/_2sdp"
-                        android:contentDescription="@string/description_left_arrow_background"
-                        android:src="@drawable/ic_arrow_back"
-                        app:layout_constraintBottom_toBottomOf="@+id/btn_back"
-                        app:layout_constraintEnd_toEndOf="@+id/btn_back"
-                        app:layout_constraintStart_toStartOf="@+id/btn_back"
-                        app:layout_constraintTop_toTopOf="@+id/btn_back" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-
             </LinearLayout>
 
         </FrameLayout>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btn_back"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_gravity="left"
+            android:layout_marginStart="@dimen/_25sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:onClick="@{(v) -> a.onClick(v)}"
+            android:layout_alignParentBottom="true"
+            tools:ignore="RtlHardcoded">
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bck_circle_white_btn"
+                android:contentDescription="@string/description_left_arrow_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_2sdp"
+                android:contentDescription="@string/description_left_arrow_background"
+                android:src="@drawable/ic_arrow_back"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_back"
+                app:layout_constraintEnd_toEndOf="@+id/btn_back"
+                app:layout_constraintStart_toStartOf="@+id/btn_back"
+                app:layout_constraintTop_toTopOf="@+id/btn_back" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </RelativeLayout>
 

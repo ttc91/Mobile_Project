@@ -116,6 +116,7 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
     @Override
     public void onResume() {
         super.onResume();
+        initHabitList(utils.getDateTodayString());
         if (viewModel.isSelectedToday()) {
             initHabitList(utils.getDateTodayString());
             Log.d(TAG, "onResume: isToday");

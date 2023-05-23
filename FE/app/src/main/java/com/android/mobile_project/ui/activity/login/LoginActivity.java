@@ -22,6 +22,7 @@ import com.android.mobile_project.ui.activity.login.service.ToastService;
 import com.android.mobile_project.ui.activity.main.MainActivity;
 import com.android.mobile_project.utils.dagger.component.provider.InputComponentProvider;
 import com.android.mobile_project.utils.dagger.component.sub.input.InputComponent;
+import com.android.mobile_project.utils.network.NetworkUtils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -63,8 +64,6 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
         component.inject(this);
 
         super.onCreate(savedInstanceState);
-
-        DataLocalManager.init(getApplicationContext());
 
         initViewModel();
 
@@ -145,6 +144,11 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
             public void makeErrorToast() {
                 Toast.makeText(getApplicationContext(), ToastService.InputToastConstant.CONTENT_ERROR, Toast.LENGTH_SHORT).show();
             }
+
+            @Override
+            public void makeNetworkErrorConnectToast() {
+                Toast.makeText(getApplicationContext(), InputToastConstant.CONTENT_CONNECT_NETWORK_ERROR, Toast.LENGTH_SHORT).show();
+            }
         };
 
         viewModel.initService = () -> {
@@ -182,10 +186,15 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
     public void onClick(View view) {
         if(view.getId() == R.id.btn_doing_now){
             viewModel.dbService.setUser("null");
+            DataLocalManager.getInstance().setLoginState("false");
             redirectToNextActivity();
         }else if(view.getId() == R.id.btn_gg){
-            Intent it = gsc.getSignInIntent();
-            startActivityForResult(it, LOGIN_REQUEST_CODE);
+            if(NetworkUtils.isNetworkConnected(getApplicationContext())){
+                Intent it = gsc.getSignInIntent();
+                startActivityForResult(it, LOGIN_REQUEST_CODE);
+            }else {
+                viewModel.toastService.makeNetworkErrorConnectToast();
+            }
         }
     }
 
@@ -228,8 +237,9 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
                     String personEmail = acct.getEmail();
                     viewModel.dbService.setUser(personEmail);
                     viewModel.requestSignInToServer();
+                    DataLocalManager.getInstance().setLoginState("true");
+                    redirectToNextActivity();
                 }
-                //redirectToNextActivity();
             }catch (Exception e){
                 Log.e("loginError", Arrays.toString(e.getStackTrace()));
                 viewModel.toastService.makeErrorToast();

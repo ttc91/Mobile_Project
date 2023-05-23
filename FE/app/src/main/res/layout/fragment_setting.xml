@@ -33,6 +33,16 @@
             android:paddingHorizontal="@dimen/_10sdp"
             android:paddingTop="@dimen/_10sdp">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:background="@drawable/bck_name_title"
+                android:gravity="center"
+                android:text="@string/title_online_setting"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold" />
+
 
             <LinearLayout
                 android:id="@+id/btn_synchronize"
@@ -76,6 +86,46 @@
                     android:textStyle="bold" />
 
             </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/btn_login_logout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_65sdp"
+                android:layout_marginHorizontal="@dimen/_10sdp"
+                android:background="@drawable/bck_item_failed"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:onClick="@{(v) -> f.onClick(v)}">
+
+                <TextView
+                    android:id="@+id/tv_login_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/text_logout"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_15ssp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="3sp"
+                android:layout_height="@dimen/_80sdp"
+                android:layout_marginVertical="@dimen/_15sdp"
+                android:layout_gravity="center"
+                android:background="@color/bck_ground" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:background="@color/bck_ground"
+                android:gravity="center"
+                android:text="@string/text_app_info"
+                android:textSize="@dimen/_10ssp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/btn_about_us"
@@ -123,27 +173,55 @@
                         android:textStyle="bold" />
 
                 </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/btn_login_logout"
+                android:id="@+id/btn_guide"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_65sdp"
-                android:layout_marginHorizontal="@dimen/_10sdp"
-                android:background="@drawable/bck_item_failed"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:onClick="@{(v) -> f.onClick(v)}">
+                android:onClick="@{(v)-> f.onClick(v)}">
 
-                <TextView
-                    android:id="@+id/tv_login_status"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/text_logout"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_15ssp"
-                    android:textStyle="bold" />
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="@dimen/_10sdp"
+                    android:background="@drawable/bck_habit_btn"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/_20sdp"
+                        android:layout_weight="1">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:layout_width="@dimen/_30sdp"
+                            android:layout_height="@dimen/_30sdp"
+                            android:src="@drawable/ic_guide"
+                            app:strokeColor="@null"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:shapeAppearanceOverlay="@style/corner" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="@dimen/_20sdp"
+                        android:layout_weight="4"
+                        android:gravity="center"
+                        android:text="@string/text_guide"
+                        android:textColor="#5A5858"
+                        android:textSize="@dimen/_15ssp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

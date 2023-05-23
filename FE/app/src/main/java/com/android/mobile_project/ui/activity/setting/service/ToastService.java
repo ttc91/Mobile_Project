@@ -10,6 +10,7 @@ public interface ToastService {
     void makeHabitNameInputtedIsEmptyToast();
     void makeRemainderWasExistedToast();
 
+
     interface HabitSettingConstant{
         String CONTENT_HABIT_UPDATE_COMPLETE = "Habit was updated !";
         String CONTENT_HABIT_NAME_IS_EMPTY = "Habit name is empty";

@@ -6,6 +6,7 @@ import com.android.mobile_project.utils.dagger.component.sub.create.CreateHabitC
 import com.android.mobile_project.utils.dagger.component.sub.receiver.CreateHistoryReceiverComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.DayChangedReceiverComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.RebootReceiverComponent;
+import com.android.mobile_project.utils.dagger.component.sub.receiver.TimeTickReceiverComponent;
 import com.android.mobile_project.utils.dagger.component.sub.service.AutoInsertServiceComponent;
 import com.android.mobile_project.utils.dagger.component.sub.setting.HabitSettingComponent;
 import com.android.mobile_project.utils.dagger.component.sub.input.InputComponent;
@@ -51,7 +52,7 @@ public interface ApplicationGraph {
     CreateHistoryReceiverComponent.Factory mCreateHistoryReceiverComponent();
     DayChangedReceiverComponent.Factory mDayChangedReceiverComponent();
     RebootReceiverComponent.Factory mRebootReceiverComponent();
-
+    TimeTickReceiverComponent.Factory mTimeTickReceiverComponent();
 
     /**
      * <b>Service</b>

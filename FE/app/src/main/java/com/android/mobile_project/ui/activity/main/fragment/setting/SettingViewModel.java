@@ -48,7 +48,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @MyCustomAnnotation.MyScope.FragmentScope
-public class SettingViewModel extends BaseViewModel {
+public class SettingViewModel extends BaseViewModel implements ISettingViewModel{
 
     private static final String TAG = SettingViewModel.class.getSimpleName();
     private final HabitRepository habitRepository;
@@ -92,7 +92,8 @@ public class SettingViewModel extends BaseViewModel {
 
     @SuppressLint("LongLogTag")
     @RequiresApi(api = Build.VERSION_CODES.N)
-    protected void synchronizeToServer(ApiService.SynchronizeToServerResult callback) {
+    @Override
+    public void synchronizeToServer(ApiService.SynchronizeToServerResult callback) {
         try {
 
             habitRepository.getMRemoteHabitDataSource().synchronize().enqueue(new Callback<ResponseModel<HabitModel>>() {

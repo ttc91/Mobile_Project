@@ -54,6 +54,9 @@
     <string name="text_about_us">About Us</string>
     <string name="text_login">Log in</string>
     <string name="text_logout">Log out</string>
+    <string name="text_app_info">APP INFO</string>
+    <string name="text_guide">Guide</string>
+    <string name="title_online_setting">ONLINE SETTING</string>
 
     <!--Original-->
     <string name="str_right_arrow">Right arrow</string>
@@ -76,5 +79,9 @@
     <string name="str_yes">Yes</string>
     <string name="str_content_delete_habit">Are you sure to delete it?</string>
     <string name="str_content_logout">Are you sure to log out?</string>
+
+    <!--Synchronize Dialog-->
+    <string name="str_synchronize_title">Synchronize</string>
+    <string name="str_content_synchronize">Are you sure to synchronize to server ?</string>
     
 </resources>

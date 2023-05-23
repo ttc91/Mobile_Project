@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 
 import com.android.mobile_project.R;
+import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.databinding.ActivityCreateHabitBinding;
 import com.android.mobile_project.receiver.local.CreateHistoryReceiver;
 import com.android.mobile_project.ui.InitLayout;
@@ -141,10 +142,13 @@ public class CreateHabitActivity extends AppCompatActivity implements InitLayout
                                 public void onGetHabitByNameFailure() {
                                     Log.i("checkExistHabitByName", "has not existed");
                                         viewModel.insertHabit(binding.edtHname.getText().toString().trim(), new DbService.InsertHabit() {
+                                            @SuppressLint("LongLogTag")
                                             @Override
                                             public void onInsertHabitSuccess() {
                                                 Log.i("insertHabit", "isSuccess");
                                                 viewModel.toastService.makeInsertHabitSuccessToast();
+                                                DataLocalManager.getInstance().setUserStateChangeData("true");
+                                                Log.i("Change state data change", DataLocalManager.getInstance().getUserStateChangeData());
                                                 finish();
                                             }
 

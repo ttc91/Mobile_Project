@@ -11,6 +11,9 @@ public class DataLocalManager {
     private static final String USER_NAME = "PREF_USER_NAME";
     private static final String USER_ID = "PREF_USER_ID";
     private static final String LONGEST_STEAK = "PREF_LONGEST_STEAK";
+    private static final String USER_STATE_CHANGE_DATA = "PREF_USER_STATE_CHANGE_DATA";
+    private static final String COUNT_TO_SYNCHRONIZE_SERVER = "PREF_COUNT_TO_SYNCHRONIZE_SERVER";
+    private static final String LOGIN_STATE = "PREF_LOGIN_STATE";
 
     private static DataLocalManager instance;
 
@@ -64,6 +67,30 @@ public class DataLocalManager {
 
     public Long getLongestTeak(){
         return DataLocalManager.mySharedPreferences.getLongValue(LONGEST_STEAK);
+    }
+
+    public void setCountToSynchronizeServer(Long value){
+        DataLocalManager.mySharedPreferences.putLongValue(COUNT_TO_SYNCHRONIZE_SERVER, value);
+    }
+
+    public Long getCountToSynchronizeServer(){
+        return DataLocalManager.mySharedPreferences.getLongValue(COUNT_TO_SYNCHRONIZE_SERVER);
+    }
+
+    public void setUserStateChangeData(String value){
+        DataLocalManager.mySharedPreferences.putStringValue(USER_STATE_CHANGE_DATA, value);
+    }
+
+    public String getUserStateChangeData(){
+        return DataLocalManager.mySharedPreferences.getStringValue(USER_STATE_CHANGE_DATA);
+    }
+
+    public void setLoginState(String value){
+        DataLocalManager.mySharedPreferences.putStringValue(LOGIN_STATE, value);
+    }
+
+    public String getLoginState(){
+        return DataLocalManager.mySharedPreferences.getStringValue(LOGIN_STATE);
     }
 
 }

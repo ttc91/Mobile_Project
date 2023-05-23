@@ -6,6 +6,7 @@ import com.android.mobile_project.data.remote.api.HistoryAPI;
 import com.android.mobile_project.data.remote.api.RemainderAPI;
 import com.android.mobile_project.data.remote.api.UserAPI;
 import com.android.mobile_project.data.utils.constant.ApiPaths;
+import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
 
 import java.util.concurrent.TimeUnit;
 

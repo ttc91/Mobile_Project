@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.mobile_project.MyApplication;
 import com.android.mobile_project.R;
+import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.data.remote.model.HabitInWeekModel;
 import com.android.mobile_project.data.remote.model.HabitModel;
 import com.android.mobile_project.databinding.ActivityHabitSettingBinding;
@@ -825,6 +826,8 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
                     @SuppressLint("LongLogTag")
                     @Override
                     public void onUpdateNameOfHabitSuccess(CompositeDisposable disposable) {
+                        DataLocalManager.getInstance().setUserStateChangeData("true");
+                        Log.i("Change state data change", DataLocalManager.getInstance().getUserStateChangeData());
                         Log.i("HabitSettingActivity - updateNameOfHabit", "onUpdateNameOfHabitSuccess");
                     }
 
@@ -844,8 +847,11 @@ public class HabitSettingActivity extends AppCompatActivity implements InitLayou
 
     }
 
+    @SuppressLint("LongLogTag")
     private void onCLickTimePicker() {
         viewModel.initService.initTimerDialog(Gravity.BOTTOM);
+        DataLocalManager.getInstance().setUserStateChangeData("true");
+        Log.i("Change state data change", DataLocalManager.getInstance().getUserStateChangeData());
     }
 
     @Override

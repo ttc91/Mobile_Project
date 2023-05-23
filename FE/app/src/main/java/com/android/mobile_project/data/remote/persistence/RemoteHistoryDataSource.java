@@ -1,6 +1,7 @@
 package com.android.mobile_project.data.remote.persistence;
 
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -26,6 +27,8 @@ import retrofit2.Call;
 
 @MyCustomAnnotation.MyScope.ActivityScope
 public class RemoteHistoryDataSource extends BaseDataSource implements IRemoteHistoryDataSource {
+
+    private static final String TAG = RemoteHistoryDataSource.class.getSimpleName();
 
     private final HistoryAPI historyAPI;
 

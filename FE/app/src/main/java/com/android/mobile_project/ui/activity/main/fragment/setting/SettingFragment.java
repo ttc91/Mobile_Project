@@ -26,13 +26,14 @@ import com.android.mobile_project.ui.activity.main.fragment.setting.service.ApiS
 import com.android.mobile_project.ui.activity.main.fragment.setting.service.InitService;
 import com.android.mobile_project.ui.activity.main.fragment.setting.service.ToastService;
 import com.android.mobile_project.ui.dialog.ConfirmDialog;
+import com.android.mobile_project.ui.dialog.SynchronizeDialog;
 import com.android.mobile_project.utils.dagger.component.sub.main.fragment.SettingComponent;
+import com.android.mobile_project.utils.network.NetworkUtils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.Arrays;
@@ -76,28 +77,30 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
         return v;
     }
 
+    @SuppressLint("LongLogTag")
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_synchronize) {
-            viewModel.synchronizeToServer(new ApiService.SynchronizeToServerResult() {
-                @Override
-                public void onSynchronizeToServerSuccess() {
-                    viewModel.toastService.makeSynchronizedSuccessToast();
-                }
-
-                @Override
-                public void onSynchronizeToServerFailure() {
-                    viewModel.toastService.makeErrorToast();
-                }
-            });
+            if(NetworkUtils.isNetworkConnected(getContext())){
+                SynchronizeDialog dialog = new SynchronizeDialog(getContext(), viewModel,  viewModel.toastService);
+                dialog.show(getChildFragmentManager(), "synchronize_dialog");
+            }else {
+                viewModel.toastService.makeNetworkErrorConnectToast();
+            }
         } else if (v.getId() == R.id.btn_login_logout) {
-            if (viewModel.isLogin) {
-                DataLocalManager.getInstance().setUserName("null");
-                DataLocalManager.getInstance().setToken("");
-                executeLogOut();
-            } else {
-                executeLogIn();
+            if(NetworkUtils.isNetworkConnected(getContext())){
+                if (viewModel.isLogin) {
+                    DataLocalManager.getInstance().setUserStateChangeData("false");
+                    Log.i("Change state data change", DataLocalManager.getInstance().getUserStateChangeData());
+                    DataLocalManager.getInstance().setUserName("null");
+                    DataLocalManager.getInstance().setToken("");
+                    executeLogOut();
+                } else {
+                    executeLogIn();
+                }
+            }else {
+                viewModel.toastService.makeNetworkErrorConnectToast();
             }
         } else if (v.getId() == R.id.btn_about_us) {
             redirectToAboutUsActivity();
@@ -132,6 +135,11 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
             @Override
             public void makeErrorToast() {
                 getActivity().runOnUiThread(() -> Toast.makeText(getContext(), SettingToastConstant.CONTENT_ERROR, Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void makeNetworkErrorConnectToast() {
+                getActivity().runOnUiThread(() ->  Toast.makeText(getContext(), SettingToastConstant.CONTENT_CONNECT_NETWORK_ERROR, Toast.LENGTH_SHORT).show());
             }
         };
 
@@ -173,7 +181,7 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
 
     private void executeLogOut() {
         ConfirmDialog dialog = new ConfirmDialog(getContext(), false, null, gsc, viewModel.initService);
-        dialog.show(getChildFragmentManager(), "dialog");
+        dialog.show(getChildFragmentManager(), "confirm_dialog");
     }
 
     private void executeLogIn() {
@@ -201,6 +209,7 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
                     //viewModel.requestSignInToServer();
                     viewModel.initService.loadUI();
                     viewModel.toastService.makeLoginSuccess();
+                    DataLocalManager.getInstance().setLoginState("true");
                     Log.d(TAG, "onActivityResult: after");
                 }
             } catch (Exception e) {
