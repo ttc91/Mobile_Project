@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="dialog"
+            type="com.android.mobile_project.ui.dialog.TryConnectNetworkDialog" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:background="@drawable/bck_confirm_dialog"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingVertical="@dimen/_3sdp"
+            android:text="@string/str_nw_dialog_title"
+            android:textColor="@color/title"
+            android:textSize="@dimen/_15ssp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="@dimen/_150sdp"
+            android:layout_height="@dimen/_60sdp"
+            android:layout_marginVertical="@dimen/_10sdp"
+            android:src="@drawable/try_connect_nw"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:text="@string/str_nw_content"
+            android:gravity="center"
+            android:paddingVertical="@dimen/_5sdp"/>
+
+
+    </LinearLayout>
+</layout>

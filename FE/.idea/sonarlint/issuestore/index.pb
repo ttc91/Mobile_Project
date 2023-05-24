@@ -105,8 +105,6 @@ Lapp/src/main/java/com/android/mobile_project/data/remote/api/HistoryAPI.java,3
 Oapp/src/main/java/com/android/mobile_project/data/utils/mapper/HabitMapper.java,e\e\eed45395b03ef9d3456079a6a97ad0d9548de586
 Ä
 Papp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/HabitDAO.java,8\5\8523db240b76762a0f96aad825650c17b8c2d334
-É
-Sapp/src/main/java/com/android/mobile_project/ui/activity/about/AboutUsActivity.java,b\7\b71e351fc97bffba0ad2dcdeea14d0dcfff077fb
 ú
 lapp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/behavior/RemainderDataSource.java,2\f\2fc7e8135523ce04b37788c1c53b1eec5e3d9a59
 ö
@@ -161,20 +159,12 @@ Xapp/src/main/java/com/android/mobile_project/ui/activity/login/service/ToastSer
 Yapp/src/main/java/com/android/mobile_project/ui/activity/create/CreateHabitViewModel.java,4\9\49b007e57c56aacf79d5e7ac884762f342053d08
 Ü
 Vapp/src/main/java/com/android/mobile_project/ui/activity/count/CountDownViewModel.java,4\a\4a38d91562da916c27b2bac487c14f26520fbb06
-Ç
-Rapp/src/main/java/com/android/mobile_project/ui/activity/login/LoginViewModel.java,d\7\d744c60f2adc73916a0b5601fe4486bb91d99376
-Å
-Qapp/src/main/java/com/android/mobile_project/ui/activity/login/LoginActivity.java,f\4\f4f31f31fbf10ee5623ae9e4546ce429e47b6679
-P
- app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e
 ò
 happ/src/main/java/com/android/mobile_project/ui/activity/main/fragment/setting/service/ToastService.java,7\2\723fc90e10207df2b8e7db83aaaa7b32190d0665
 î
 dapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/planner/PlannerViewModel.java,1\5\15f822eb5a2f9152f327473b1ea4f0c58d6c9392
 É
 Sapp/src/main/java/com/android/mobile_project/receiver/local/DayChangedReceiver.java,1\7\173fa8f1bdadd9c49d82cdb36b20093eb2a8d282
-Ü
-Vapp/src/main/java/com/android/mobile_project/receiver/local/CreateHistoryReceiver.java,c\4\c40974156a014914a9439c1a655eeba5ce8021c6
 á
 Wapp/src/main/java/com/android/mobile_project/utils/dagger/module/ApplicationModule.java,2\e\2e8008aed6c4af03f8493a636c4c0378791d586a
 °
@@ -217,8 +207,6 @@ Oapp/src/main/java/com/android/mobile_project/utils/dagger/ApplicationGraph.java
 _app/src/main/java/com/android/mobile_project/data/remote/persistence/RemoteHabitDataSource.java,9\0\905a447a3da06c6d20727e82325a0be9965eaf40
 °
 qapp/src/main/java/com/android/mobile_project/utils/dagger/component/provider/RebootReceiverComponentProvider.java,f\c\fc512b651add5a6d355a1b0fade226cef83af8af
-}
-Mapp/src/main/java/com/android/mobile_project/data/local/DataLocalManager.java,e\4\e402ade484093691270991949b5421c5995340c8
 ä
 Zapp/src/main/java/com/android/mobile_project/ui/activity/setting/HabitSettingActivity.java,c\f\cfbc2cd1f1f778eaa0128357e60d0a76b1e48ddb
 é
@@ -229,3 +217,15 @@ Zapp/src/main/java/com/android/mobile_project/ui/activity/setting/HabitSettingAc
 Xapp/src/main/java/com/android/mobile_project/ui/activity/create/CreateHabitActivity.java,7\e\7ea7b6c6db07398aaefa67d00a21fff053ac5232
 o
 ?app/src/main/java/com/android/mobile_project/MyApplication.java,4\4\4491519b89794a868cc0f0381ce259cb39363b5f
+è
+_app/src/main/java/com/android/mobile_project/data/remote/model/api/HistorySynchronizeModel.java,6\4\64cae64f991fe816f61041c7cd8433093b7a4d16
+ë
+aapp/src/main/java/com/android/mobile_project/data/remote/model/api/base/BaseSynchronizeModel.java,3\e\3ed6db3831eda9cdbdceab43931e876f71c31243
+Ä
+Papp/src/main/java/com/android/mobile_project/data/remote/model/HistoryModel.java,f\f\ff424b6d07722b83646a00684152ca906db596ea
+ë
+aapp/src/main/java/com/android/mobile_project/data/remote/persistence/RemoteHistoryDataSource.java,c\b\cbdc11734d2b857943aaa7b8d15463c428b85f4d
+{
+Kapp/src/main/java/com/android/mobile_project/ui/dialog/RemainderDialog.java,0\2\022ac81805215c213414bd26731c48e70aac497c
+ã
+[app/src/main/java/com/android/mobile_project/ui/activity/setting/HabitSettingViewModel.java,9\6\96a411fe4f93e625f9cf4c7a96d2c4ec40f14edc

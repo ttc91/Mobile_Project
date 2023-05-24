@@ -34,6 +34,9 @@
         <activity android:name=".ui.activity.about.AboutUsActivity"
             android:exported="false"/>
 
+        <activity android:name=".ui.activity.guide.GuideActivity"
+            android:exported="false"/>
+
         <activity android:name=".ui.activity.login.LoginActivity"
             android:exported="true">
 

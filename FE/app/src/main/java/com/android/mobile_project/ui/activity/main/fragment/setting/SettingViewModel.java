@@ -1,7 +1,6 @@
 package com.android.mobile_project.ui.activity.main.fragment.setting;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
@@ -35,7 +34,6 @@ import com.android.mobile_project.ui.activity.main.fragment.setting.service.ApiS
 import com.android.mobile_project.ui.activity.main.fragment.setting.service.InitService;
 import com.android.mobile_project.ui.activity.main.fragment.setting.service.ToastService;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
-import com.android.mobile_project.utils.worker.NotificationWorker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,12 +74,6 @@ public class SettingViewModel extends BaseViewModel implements ISettingViewModel
     }
 
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
-
-    private Context context;
-
-    public void setContext(Context context) {
-        this.context = context;
-    }
 
     protected void setDispose() {
         mCompositeDisposable.clear();
@@ -156,7 +148,8 @@ public class SettingViewModel extends BaseViewModel implements ISettingViewModel
         }
     }
 
-    private void requestSignInToServer() {
+    @Override
+    public void requestSignInToServer() {
         Log.d(TAG, "requestSignInToServer: ");
         userRepository.getMRemoteUserDataSource().signIn().enqueue(new Callback<ResponseModel<JwtResponseModel>>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -177,7 +170,8 @@ public class SettingViewModel extends BaseViewModel implements ISettingViewModel
         });
     }
 
-    protected void getUserIdByName(String username) {
+    @Override
+    public void getUserIdByName(String username) {
         Log.d(TAG, "getUserIdByName: ");
         mCompositeDisposable.add(
                 userRepository.getMUserDataSource().getUserIdByName(username)
@@ -203,7 +197,8 @@ public class SettingViewModel extends BaseViewModel implements ISettingViewModel
     private final CountDownLatch mLocalLatch = new CountDownLatch(4);
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void loadHabitFromServer() {
+    @Override
+    public void loadHabitFromServer() {
         Long userId = mUserIdMutableLiveData.getValue();
         habitRepository.getMRemoteHabitDataSource().getAllHabit()
                 .observeOn(Schedulers.newThread())
@@ -235,7 +230,8 @@ public class SettingViewModel extends BaseViewModel implements ISettingViewModel
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void loadHabitInWeekFromServer() {
+    @Override
+    public void loadHabitInWeekFromServer() {
         Long userId = mUserIdMutableLiveData.getValue();
         habitInWeekRepository.getMRemoteHabitInWeekDataSource()
                 .getAllHabitInWeek()
@@ -266,7 +262,8 @@ public class SettingViewModel extends BaseViewModel implements ISettingViewModel
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void loadHistoryFromServer() {
+    @Override
+    public void loadHistoryFromServer() {
         Long userId = mUserIdMutableLiveData.getValue();
         historyRepository.getMRemoteHistoryDataSource()
                 .getAllHistory()
@@ -299,7 +296,8 @@ public class SettingViewModel extends BaseViewModel implements ISettingViewModel
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void loadReminderFromServer() {
+    @Override
+    public void loadReminderFromServer() {
         //Long userId = mUserIdMutableLiveData.getValue();
         remainderRepository.getMRemoteRemainderDataSource()
                 .getAllReminder()
@@ -330,8 +328,9 @@ public class SettingViewModel extends BaseViewModel implements ISettingViewModel
                 });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void insertAllDataIntoDB() {
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void insertAllDataIntoDB() {
         habitRepository.getMHabitDataSource()
                 .insertAll(HabitMapper.getInstance().mapToListEntity(habitModels)
                         .toArray(new HabitEntity[0]))
@@ -382,26 +381,12 @@ public class SettingViewModel extends BaseViewModel implements ISettingViewModel
                                 });
                     }
                 });
-        NotificationWorker.cancelAllWorkers(context);
-        for (RemainderModel remainderModel: remainderModels) {
-            HabitModel habitModel = new HabitModel();
-            List<HabitInWeekModel> habitInWeekModelList = new ArrayList<>();
-            for (HabitModel habitModel1: habitModels) {
-                if (habitModel1.getHabitId().equals(remainderModel.getHabitId())) {
-                    habitModel = habitModel1;
-                }
-            }
-            for (HabitInWeekModel habitInWeekModel: habitInWeekModels) {
-                if (habitInWeekModel.getHabitId().equals(remainderModel.getHabitId())) {
-                    habitInWeekModelList.add(habitInWeekModel);
-                }
-            }
-            NotificationWorker.enqueueWorkerWithHabit(context, habitModel, remainderModel, habitInWeekModelList);
-        }
+        //NotificationWorker.enqueueWorkerWithHabit();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void loadAllDataFromServer() {
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    public void loadAllDataFromServer() {
 
         loadHabitFromServer();
         loadHabitInWeekFromServer();
@@ -422,7 +407,8 @@ public class SettingViewModel extends BaseViewModel implements ISettingViewModel
 
     }
 
-    private void deleteAllDB() {
+    @Override
+    public void deleteAllDB() {
         habitInWeekRepository.getMHabitInWeekDataSource()
                 .deleteAll()
                 .observeOn(Schedulers.newThread())

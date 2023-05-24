@@ -22,6 +22,18 @@
     <string name="str_doing_now">Doing Now</string>
     <string name="str_login">Login Now</string>
 
+    <!--Guide Activity-->
+    <string name="str_content_1">A habit tracker is a simple way to measure whether you did a habit.</string>
+    <string name="str_content_2">The most basic format is to get a calendar and cross off each day you stick with your routine. For example, if you meditate on Monday, Wednesday, and Friday, each of those dates gets an X. As time rolls by, the calendar becomes a record of your habit streak.</string>
+    <string name="str_content_3">To make this process as easy as possible, I created the Habit, which includes 12 habit tracker templates—one for each month. All you have to do is add your habit and start crossing off the days.</string>
+    <string name="str_content_4">Placing an X on each day is the classic look. I prefer something a little more design-oriented, so I shade in the cells on my habit tracker. You could also use checkmarks or fill your habit tracker with dots.</string>
+    <string name="str_content_5">No matter what design you choose, the key point is your habit tracker provides immediate evidence that you completed your habit. It’s a signal that you are making progress. Of course, that’s not all it does…</string>
+    <string name="str_content_6">Habit tracking is powerful for three reasons.</string>
+    <string name="str_content_7">1. It creates a visual cue that can remind you to act.</string>
+    <string name="str_content_8">2. It is motivating to see the progress you are making. You don’t want to break your streak.</string>
+    <string name="str_content_9">3. It feels satisfying to record your success in the moment.</string>
+    <string name="str_content_10">Let’s break down each one.</string>
+
     <!--Create Habit Activity-->
     <string name="title_name_create_habit_activity">NAME</string>
     <string name="title_day_of_week_create_habit_activity">DAY OF WEEK</string>
@@ -83,5 +95,15 @@
     <!--Synchronize Dialog-->
     <string name="str_synchronize_title">Synchronize</string>
     <string name="str_content_synchronize">Are you sure to synchronize to server ?</string>
+
+    <!--Confirm login dialog-->
+    <string name="str_cl_dialog_title">ATTENTION !</string>
+    <string name="str_cl_dialog_content_1">If you sure want to login all data are stored in \n local is going to be deleted in order to get all data \n is storing in server.</string>
+    <string name="str_cl_dialog_content_2">Please think it through !</string>
+    <string name="str_cl_dialog_btn">Still login</string>
+
+    <!--Try connect network dialog-->
+    <string name="str_nw_dialog_title">PLEASE !</string>
+    <string name="str_nw_content">Try connect to network again !</string>
     
 </resources>

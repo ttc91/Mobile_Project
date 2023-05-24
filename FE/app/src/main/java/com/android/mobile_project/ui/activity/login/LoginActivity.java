@@ -20,6 +20,7 @@ import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.login.service.DbService;
 import com.android.mobile_project.ui.activity.login.service.ToastService;
 import com.android.mobile_project.ui.activity.main.MainActivity;
+import com.android.mobile_project.ui.dialog.TryConnectNetworkDialog;
 import com.android.mobile_project.utils.dagger.component.provider.InputComponentProvider;
 import com.android.mobile_project.utils.dagger.component.sub.input.InputComponent;
 import com.android.mobile_project.utils.network.NetworkUtils;
@@ -89,7 +90,6 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
     public void initViewModel() {
 
         binding.setVm(viewModel);
-        viewModel.setContext(this);
 
         viewModel.dbService = new DbService() {
             @Override
@@ -194,6 +194,7 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
                 Intent it = gsc.getSignInIntent();
                 startActivityForResult(it, LOGIN_REQUEST_CODE);
             }else {
+                showTryConnectNetworkDialog();
                 viewModel.toastService.makeNetworkErrorConnectToast();
             }
         }
@@ -221,6 +222,11 @@ public class LoginActivity extends AppCompatActivity implements InitLayout, View
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void showTryConnectNetworkDialog(){
+        TryConnectNetworkDialog dialog = new TryConnectNetworkDialog(getApplicationContext());
+        dialog.show(getSupportFragmentManager(), "try_connect_nw_dialog");
     }
 
 

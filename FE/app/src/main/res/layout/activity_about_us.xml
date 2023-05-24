@@ -50,17 +50,17 @@
             android:id="@+id/btn_about_us_back"
             android:layout_width="0dp"
             android:layout_height="@dimen/_45sdp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
             android:layout_marginHorizontal="@dimen/_30sdp"
             android:layout_marginBottom="@dimen/_10sdp"
+            android:background="@drawable/btn_create"
+            android:onClick="@{(v) -> a.onClick(v)}"
             android:text="@string/str_back"
             android:textColor="@color/white"
-            android:textStyle="bold"
             android:textSize="@dimen/_12ssp"
-            android:onClick="@{(v) -> a.onClick(v)}"
-            android:background="@drawable/btn_create"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"/>
+            android:textStyle="bold" />
 
     </RelativeLayout>
 </layout>

@@ -5,5 +5,14 @@ import com.android.mobile_project.ui.activity.main.fragment.setting.service.ApiS
 public interface ISettingViewModel {
 
     void synchronizeToServer(ApiService.SynchronizeToServerResult callback);
+    void deleteAllDB();
+    void loadAllDataFromServer();
+    void insertAllDataIntoDB();
+    void loadReminderFromServer();
+    void loadHistoryFromServer();
+    void loadHabitInWeekFromServer();
+    void loadHabitFromServer();
+    void getUserIdByName(String username);
+    void requestSignInToServer();
 
 }

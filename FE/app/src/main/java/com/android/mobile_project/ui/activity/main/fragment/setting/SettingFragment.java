@@ -21,12 +21,15 @@ import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.databinding.FragmentSettingBinding;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.about.AboutUsActivity;
+import com.android.mobile_project.ui.activity.guide.GuideActivity;
 import com.android.mobile_project.ui.activity.main.MainActivity;
 import com.android.mobile_project.ui.activity.main.fragment.setting.service.ApiService;
 import com.android.mobile_project.ui.activity.main.fragment.setting.service.InitService;
 import com.android.mobile_project.ui.activity.main.fragment.setting.service.ToastService;
 import com.android.mobile_project.ui.dialog.ConfirmDialog;
+import com.android.mobile_project.ui.dialog.ConfirmLoginDialog;
 import com.android.mobile_project.ui.dialog.SynchronizeDialog;
+import com.android.mobile_project.ui.dialog.TryConnectNetworkDialog;
 import com.android.mobile_project.utils.dagger.component.sub.main.fragment.SettingComponent;
 import com.android.mobile_project.utils.network.NetworkUtils;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -43,6 +46,7 @@ import javax.inject.Inject;
 public class SettingFragment extends Fragment implements InitLayout, View.OnClickListener {
 
     private static final String TAG = SettingFragment.class.getSimpleName();
+
     private final int LOGIN_REQUEST_CODE = 2000;
 
     public SettingComponent component;
@@ -86,12 +90,12 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
                 SynchronizeDialog dialog = new SynchronizeDialog(getContext(), viewModel,  viewModel.toastService);
                 dialog.show(getChildFragmentManager(), "synchronize_dialog");
             }else {
+                showTryConnectNetworkDialog();
                 viewModel.toastService.makeNetworkErrorConnectToast();
             }
         } else if (v.getId() == R.id.btn_login_logout) {
             if(NetworkUtils.isNetworkConnected(getContext())){
                 if (viewModel.isLogin) {
-                    DataLocalManager.getInstance().setUserStateChangeData("false");
                     Log.i("Change state data change", DataLocalManager.getInstance().getUserStateChangeData());
                     DataLocalManager.getInstance().setUserName("null");
                     DataLocalManager.getInstance().setToken("");
@@ -100,10 +104,13 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
                     executeLogIn();
                 }
             }else {
+                showTryConnectNetworkDialog();
                 viewModel.toastService.makeNetworkErrorConnectToast();
             }
         } else if (v.getId() == R.id.btn_about_us) {
             redirectToAboutUsActivity();
+        } else if(v.getId() == R.id.btn_guide) {
+            redirectToGuideActivity();
         }
     }
 
@@ -120,7 +127,6 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
     @Override
     public void initViewModel() {
         binding.setVm(viewModel);
-        viewModel.setContext(getContext());
 
         viewModel.toastService = new ToastService() {
             @Override
@@ -186,12 +192,26 @@ public class SettingFragment extends Fragment implements InitLayout, View.OnClic
     }
 
     private void executeLogIn() {
-        Intent it = gsc.getSignInIntent();
-        startActivityForResult(it, LOGIN_REQUEST_CODE);
+        if(DataLocalManager.getInstance().getUserStateChangeData().equals("true")){
+            ConfirmLoginDialog dialog = new ConfirmLoginDialog(getContext(), viewModel, viewModel.toastService, viewModel.initService);
+            dialog.show(getChildFragmentManager(), "confirm_login_dialog");
+        }else {
+            Intent it = gsc.getSignInIntent();
+            startActivityForResult(it, LOGIN_REQUEST_CODE);
+        }
+    }
+
+    private void showTryConnectNetworkDialog(){
+        TryConnectNetworkDialog dialog = new TryConnectNetworkDialog(getContext());
+        dialog.show(getChildFragmentManager(), "try_connect_nw_dialog");
     }
 
     private void redirectToAboutUsActivity() {
         startActivity(new Intent(getContext(), AboutUsActivity.class));
+    }
+
+    private void redirectToGuideActivity() {
+        startActivity(new Intent(getContext(), GuideActivity.class));
     }
 
     @Override
