@@ -64,4 +64,7 @@ public interface HistoryDAO extends BaseDAO<HistoryEntity>{
     @Query("DELETE FROM tbl_history")
     Completable deleteAll();
 
+    @Query("SELECT COUNT(habit_id) FROM tbl_history WHERE state = 'true' AND date = :historyDate")
+    Long countTrueStateByHistoryDateInBackground(String historyDate);
+
 }

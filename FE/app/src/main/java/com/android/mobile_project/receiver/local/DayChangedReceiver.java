@@ -12,6 +12,7 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 import com.android.mobile_project.MyApplication;
+import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.data.local.sqlite.dao.HabitDAO;
 import com.android.mobile_project.data.local.sqlite.dao.HabitInWeekDAO;
 import com.android.mobile_project.data.local.sqlite.dao.HistoryDAO;
@@ -82,7 +83,7 @@ public class DayChangedReceiver extends BroadcastReceiver {
         component.inject(this);
 
         String todayFormat = LocalDate.now().plus(Period.ofDays(1)).format(DateTimeFormatter.ofPattern(DAY_FORMAT));
-        String yesterdayFormat = LocalDate.now().minus(Period.ofDays(1)).format(DateTimeFormatter.ofPattern(DAY_FORMAT));
+        String yesterdayFormat = LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT));
         Long dayOfWeekTodayId = TimeUtils.getInstance().getDayOfWeekId(todayFormat);
         Long dayOfWeekYesterdayId = TimeUtils.getInstance().getDayOfWeekId(yesterdayFormat);
 
@@ -93,6 +94,15 @@ public class DayChangedReceiver extends BroadcastReceiver {
         List<HabitInWeekEntity> habitInWeekYesterdayEntities = mHabitInWeekDAO.getHabitInWeekEntityByDayOfWeekIdInBackground(
                 1L, dayOfWeekYesterdayId);
         Log.i(TAG, "Habit in week yesterday size " + habitInWeekYesterdayEntities.size());
+
+        //update longest steak for planner fragment
+        Long number = mHistoryDAO.countTrueStateByHistoryDateInBackground(yesterdayFormat);
+        if(number > 0){
+            Long steak = DataLocalManager.getInstance().getLongestTeak();
+            DataLocalManager.getInstance().setLongestTeak(steak + 1L);
+        }else {
+            DataLocalManager.getInstance().setLongestTeak(0L);
+        }
 
         if(habitInWeekToDayEntities.size() > 0){
             //insert history for next day

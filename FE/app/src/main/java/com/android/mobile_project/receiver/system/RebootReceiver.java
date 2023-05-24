@@ -9,6 +9,7 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 import com.android.mobile_project.MyApplication;
+import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.data.local.sqlite.dao.HabitDAO;
 import com.android.mobile_project.data.local.sqlite.dao.HabitInWeekDAO;
 import com.android.mobile_project.data.local.sqlite.dao.HistoryDAO;
@@ -107,6 +108,15 @@ public class RebootReceiver extends BroadcastReceiver {
                             Log.e(TAG, String.valueOf(e));
                         }
                     }
+                }
+
+                //update longest steak for planner fragment
+                Long number = mHistoryDAO.countTrueStateByHistoryDateInBackground(yesterdayFormat);
+                if(number > 0){
+                    Long steak = DataLocalManager.getInstance().getLongestTeak();
+                    DataLocalManager.getInstance().setLongestTeak(steak + 1L);
+                }else {
+                    DataLocalManager.getInstance().setLongestTeak(0L);
                 }
 
             }

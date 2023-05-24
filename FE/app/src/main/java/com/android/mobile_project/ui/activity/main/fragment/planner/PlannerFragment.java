@@ -190,9 +190,7 @@ public class PlannerFragment extends Fragment implements InitLayout, View.OnClic
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void setLongestSteak() {
-                TimeUtils utils = new TimeUtils();
-                LocalDate yesterday = utils.getSelectedDate().minus(1, ChronoUnit.DAYS);
-                viewModel.setLongestSteakForPlannerFragment(yesterday.format(DateTimeFormatter.ofPattern(DATE_FORMAT)));
+                viewModel.setLongestSteakForPlannerFragment();
             }
 
             @Override

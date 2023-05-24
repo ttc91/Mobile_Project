@@ -16,6 +16,9 @@ import com.android.mobile_project.data.local.sqlite.dao.HabitDAO;
 import com.android.mobile_project.data.local.sqlite.dao.HabitInWeekDAO;
 import com.android.mobile_project.data.local.sqlite.dao.HistoryDAO;
 import com.android.mobile_project.data.local.sqlite.dao.RemainderDAO;
+import com.android.mobile_project.data.local.sqlite.entity.db.HabitEntity;
+import com.android.mobile_project.data.local.sqlite.entity.db.HabitInWeekEntity;
+import com.android.mobile_project.data.local.sqlite.entity.db.HistoryEntity;
 import com.android.mobile_project.data.remote.api.HabitAPI;
 import com.android.mobile_project.data.remote.api.HabitInWeekAPI;
 import com.android.mobile_project.data.remote.api.HistoryAPI;
@@ -30,6 +33,11 @@ import com.android.mobile_project.data.remote.persistence.RemoteHabitInWeekDataS
 import com.android.mobile_project.data.remote.persistence.RemoteHistoryDataSource;
 import com.android.mobile_project.data.remote.persistence.RemoteRemainderDataSource;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.TimeTickReceiverComponent;
+import com.android.mobile_project.utils.time.utils.TimeUtils;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -40,6 +48,12 @@ import retrofit2.Response;
 public class TimeTickReceiver extends BroadcastReceiver {
 
     private static final String TAG = TimeTickReceiver.class.getSimpleName();
+
+    private static final String VAL_NULL = "null";
+
+    private static final String VAL_TRUE = "true";
+
+    private static final String DAY_FORMAT = "yyyy-MM-dd";
 
     @Inject
     HabitDAO mHabitDAO;
@@ -67,18 +81,43 @@ public class TimeTickReceiver extends BroadcastReceiver {
 
     public TimeTickReceiverComponent component;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent intent) {
 
         if(intent.getAction().equals(Intent.ACTION_TIME_TICK)){
             Log.i(TAG, "onReceive");
+            Log.i(TAG, "tick");
 
             component = ((MyApplication) context.getApplicationContext()).provideTimeTickReceiverComponent();
             component.inject(this);
 
-            Log.i(TAG, "tick");
+            Log.i(TAG,"check habit list today before");
+            String todayFormat = LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT));
+            List<HistoryEntity> historyEntities = mHistoryDAO.getHistoriesByDateInBackground(1L, todayFormat);
+            if(historyEntities.size() == 0 || historyEntities == null){
+                Long dayOfWeekTodayId = TimeUtils.getInstance().getDayOfWeekId(todayFormat);
+                List<HabitInWeekEntity> habitInWeekToDayEntities = mHabitInWeekDAO.getHabitInWeekEntityByDayOfWeekIdInBackground(
+                        1L, dayOfWeekTodayId);
+                Log.i(TAG, "Habit in week today size  " + habitInWeekToDayEntities.size());
+
+                if(habitInWeekToDayEntities.size() > 0){
+                    //insert history for new day
+                    Log.i(TAG, "Insert history for today");
+                    for (HabitInWeekEntity entity : habitInWeekToDayEntities) {
+                        HabitEntity habitEntity = mHabitDAO.getHabitByUserIdAndHabitIdInBackground(1L, entity.getHabitId());
+                        HistoryEntity historyEntity = new HistoryEntity();
+                        historyEntity.setHabitId(habitEntity.getHabitId());
+                        historyEntity.setHistoryDate(todayFormat);
+                        historyEntity.setHistoryHabitsState(VAL_NULL);
+                        historyEntity.setUserId(1L);
+                        mHistoryDAO.insertInBackground(historyEntity);
+                    }
+
+                }
+            }
+
             Log.i(TAG, "Current count "
                     + DataLocalManager.getInstance().getCountToSynchronizeServer());
             Log.i(TAG, "Login state " + DataLocalManager.getInstance().getLoginState());

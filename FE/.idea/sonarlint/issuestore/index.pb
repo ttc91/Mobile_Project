@@ -59,8 +59,6 @@ Uapp/src/main/java/com/android/mobile_project/data/local/pref/MySharedPreference
 Uapp/src/main/java/com/android/mobile_project/ui/activity/count/CountDownActivity.java,e\7\e7c37a6b250a8874814b499f863b4fe4fade6ee9
 Ü
 Vapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/HabitInWeekDAO.java,3\a\3a123d4eb263dc789e02eebaa1bf2c0773d2a93e
-~
-Napp/src/main/java/com/android/mobile_project/data/remote/model/HabitModel.java,c\3\c30f522c421524d23612e525b92a2bd77afb1e0a
 ó
 gapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/setting/service/InitService.java,6\d\6d964d8eb6498444e8f25c32b2927543304873e4
 Ñ
@@ -107,8 +105,6 @@ Oapp/src/main/java/com/android/mobile_project/data/utils/mapper/HabitMapper.java
 Papp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/HabitDAO.java,8\5\8523db240b76762a0f96aad825650c17b8c2d334
 ú
 lapp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/behavior/RemainderDataSource.java,2\f\2fc7e8135523ce04b37788c1c53b1eec5e3d9a59
-ö
-japp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/behavior/HistoryDataSource.java,f\7\f7732044b79139e2df673a7be0aaed97bcb5b39e
 ñ
 fapp/src/main/java/com/android/mobile_project/data/local/sqlite/persistence/LocalHistoryDataSource.java,7\e\7eedbff87391994b2a8092c0a8fd7c125e56484d
 á
@@ -125,12 +121,6 @@ Oapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/BaseDAO.java
 Oapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/UserDAO.java,9\1\9107d42372a82b626846360c23e0e789ded2f481
 Ä
 Papp/src/main/java/com/android/mobile_project/ui/activity/base/BaseViewModel.java,9\d\9d0a5d0843dd4f95ed61df371342873cb5c1115e
-Ç
-Rapp/src/main/java/com/android/mobile_project/data/local/sqlite/dao/HistoryDAO.java,c\0\c09700092eaaa52863fb36f5978c94f6fd7810f5
-ó
-gapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/planner/service/InitService.java,8\0\80f541035d2d4ae7ea8f152f7cb629a1575e3e97
-ì
-capp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/planner/PlannerFragment.java,f\2\f256bdfd999b8252ff8ff82878e2c8e02501e1d8
 å
 \app/src/main/java/com/android/mobile_project/ui/activity/setting/IHabitSettingViewModel.java,5\e\5e726fd3ab4c0e786accddca4e1b09dc800cdd9c
 é
@@ -161,10 +151,6 @@ Yapp/src/main/java/com/android/mobile_project/ui/activity/create/CreateHabitView
 Vapp/src/main/java/com/android/mobile_project/ui/activity/count/CountDownViewModel.java,4\a\4a38d91562da916c27b2bac487c14f26520fbb06
 ò
 happ/src/main/java/com/android/mobile_project/ui/activity/main/fragment/setting/service/ToastService.java,7\2\723fc90e10207df2b8e7db83aaaa7b32190d0665
-î
-dapp/src/main/java/com/android/mobile_project/ui/activity/main/fragment/planner/PlannerViewModel.java,1\5\15f822eb5a2f9152f327473b1ea4f0c58d6c9392
-É
-Sapp/src/main/java/com/android/mobile_project/receiver/local/DayChangedReceiver.java,1\7\173fa8f1bdadd9c49d82cdb36b20093eb2a8d282
 á
 Wapp/src/main/java/com/android/mobile_project/utils/dagger/module/ApplicationModule.java,2\e\2e8008aed6c4af03f8493a636c4c0378791d586a
 °
@@ -215,8 +201,6 @@ Zapp/src/main/java/com/android/mobile_project/ui/activity/setting/HabitSettingAc
 ]app/src/main/java/com/android/mobile_project/ui/activity/main/fragment/home/HomeFragment.java,4\0\408bb331b8925889845bd28e8bf300818319cd64
 à
 Xapp/src/main/java/com/android/mobile_project/ui/activity/create/CreateHabitActivity.java,7\e\7ea7b6c6db07398aaefa67d00a21fff053ac5232
-o
-?app/src/main/java/com/android/mobile_project/MyApplication.java,4\4\4491519b89794a868cc0f0381ce259cb39363b5f
 è
 _app/src/main/java/com/android/mobile_project/data/remote/model/api/HistorySynchronizeModel.java,6\4\64cae64f991fe816f61041c7cd8433093b7a4d16
 ë

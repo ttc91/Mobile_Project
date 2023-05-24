@@ -140,24 +140,8 @@ public class PlannerViewModel extends ViewModel {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    protected void setLongestSteakForPlannerFragment(String historyDate){
-        mCompositeDisposable.add(
-                mHistoryRepository.getMHistoryDataSource().countTrueStateByHistoryDate(historyDate)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(number -> {
-                                    Log.i("getHistoryWithSteak", "onSuccess");
-                                    Log.i("historySteak", String.valueOf(number));
-                                    if(number > 0){
-                                        Long steak = DataLocalManager.getInstance().getLongestTeak();
-                                        DataLocalManager.getInstance().setLongestTeak(steak + 1L);
-                                    }else {
-                                        DataLocalManager.getInstance().setLongestTeak(0L);
-                                    }
-                                    longestSteakForPlannerFragmentMutableLiveData.postValue(Math.toIntExact(DataLocalManager.getInstance().getLongestTeak()));
-                                }, throwable -> Log.e("getHistoryByDate", "onError", throwable)
-                        )
-        );
+    protected void setLongestSteakForPlannerFragment(){
+        longestSteakForPlannerFragmentMutableLiveData.postValue(Math.toIntExact(DataLocalManager.getInstance().getLongestTeak()));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
