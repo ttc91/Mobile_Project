@@ -66,6 +66,18 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button
+                android:id="@+id/btn_step_counter"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:background="@drawable/btn_step_counter"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="@{(v) -> a.onClick(v)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/btn_ch"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
                 android:id="@+id/btn_ch"
                 android:layout_width="@dimen/_40sdp"
                 android:layout_height="@dimen/_40sdp"

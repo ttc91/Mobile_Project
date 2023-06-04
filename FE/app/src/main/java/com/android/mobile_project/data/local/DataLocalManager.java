@@ -14,6 +14,8 @@ public class DataLocalManager {
     private static final String USER_STATE_CHANGE_DATA = "PREF_USER_STATE_CHANGE_DATA";
     private static final String COUNT_TO_SYNCHRONIZE_SERVER = "PREF_COUNT_TO_SYNCHRONIZE_SERVER";
     private static final String LOGIN_STATE = "PREF_LOGIN_STATE";
+    private static final String COUNTER_STEP_VALUE = "PREF_COUNTER_STEP_VALUE";
+    private static final String COUNTER_STEP_PER_DAY_VALUE = "PREF_COUNTER_STEP_PER_DAY_VALUE";
 
     private static DataLocalManager instance;
 
@@ -91,6 +93,31 @@ public class DataLocalManager {
 
     public String getLoginState(){
         return DataLocalManager.mySharedPreferences.getStringValue(LOGIN_STATE);
+    }
+
+    public void setCounterStepValue(Integer value){
+        DataLocalManager.mySharedPreferences.putIntValue(COUNTER_STEP_VALUE, value);
+    }
+
+    public Integer getCounterStepValue(){
+        return DataLocalManager.mySharedPreferences.getIntValue(COUNTER_STEP_VALUE);
+    }
+
+    public void setCounterStepPerDayValue(){
+        if(DataLocalManager.mySharedPreferences.getLongValue(COUNTER_STEP_PER_DAY_VALUE) == null){
+            DataLocalManager.mySharedPreferences.putLongValue(COUNTER_STEP_PER_DAY_VALUE, 0L);
+        }else {
+            Long value = DataLocalManager.mySharedPreferences.getLongValue(COUNTER_STEP_PER_DAY_VALUE) + 1L;
+            DataLocalManager.mySharedPreferences.putLongValue(COUNTER_STEP_PER_DAY_VALUE, value);
+        }
+    }
+
+    public void resetCounterStepPerDayValue(){
+            DataLocalManager.mySharedPreferences.putLongValue(COUNTER_STEP_PER_DAY_VALUE, 0L);
+    }
+
+    public Long getCounterStepPerDayValue(){
+        return DataLocalManager.mySharedPreferences.getLongValue(COUNTER_STEP_PER_DAY_VALUE);
     }
 
 }

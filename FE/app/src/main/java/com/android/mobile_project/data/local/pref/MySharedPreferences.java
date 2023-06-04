@@ -48,5 +48,23 @@ public class MySharedPreferences {
 
     }
 
+    public void putIntValue(String key, Integer value){
+
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(key, value);
+        editor.apply();
+
+    }
+
+    public Integer getIntValue(String key){
+
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+
+        return sharedPreferences.getInt(key, 0);
+
+    }
+
 
 }

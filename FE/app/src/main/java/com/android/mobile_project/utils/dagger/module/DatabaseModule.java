@@ -14,6 +14,7 @@ import com.android.mobile_project.data.local.sqlite.dao.HabitDAO;
 import com.android.mobile_project.data.local.sqlite.dao.HabitInWeekDAO;
 import com.android.mobile_project.data.local.sqlite.dao.HistoryDAO;
 import com.android.mobile_project.data.local.sqlite.dao.RemainderDAO;
+import com.android.mobile_project.data.local.sqlite.dao.StepHistoryDAO;
 import com.android.mobile_project.data.local.sqlite.dao.UserDAO;
 import com.android.mobile_project.data.local.sqlite.entity.db.DayOfTimeEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.DayOfWeekEntity;
@@ -26,6 +27,7 @@ import com.android.mobile_project.data.local.sqlite.persistence.LocalHabitDataSo
 import com.android.mobile_project.data.local.sqlite.persistence.LocalHabitInWeekDataSource;
 import com.android.mobile_project.data.local.sqlite.persistence.LocalHistoryDataSource;
 import com.android.mobile_project.data.local.sqlite.persistence.LocalRemainderDataSource;
+import com.android.mobile_project.data.local.sqlite.persistence.LocalStepHistoryDataSource;
 import com.android.mobile_project.data.local.sqlite.persistence.LocalUserDataSource;
 import com.android.mobile_project.data.local.sqlite.persistence.behavior.DayOfTimeDataSource;
 import com.android.mobile_project.data.local.sqlite.persistence.behavior.DayOfWeekDataSource;
@@ -33,6 +35,7 @@ import com.android.mobile_project.data.local.sqlite.persistence.behavior.HabitDa
 import com.android.mobile_project.data.local.sqlite.persistence.behavior.HabitInWeekDataSource;
 import com.android.mobile_project.data.local.sqlite.persistence.behavior.HistoryDataSource;
 import com.android.mobile_project.data.local.sqlite.persistence.behavior.RemainderDataSource;
+import com.android.mobile_project.data.local.sqlite.persistence.behavior.StepHistoryDataSource;
 import com.android.mobile_project.data.local.sqlite.persistence.behavior.UserDataSource;
 import com.android.mobile_project.utils.dagger.custom.MyCustomAnnotation;
 import com.android.mobile_project.utils.time.DayOfTime;
@@ -121,6 +124,12 @@ public final class DatabaseModule {
 
     @Provides
     @Singleton
+    public StepHistoryDAO provideStepHistoryDAO(){
+        return DATABASE.stepHistoryDAO();
+    }
+
+    @Provides
+    @Singleton
     public RemainderDAO provideRemainDAO(){
         return DATABASE.remainderDao();
     }
@@ -195,6 +204,12 @@ public final class DatabaseModule {
     @Singleton
     public UserDataSource provideUserDataSource(UserDAO dao){
         return new LocalUserDataSource(dao);
+    }
+
+    @Provides
+    @Singleton
+    public StepHistoryDataSource provideStepHistoryDataSource(StepHistoryDAO dao){
+        return new LocalStepHistoryDataSource(dao);
     }
 
 }

@@ -3,9 +3,14 @@ package com.android.mobile_project.ui.activity.main;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -32,6 +37,8 @@ import javax.inject.Inject;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends AppCompatActivity implements InitLayout {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private ActivityMainBinding binding;
 
@@ -142,4 +149,5 @@ public class MainActivity extends AppCompatActivity implements InitLayout {
         binding.executePendingBindings();
 
     }
+
 }

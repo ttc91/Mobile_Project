@@ -15,6 +15,7 @@ import com.android.mobile_project.utils.dagger.ApplicationGraph;
 import com.android.mobile_project.utils.dagger.DaggerApplicationGraph;
 import com.android.mobile_project.utils.dagger.component.provider.AutoInsertServiceComponentProvider;
 import com.android.mobile_project.utils.dagger.component.provider.CountDownComponentProvider;
+import com.android.mobile_project.utils.dagger.component.provider.CounterStepComponentProvider;
 import com.android.mobile_project.utils.dagger.component.provider.CreateHabitComponentProvider;
 import com.android.mobile_project.utils.dagger.component.provider.CreateHistoryReceiverComponentProvider;
 import com.android.mobile_project.utils.dagger.component.provider.DayChangedReceiverComponentProvider;
@@ -25,6 +26,7 @@ import com.android.mobile_project.utils.dagger.component.provider.RebootReceiver
 import com.android.mobile_project.utils.dagger.component.provider.TimeTickReceiverComponentProvider;
 import com.android.mobile_project.utils.dagger.component.sub.count.CountDownComponent;
 import com.android.mobile_project.utils.dagger.component.sub.create.CreateHabitComponent;
+import com.android.mobile_project.utils.dagger.component.sub.main.CounterStepComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.CreateHistoryReceiverComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.DayChangedReceiverComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.RebootReceiverComponent;
@@ -42,7 +44,8 @@ public class MyApplication extends Application
         InputComponentProvider, CountDownComponentProvider,
         CreateHabitComponentProvider, CreateHistoryReceiverComponentProvider,
         DayChangedReceiverComponentProvider, AutoInsertServiceComponentProvider,
-        RebootReceiverComponentProvider, TimeTickReceiverComponentProvider {
+        RebootReceiverComponentProvider, TimeTickReceiverComponentProvider,
+        CounterStepComponentProvider {
 
     private static final String TAG = MyApplication.class.getSimpleName();
 
@@ -71,6 +74,9 @@ public class MyApplication extends Application
         DataLocalManager.init(getApplicationContext());
         DataLocalManager.getInstance().setCountToSynchronizeServer(0L);
         DataLocalManager.getInstance().setUserStateChangeData("false");
+        if(DataLocalManager.getInstance().getCounterStepValue() == null){
+            DataLocalManager.getInstance().setCounterStepValue(0);
+        }
     }
 
     @Override
@@ -121,5 +127,10 @@ public class MyApplication extends Application
     @Override
     public TimeTickReceiverComponent provideTimeTickReceiverComponent() {
         return graph.mTimeTickReceiverComponent().create();
+    }
+
+    @Override
+    public CounterStepComponent provideCounterStepComponent() {
+        return graph.mCounterStepComponent().create();
     }
 }

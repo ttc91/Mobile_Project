@@ -91,7 +91,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/_20ssp"
+                                android:textSize="@dimen/_15ssp"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -99,7 +99,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Days"
                                 android:textColor="@color/white"
-                                android:textSize="@dimen/_15ssp"
+                                android:textSize="@dimen/_12ssp"
                                 android:textStyle="bold" />
 
                         </LinearLayout>
@@ -142,7 +142,7 @@
                     android:layout_marginStart="@dimen/_15sdp"
                     android:layout_marginEnd="@dimen/_15sdp"
                     android:text="Your record"
-                    android:textSize="@dimen/_12ssp"
+                    android:textSize="@dimen/_10ssp"
                     android:textStyle="bold"
                     android:background="@drawable/bck_planner_ac_titile"
                     android:gravity="center"/>
@@ -158,7 +158,7 @@
                     android:layout_marginEnd="@dimen/_15sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:text="The weekdays missed doing"
-                    android:textSize="@dimen/_12ssp"
+                    android:textSize="@dimen/_10ssp"
                     android:textStyle="bold"
                     android:background="@drawable/bck_planner_ac_titile"
                     android:gravity="center"/>

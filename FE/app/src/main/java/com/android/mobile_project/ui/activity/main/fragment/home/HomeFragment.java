@@ -11,6 +11,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +38,7 @@ import com.android.mobile_project.databinding.FragmentHomeBinding;
 import com.android.mobile_project.ui.InitLayout;
 import com.android.mobile_project.ui.activity.count.CountDownActivity;
 import com.android.mobile_project.ui.activity.create.CreateHabitActivity;
+import com.android.mobile_project.ui.activity.main.CounterStepActivity;
 import com.android.mobile_project.ui.activity.main.MainActivity;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.DoneHabitAdapter;
 import com.android.mobile_project.ui.activity.main.fragment.home.adapter.FailedHabitAdapter;
@@ -318,8 +321,16 @@ public class HomeFragment extends Fragment implements InitLayout, View.OnClickLi
                     binding.rcvHabitFailedList.setVisibility(View.VISIBLE);
                 }
                 break;
+            case R.id.btn_step_counter:
+                clickStepCounter();
+                break;
         }
 
+    }
+
+    private void clickStepCounter() {
+        Intent intent = new Intent(getContext(), CounterStepActivity.class);
+        startActivity(intent);
     }
 
     private void clickCreateHabit() {

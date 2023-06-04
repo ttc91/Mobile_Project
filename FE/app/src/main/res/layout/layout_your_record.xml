@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textColor="#5A5858"
-                    android:textSize="@dimen/_25ssp"
+                    android:textSize="@dimen/_20ssp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:text="Days"
                     android:textColor="#5A5858"
-                    android:textSize="@dimen/_12ssp"
+                    android:textSize="@dimen/_10ssp"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -117,7 +117,7 @@
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textColor="#5A5858"
-                    android:textSize="@dimen/_25ssp"
+                    android:textSize="@dimen/_20ssp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -125,7 +125,7 @@
                     android:layout_height="wrap_content"
                     android:text="Days"
                     android:textColor="#5A5858"
-                    android:textSize="@dimen/_12ssp"
+                    android:textSize="@dimen/_10ssp"
                     android:textStyle="bold" />
 
             </LinearLayout>

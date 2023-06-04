@@ -54,6 +54,14 @@ public class RebootReceiver extends BroadcastReceiver {
 
         if(intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)){
 
+            try{
+                if(DataLocalManager.getInstance().getCounterStepValue() != null){
+                    DataLocalManager.getInstance().resetCounterStepPerDayValue();
+                }
+            }catch (Exception e){
+                Log.e(TAG, e.getMessage());
+            }
+
             Log.i(TAG, "onReceive()");
 
             component = ((MyApplication) context.getApplicationContext()).provideRebootReceiverComponent();

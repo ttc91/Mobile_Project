@@ -9,6 +9,7 @@ import com.android.mobile_project.data.local.sqlite.entity.db.relation.UserWithD
 import com.android.mobile_project.data.local.sqlite.entity.db.relation.UserWithHabit;
 import com.android.mobile_project.data.local.sqlite.entity.db.relation.UserWithHabitForHabitInWeek;
 import com.android.mobile_project.data.local.sqlite.entity.db.relation.UserWithHistory;
+import com.android.mobile_project.data.local.sqlite.entity.db.relation.UserWithStepHistory;
 
 import java.util.List;
 
@@ -24,6 +25,13 @@ public interface UserDAO extends BaseDAO<UserEntity>{
     @Transaction
     @Query("SELECT * FROM tbl_user")
     List<UserWithHabit> getUserWithHabits();
+
+    /**
+     * <b>One-to-many</b> User with step history.
+     */
+    @Transaction
+    @Query("SELECT * FROM tbl_user")
+    List<UserWithStepHistory> getUserWithStepHistories();
 
     /**
      * <b>One-to-many</b> User with history.

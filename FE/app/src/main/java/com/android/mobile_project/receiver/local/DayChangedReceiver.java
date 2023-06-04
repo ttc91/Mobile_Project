@@ -16,9 +16,11 @@ import com.android.mobile_project.data.local.DataLocalManager;
 import com.android.mobile_project.data.local.sqlite.dao.HabitDAO;
 import com.android.mobile_project.data.local.sqlite.dao.HabitInWeekDAO;
 import com.android.mobile_project.data.local.sqlite.dao.HistoryDAO;
+import com.android.mobile_project.data.local.sqlite.dao.StepHistoryDAO;
 import com.android.mobile_project.data.local.sqlite.entity.db.HabitEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.HabitInWeekEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.HistoryEntity;
+import com.android.mobile_project.data.local.sqlite.entity.db.StepHistoryEntity;
 import com.android.mobile_project.service.AutoInsertService;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.DayChangedReceiverComponent;
 import com.android.mobile_project.utils.time.utils.TimeUtils;
@@ -71,6 +73,9 @@ public class DayChangedReceiver extends BroadcastReceiver {
     @Inject
     HistoryDAO mHistoryDAO;
 
+    @Inject
+    StepHistoryDAO mStepHistoryDAO;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -86,6 +91,20 @@ public class DayChangedReceiver extends BroadcastReceiver {
         String yesterdayFormat = LocalDate.now().format(DateTimeFormatter.ofPattern(DAY_FORMAT));
         Long dayOfWeekTodayId = TimeUtils.getInstance().getDayOfWeekId(todayFormat);
         Long dayOfWeekYesterdayId = TimeUtils.getInstance().getDayOfWeekId(yesterdayFormat);
+
+        //update step per day
+        try{
+            if(DataLocalManager.getInstance().getCounterStepValue() != null){
+                StepHistoryEntity entity = new StepHistoryEntity();
+                entity.setUserId(1L);
+                entity.setStepHistoryDate(yesterdayFormat);
+                entity.setStepValue(DataLocalManager.getInstance().getCounterStepPerDayValue());
+                mStepHistoryDAO.insert(entity);
+                DataLocalManager.getInstance().resetCounterStepPerDayValue();
+            }
+        }catch (Exception e){
+            Log.e(TAG, e.getMessage());
+        }
 
         List<HabitInWeekEntity> habitInWeekToDayEntities = mHabitInWeekDAO.getHabitInWeekEntityByDayOfWeekIdInBackground(
                 1L, dayOfWeekTodayId);

@@ -10,17 +10,28 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/drawable/bck_car_null_date.xml" value="0.2155" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/drawable/bck_car_today.xml" value="0.2155" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/drawable/bck_car_true_date.xml" value="0.2155" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/drawable/bck_config_step.xml" value="0.2245" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/drawable/bck_confirm_dialog.xml" value="0.2155" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/drawable/bck_green_circle.xml" value="0.2245" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/drawable/bck_habit.xml" value="0.195" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/drawable/bck_item_your_record.xml" value="0.2345" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/drawable/bck_name_title.xml" value="0.228" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/drawable/bck_schedule_step_counter_title.xml" value="0.2345" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/drawable/ic_about_deciduous_tree.xml" value="0.244" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/activity_about_us.xml" value="0.17831813576494426" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/activity_counter_step.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/activity_create_habit.xml" value="0.17831813576494426" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/activity_guide.xml" value="0.21302083333333333" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/activity_habit_setting.xml" value="0.296875" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/activity_login.xml" value="0.13949275362318841" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/activity_main.xml" value="0.2125" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/activity_process_time.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/activity_step_counter.xml" value="0.2125" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/fragment_home.xml" value="0.25885416666666666" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/fragment_planner.xml" value="0.21770833333333334" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/fragment_schedule_counter_step.xml" value="0.33" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/fragment_set_counter_step.xml" value="0.25" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/fragment_setting.xml" value="0.25" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_confirm_dialog.xml" value="0.3473731884057971" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_confirm_login_dialog.xml" value="0.21302083333333333" />
@@ -31,17 +42,19 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_reconnect_nw_dialog.xml" value="0.33" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_remainder_dialog.xml" value="0.5" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_reminder_item.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_step_schedule_chart.xml" value="0.17831813576494426" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_step_schedule_item.xml" value="0.33" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_synchronize_dialog.xml" value="0.13872832369942195" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_time_picker_dialog.xml" value="0.1" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_ver_calendar.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_ver_calendar.xml" value="0.25" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_waiting.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/layout_your_record.xml" value="0.33" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/rcv_horizontal_calendar_text_date.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/rcv_horizontal_calendar_text_date.xml" value="0.22" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/rcv_item_habit.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/rcv_item_habit_after.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/rcv_item_habit_done.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/rcv_item_habit_failed.xml" value="0.1" />
-        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/rcv_vertical_calendar_text_date.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/layout/rcv_vertical_calendar_text_date.xml" value="0.25" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/FE/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.22" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_best_planner.xml" value="0.292" />
         <entry key="..\:/Users/User/AndroidStudioProjects/Mobile_Project/app/src/main/res/drawable/bck_bottom.xml" value="0.1" />

@@ -105,5 +105,32 @@
     <!--Try connect network dialog-->
     <string name="str_nw_dialog_title">PLEASE !</string>
     <string name="str_nw_content">Try connect to network again !</string>
-    
+
+    <!--Fragment set counter step-->
+    <string name="str_fragment_set_counter_step">Your target every day</string>
+    <string name="str_fragment_set_counter_step_content">Fill your target kcal value you want to reach every day. \nAfter that your activity is going to be scheduled every day</string>
+    <string name="str_kcal_day">Kcal/day</string>
+    <string name="str_confirm">Confirm</string>
+
+    <!--Fragment schedule counter step-->
+    <string name="str_fragment_schedule_counter_step">Healthy Step Counter</string>
+    <string name="str_healthy_record_today">Healthy Record Today</string>
+    <string name="str_work">Work</string>
+    <string name="str_step">Step</string>
+    <string name="str_distance">Distance</string>
+    <string name="str_km">km</string>
+    <string name="str_steps">steps</string>
+    <string name="str_kcal">kcal</string>
+    <string name="str_schedule_for_week">Schedule for week</string>
+    <string name="str_config">config</string>
+
+    <!---->
+    <string name="str_monday_abbreviation">M</string>
+    <string name="str_tuesday_abbreviation">T</string>
+    <string name="str_wednesday_abbreviation">W</string>
+    <string name="str_thursday_abbreviation">T</string>
+    <string name="str_friday_abbreviation">F</string>
+    <string name="str_saturday_abbreviation">S</string>
+    <string name="str_sunday_abbreviation">S</string>
+
 </resources>

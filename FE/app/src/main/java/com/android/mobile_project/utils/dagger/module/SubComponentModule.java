@@ -2,6 +2,7 @@ package com.android.mobile_project.utils.dagger.module;
 
 import com.android.mobile_project.utils.dagger.component.sub.count.CountDownComponent;
 import com.android.mobile_project.utils.dagger.component.sub.create.CreateHabitComponent;
+import com.android.mobile_project.utils.dagger.component.sub.main.CounterStepComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.CreateHistoryReceiverComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.DayChangedReceiverComponent;
 import com.android.mobile_project.utils.dagger.component.sub.receiver.RebootReceiverComponent;
@@ -15,6 +16,7 @@ import dagger.Module;
 
 @Module(subcomponents = {
         MainComponent.class,
+        CounterStepComponent.class,
         HabitSettingComponent.class,
         CountDownComponent.class,
         InputComponent.class,

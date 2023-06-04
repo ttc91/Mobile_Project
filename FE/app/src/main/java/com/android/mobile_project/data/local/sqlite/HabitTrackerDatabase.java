@@ -2,12 +2,14 @@ package com.android.mobile_project.data.local.sqlite;
 
 import androidx.room.RoomDatabase;
 
+import com.android.mobile_project.data.local.sqlite.dao.StepHistoryDAO;
 import com.android.mobile_project.data.local.sqlite.entity.db.DayOfTimeEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.DayOfWeekEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.HabitEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.HabitInWeekEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.HistoryEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.RemainderEntity;
+import com.android.mobile_project.data.local.sqlite.entity.db.StepHistoryEntity;
 import com.android.mobile_project.data.local.sqlite.entity.db.UserEntity;
 import com.android.mobile_project.data.local.sqlite.dao.DayOfTimeDAO;
 import com.android.mobile_project.data.local.sqlite.dao.DayOfWeekDAO;
@@ -18,7 +20,7 @@ import com.android.mobile_project.data.local.sqlite.dao.RemainderDAO;
 import com.android.mobile_project.data.local.sqlite.dao.UserDAO;
 
 @androidx.room.Database(entities = {UserEntity.class, HabitEntity.class, DayOfWeekEntity.class, DayOfTimeEntity.class,
-        HabitInWeekEntity.class, HistoryEntity.class, RemainderEntity.class}, version = 16)
+        HabitInWeekEntity.class, HistoryEntity.class, RemainderEntity.class, StepHistoryEntity.class}, version = 16)
 public abstract class HabitTrackerDatabase extends RoomDatabase {
 
     public abstract UserDAO userDao();
@@ -28,5 +30,6 @@ public abstract class HabitTrackerDatabase extends RoomDatabase {
     public abstract HistoryDAO historyDao();
     public abstract HabitInWeekDAO habitInWeekDao();
     public abstract RemainderDAO remainderDao();
+    public abstract StepHistoryDAO stepHistoryDAO();
 
 }
